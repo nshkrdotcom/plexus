@@ -19,10 +19,13 @@ defmodule Plexus.Provenance do
 
   @spec invalidate(term(), term(), keyword()) :: [term()]
   def invalidate(run_id, upstream_id, opts \\ []) do
-    invalidated = do_invalidate(run_id, upstream_id, %{}) |> Map.keys()
+    {invalidated, notify} =
+      do_invalidate(run_id, upstream_id, %{}, %{})
+
+    invalidated = Map.keys(invalidated)
 
     if Keyword.get(opts, :notify, false),
-      do: notify_invalidated(run_id, upstream_id, invalidated)
+      do: notify_invalidated(run_id, upstream_id, Map.keys(notify))
 
     invalidated
   end
@@ -98,44 +101,60 @@ defmodule Plexus.Provenance do
 
   defp enqueue(run_id, actor_id) do
     Graph.update(run_id, actor_id, fn attrs ->
-      attrs |> Map.put(:stale, true) |> Map.update(:epoch, 1, &(&1 + 1))
+      attrs
+      |> Map.put(:stale, true)
+      |> Map.update(:epoch, 1, &(&1 + 1))
     end)
 
     case Graph.get(run_id, actor_id) do
       nil ->
-        :ok
+        false
 
       attrs ->
         priority = Map.get(attrs, :repair_priority, 0)
+        encoded = :erlang.term_to_binary(actor_id)
+        key = {-priority, encoded}
+        table = Config.fetch!(run_id).tables.repairs
 
-        :ets.insert(
-          Config.fetch!(run_id).tables.repairs,
-          {{-priority, :erlang.term_to_binary(actor_id)}, actor_id}
-        )
+        newly_pending? = :ets.insert_new(table, {key, actor_id})
 
-        Record.append(run_id, :repair_queued, %{
-          actor_id: actor_id,
-          epoch: attrs.epoch,
-          priority: priority
-        })
+        if newly_pending? do
+          Record.append(run_id, :repair_queued, %{
+            actor_id: actor_id,
+            epoch: attrs.epoch,
+            priority: priority
+          })
+        end
+
+        newly_pending?
     end
   end
 
-  @spec do_invalidate(term(), term(), map()) :: map()
-  defp do_invalidate(run_id, upstream_id, seen) do
+  @spec do_invalidate(term(), term(), map(), map()) :: {map(), map()}
+  defp do_invalidate(run_id, upstream_id, seen, notify) do
     if Map.has_key?(seen, upstream_id) do
-      seen
+      {seen, notify}
     else
       seen = Map.put(seen, upstream_id, true)
 
       Graph.incoming(run_id, upstream_id, :depends_on)
-      |> Enum.reduce(seen, &invalidate_edge(run_id, &1, &2))
+      |> Enum.reduce({seen, notify}, fn edge, {seen, notify} ->
+        invalidate_edge(run_id, edge, seen, notify)
+      end)
     end
   end
 
-  @spec invalidate_edge(term(), map(), map()) :: map()
-  defp invalidate_edge(run_id, edge, seen) do
-    unless Map.has_key?(seen, edge.node), do: enqueue(run_id, edge.node)
-    do_invalidate(run_id, edge.node, seen)
+  @spec invalidate_edge(term(), map(), map(), map()) :: {map(), map()}
+  defp invalidate_edge(run_id, edge, seen, notify) do
+    if Map.has_key?(seen, edge.node) do
+      {seen, notify}
+    else
+      notify =
+        if enqueue(run_id, edge.node),
+          do: Map.put(notify, edge.node, true),
+          else: notify
+
+      do_invalidate(run_id, edge.node, seen, notify)
+    end
   end
 end

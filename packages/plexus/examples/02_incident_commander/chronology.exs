@@ -42,7 +42,7 @@ defmodule Plexus.Examples.IncidentCommander.Chronology do
     stream =
       path
       |> Data.csv_maps!()
-      |> Stream.filter(&selected_day?(&1, day))
+      |> day_window(day)
       |> Stream.filter(&usable_row?(kind, &1))
 
     case Enumerable.reduce(stream, {:cont, nil}, &suspend_row/2) do
@@ -95,10 +95,32 @@ defmodule Plexus.Examples.IncidentCommander.Chronology do
 
   defp usable_row?(_kind, _row), do: true
 
-  defp selected_day?(row, day) do
+  defp day_window(stream, day) do
+    stream
+    |> Stream.drop_while(fn row ->
+      day_relation(row, day) in [:before, :other]
+    end)
+    |> Stream.take_while(fn row ->
+      day_relation(row, day) != :after
+    end)
+    |> Stream.filter(fn row ->
+      day_relation(row, day) == :selected
+    end)
+  end
+
+  defp day_relation(row, day) do
     case timestamp(row) do
-      value when is_binary(value) -> String.starts_with?(value, day)
-      _ -> false
+      value when is_binary(value) and byte_size(value) >= 10 ->
+        row_day = binary_part(value, 0, 10)
+
+        cond do
+          row_day < day -> :before
+          row_day > day -> :after
+          true -> :selected
+        end
+
+      _ ->
+        :other
     end
   end
 

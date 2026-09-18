@@ -91,6 +91,117 @@ defmodule Plexus.IncidentCommanderExampleTest do
   end
 
   @tag :semantic_invalidation_source
+  test "semantic service-state transition requires repeated confirmation before invalidation" do
+    signal_count = :atomics.new(1, signed: false)
+
+    client =
+      Test.client()
+      |> Test.stub_callback(fn request ->
+        state = request.body |> Jason.decode!() |> Map.fetch!("state")
+
+        cond do
+          Map.has_key?(state, "challenger") ->
+            {:answers,
+             [
+               survives_challenge: {:noul, 0.9},
+               disposition: {:choice, "stand", 0.98}
+             ]}
+
+          Map.has_key?(state, "hypothesis_service") ->
+            {:answers,
+             [
+               root_cause: {:noul, 0.72},
+               next_action: {:choice, "observe", 0.96},
+               evidence_strength: {:score, 3, 0.94}
+             ]}
+
+          true ->
+            n = :atomics.add_get(signal_count, 1, 1)
+
+            {mode, strength} =
+              if n == 1,
+                do: {"request_path_error", 2.0},
+                else: {"network", 2.0}
+
+            {:answers,
+             [
+               anomaly_relevance: {:noul, 0.95},
+               failure_mode: {:choice, mode, 0.97},
+               diagnostic_strength: {:score, strength, 0.95}
+             ]}
+        end
+      end)
+
+    {:ok, run} =
+      Plexus.start_run(
+        id: make_ref(),
+        client: client,
+        max_population: 100,
+        max_depth: 6,
+        budgets: [measure: 100, expand: 100, population: 100, tokens: 1_000_000],
+        batch: [delay_ms: 1, max: 16, max_concurrency: 4]
+      )
+
+    topology = Topology.new()
+
+    on_exit(fn ->
+      Topology.close(topology)
+      _ = Plexus.stop_run(run)
+      Test.close(client)
+    end)
+
+    IncidentCommander.register_contracts!(run)
+    IncidentCommander.prepare_indexes!(run)
+
+    opts = [
+      topology: topology,
+      signal_every: 1,
+      hypothesis_update_every: 1,
+      trigger_probability: 0.5,
+      branch_width: 1,
+      branch_credits: 0,
+      peer_challenges: 0,
+      max_hypotheses: 50
+    ]
+
+    {:ok, _} = IncidentCommander.ensure_service(run, "frontend", opts)
+
+    assert :ok =
+             Run.cast(run, {:service, "frontend"}, {:telemetry, event(:trace, 1, "frontend")})
+
+    eventually(fn -> hypothesis_nodes(run) != [] end)
+
+    for index <- 2..3 do
+      assert :ok =
+               Run.cast(
+                 run,
+                 {:service, "frontend"},
+                 {:telemetry, event(:trace, index, "frontend")}
+               )
+    end
+
+    eventually(fn -> :atomics.get(signal_count, 1) >= 3 end)
+
+    refute Enum.any?(Plexus.Record.events(Run.run_id(run)), fn event ->
+             event.type == :gaia_service_semantic_state_changed
+           end)
+
+    assert :ok =
+             Run.cast(run, {:service, "frontend"}, {:telemetry, event(:trace, 4, "frontend")})
+
+    eventually(fn -> :atomics.get(signal_count, 1) >= 4 end)
+
+    eventually(fn ->
+      Enum.any?(Plexus.Record.events(Run.run_id(run)), fn event ->
+        event.type == :gaia_service_semantic_state_changed
+      end)
+    end)
+
+    eventually(fn ->
+      IncidentCommander.acceptance_evidence(run).invalidations >= 1
+    end)
+  end
+
   test "semantic service-state changes invalidate already-live dependent hypotheses" do
     signal_count = :atomics.new(1, signed: false)
 

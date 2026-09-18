@@ -33,7 +33,10 @@ defmodule Plexus.Examples.IncidentCommander.Service do
       recent: [],
       pending_signals: %{},
       last_event_time_us: nil,
-      semantic_signature: nil
+      semantic_signature: nil,
+      semantic_candidate: nil,
+      semantic_candidate_count: 0,
+      semantic_confirmations: max(args[:semantic_confirmations] || 3, 1)
     }
 
     Graph.update(context.run_id, context.actor_id, fn attrs ->
@@ -271,42 +274,103 @@ defmodule Plexus.Examples.IncidentCommander.Service do
     }
   end
 
-  defp maybe_invalidate_semantic_state(state, nil, _relevance, _failure_mode, _strength),
-    do: state
+  defp maybe_invalidate_semantic_state(
+         state,
+         nil,
+         _relevance,
+         _failure_mode,
+         _strength
+       ),
+       do: state
 
-  defp maybe_invalidate_semantic_state(state, event, relevance, failure_mode, strength) do
+  defp maybe_invalidate_semantic_state(
+         state,
+         event,
+         relevance,
+         failure_mode,
+         strength
+       ) do
     if Plexus.Belief.probability(relevance) >= state.trigger_probability do
-      signature = {failure_mode, strength}
-
-      case state.semantic_signature do
-        nil ->
-          %{state | semantic_signature: signature}
-
-        ^signature ->
-          state
-
-        previous ->
-          invalidated =
-            Provenance.invalidate(
-              state.context.run_id,
-              {:service, state.service},
-              notify: true
-            )
-
-          Record.append(state.context.run_id, :gaia_service_semantic_state_changed, %{
-            service: state.service,
-            event_id: event.event_id,
-            previous: inspect(previous),
-            current: inspect(signature),
-            dependent_nodes: max(length(invalidated) - 1, 0)
-          })
-
-          %{state | semantic_signature: signature}
-      end
+      signature = {failure_mode, strength_band(strength)}
+      advance_semantic_state(state, event, signature)
     else
       state
     end
   end
+
+  defp advance_semantic_state(
+         %{semantic_signature: nil} = state,
+         _event,
+         signature
+       ) do
+    %{
+      state
+      | semantic_signature: signature,
+        semantic_candidate: nil,
+        semantic_candidate_count: 0
+    }
+  end
+
+  defp advance_semantic_state(
+         %{semantic_signature: signature} = state,
+         _event,
+         signature
+       ) do
+    %{state | semantic_candidate: nil, semantic_candidate_count: 0}
+  end
+
+  defp advance_semantic_state(state, event, signature) do
+    candidate_count =
+      if state.semantic_candidate == signature,
+        do: state.semantic_candidate_count + 1,
+        else: 1
+
+    if candidate_count >= state.semantic_confirmations do
+      previous = state.semantic_signature
+
+      invalidated =
+        Provenance.invalidate(
+          state.context.run_id,
+          {:service, state.service},
+          notify: true
+        )
+
+      Record.append(
+        state.context.run_id,
+        :gaia_service_semantic_state_changed,
+        %{
+          service: state.service,
+          event_id: event.event_id,
+          previous: inspect(previous),
+          current: inspect(signature),
+          dependent_nodes: max(length(invalidated) - 1, 0)
+        }
+      )
+
+      %{
+        state
+        | semantic_signature: signature,
+          semantic_candidate: nil,
+          semantic_candidate_count: 0
+      }
+    else
+      %{
+        state
+        | semantic_candidate: signature,
+          semantic_candidate_count: candidate_count
+      }
+    end
+  end
+
+  defp strength_band(value) when is_number(value) do
+    cond do
+      value < 1.5 -> :weak
+      value < 2.5 -> :moderate
+      true -> :strong
+    end
+  end
+
+  defp strength_band(_value), do: :unknown
 
   defp trace_failure?(nil), do: false
   defp trace_failure?(""), do: false

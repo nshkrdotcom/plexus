@@ -76,4 +76,45 @@ defmodule Plexus.ProvenanceTest do
     refute Graph.get(id, :dependent).stale
     assert :empty = Provenance.next_repair(id)
   end
+
+  test "repeated invalidation advances epoch without duplicating a pending repair" do
+    client = TypeSafeSDK.Test.client()
+    {:ok, run} = Plexus.start_run(client: client)
+
+    on_exit(fn ->
+      _ = Plexus.stop_run(run)
+      TypeSafeSDK.Test.close(client)
+    end)
+
+    run_id = Plexus.Run.run_id(run)
+
+    Plexus.Graph.put(run_id, :source, %{class: :source})
+    Plexus.Graph.put(run_id, :derived, %{class: :derived, repair_priority: 10})
+    :ok = Plexus.Provenance.depend(run_id, :derived, :source)
+
+    assert [:derived, :source] |> Enum.sort() ==
+             Plexus.Provenance.invalidate(run_id, :source) |> Enum.sort()
+
+    first = Plexus.Graph.get(run_id, :derived)
+    assert first.stale == true
+
+    first_repairs =
+      Plexus.Record.events(run_id)
+      |> Enum.count(&(&1.type == :repair_queued and &1.data.actor_id == :derived))
+
+    assert first_repairs == 1
+
+    _ = Plexus.Provenance.invalidate(run_id, :source)
+
+    second = Plexus.Graph.get(run_id, :derived)
+
+    assert second.stale == true
+    assert second.epoch == first.epoch + 1
+
+    second_repairs =
+      Plexus.Record.events(run_id)
+      |> Enum.count(&(&1.type == :repair_queued and &1.data.actor_id == :derived))
+
+    assert second_repairs == 1
+  end
 end

@@ -3,3 +3,4 @@ datetime,service,message
 2021-07-01,mobservice1,
 2021-07-01,frontend,"2021-07-01 00:00:04,456 | WARNING | frontend | retry failed"
 2021-07-02,ignored,"2021-07-02 00:00:02,000 | INFO | ignored | other day"
+2021-07-01,late_should_never_be_read,"2021-07-01 23:59:59,999 | ERROR | late_should_never_be_read | invalid file ordering sentinel"
