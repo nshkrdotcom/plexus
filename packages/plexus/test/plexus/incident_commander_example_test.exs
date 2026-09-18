@@ -1,4 +1,6 @@
 Code.require_file("../../examples/support/runtime.exs", __DIR__)
+Code.require_file("../../examples/support/data.exs", __DIR__)
+Code.require_file("../../examples/support/metrics.exs", __DIR__)
 Code.require_file("../../examples/02_incident_commander/application.exs", __DIR__)
 
 defmodule Plexus.IncidentCommanderExampleTest do
@@ -27,6 +29,12 @@ defmodule Plexus.IncidentCommanderExampleTest do
              ]}
 
           "gateway" ->
+            assert state["parent_assessment"]["service"] == "frontend"
+            assert state["parent_assessment"]["failure_mode"] == "request_path_error"
+            assert state["parent_assessment"]["next_action"] == "investigate_callers"
+            assert state["parent_assessment"]["transition"] == "caller"
+            assert state["parent_assessment"]["transition_span_count"] == 21
+
             {:answers,
              [
                root_cause: {:noul, 0.93},
@@ -77,10 +85,16 @@ defmodule Plexus.IncidentCommanderExampleTest do
     assert summary.hypotheses_spawned == 2
     assert summary.dynamic_hypotheses == 1
     assert summary.completed_hypotheses == 2
+    assert summary.successful_hypotheses == 2
+    assert summary.failed_hypotheses == 0
     assert summary.max_investigation_depth == 1
     assert summary.hypothesis_credits_used == 2
     assert summary.hypothesis_credits_remaining == 2
     assert length(Test.requests(client)) == 2
+
+    refute Enum.any?(summary.ranked, fn {_actor_id, attrs} ->
+             Map.has_key?(attrs.result, :error)
+           end)
 
     assert Graph.get(run_id, child).parent == seed
     assert Graph.get(run_id, seed).result.spawned_targets == ["gateway"]

@@ -125,7 +125,7 @@ defmodule Plexus.Examples.IncidentCommander.Hypothesis do
       investigation_origin: state.origin,
       investigation_path: state.path,
       investigation_depth: state.depth,
-      parent_assessment: state.parent_assessment,
+      parent_assessment: semantic_parent_assessment(state.parent_assessment),
       observed_trace_failures: evidence.trace_failures,
       observed_log_signals: evidence.log_signals,
       trace_examples: evidence.trace_examples,
@@ -216,6 +216,25 @@ defmodule Plexus.Examples.IncidentCommander.Hypothesis do
 
   @impl true
   def handle_evaluation(_, _, state), do: {:noreply, state}
+
+  defp semantic_parent_assessment(nil), do: nil
+
+  defp semantic_parent_assessment(assessment) when is_map(assessment) do
+    Map.new(assessment, fn {key, value} -> {key, semantic_json_value(value)} end)
+  end
+
+  defp semantic_json_value(nil), do: nil
+  defp semantic_json_value(value) when is_boolean(value), do: value
+  defp semantic_json_value(value) when is_number(value), do: value
+  defp semantic_json_value(value) when is_binary(value), do: value
+  defp semantic_json_value(value) when is_atom(value), do: Atom.to_string(value)
+
+  defp semantic_json_value(value) when is_list(value),
+    do: Enum.map(value, &semantic_json_value/1)
+
+  defp semantic_json_value(value) when is_map(value) do
+    Map.new(value, fn {key, nested} -> {key, semantic_json_value(nested)} end)
+  end
 
   defp reserve_children(state, targets, assessment) do
     Enum.reduce(targets, {[], []}, fn target, {spawned, commands} ->
@@ -339,8 +358,7 @@ defmodule Plexus.Examples.IncidentCommander do
         budgets: [
           measure: max_hypotheses,
           population: map_size(evidence) + max_hypotheses * 2 + 100,
-          tokens:
-            Runtime.token_budget(opts, max_hypotheses, per_call: 12_000, floor: 250_000)
+          tokens: Runtime.token_budget(opts, max_hypotheses, per_call: 12_000, floor: 250_000)
         ]
       )
 
@@ -500,8 +518,18 @@ defmodule Plexus.Examples.IncidentCommander do
       hypotheses
       |> Enum.filter(fn {_actor_id, attrs} -> attrs[:status] == :complete end)
 
+    successful =
+      Enum.reject(complete, fn {_actor_id, attrs} ->
+        Map.has_key?(attrs[:result] || %{}, :error)
+      end)
+
+    failed =
+      Enum.filter(complete, fn {_actor_id, attrs} ->
+        Map.has_key?(attrs[:result] || %{}, :error)
+      end)
+
     ranked =
-      complete
+      successful
       |> Enum.sort_by(
         fn {_actor_id, attrs} -> hypothesis_score(attrs[:result] || %{}) end,
         :desc
@@ -514,6 +542,8 @@ defmodule Plexus.Examples.IncidentCommander do
       hypotheses_spawned: length(hypotheses),
       dynamic_hypotheses: max(length(hypotheses) - seed_count, 0),
       completed_hypotheses: length(complete),
+      successful_hypotheses: length(successful),
+      failed_hypotheses: length(failed),
       hypothesis_credits_used: pool.meters.population.used,
       hypothesis_credits_remaining: pool.meters.population.remaining,
       max_investigation_depth: max_depth(complete),
@@ -662,6 +692,8 @@ defmodule Plexus.Examples.IncidentCommander do
       {"hypotheses spawned", summary.hypotheses_spawned},
       {"dynamic descendants", summary.dynamic_hypotheses},
       {"completed hypotheses", summary.completed_hypotheses},
+      {"successful hypotheses", summary.successful_hypotheses},
+      {"failed hypotheses", summary.failed_hypotheses},
       {"max investigation depth", summary.max_investigation_depth},
       {"hypothesis credits used", summary.hypothesis_credits_used},
       {"semantic measurements", Plexus.budget(run).measure.used},
