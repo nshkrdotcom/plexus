@@ -34,3 +34,13 @@ Each run attaches to TypeSafeSDK evaluate/answer/batch-cancel telemetry and filt
 ## Test fixtures
 
 `TypeSafeSDK.Test` remains the deterministic semantic oracle. The Plexus test suite uses the real serialization/decoding path while replacing only the transport, making scheduler/coalescer tests meaningful without live API calls.
+
+## Live transport evidence
+
+The standalone dataset runtime attaches a privacy-safe listener to TypeSafeSDK evaluation telemetry.
+It distinguishes Plexus logical measurement accounting from confirmed provider responses. A provider
+response is confirmed only when telemetry includes an HTTP status and non-empty request ID.
+
+The summary exposes endpoint/model selection, returned model, status distribution, request IDs, retries,
+and token usage without storing semantic state, question text, request/response bodies, credentials, or
+authorization headers.

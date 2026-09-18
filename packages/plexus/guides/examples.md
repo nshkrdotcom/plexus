@@ -19,3 +19,14 @@ The examples print useful counts and application outcomes, but they do not creat
 Example run scripts require a real TypeSafe client. Offline deterministic coverage belongs to the test suite. There is no hidden mock mode in `examples/`.
 
 For expensive runs, control the number of *semantic decision points* separately from the number of actors. This is often the point of Plexus: a large stateful population can contain comparatively sparse semantic measurements.
+
+## Verifying that semantic work reached TypeSafe
+
+Standalone dataset examples expose two independent facts:
+
+1. the application-level `semantic measurements` count; and
+2. the `TYPESAFE LIVE TRANSPORT SUMMARY` emitted from TypeSafeSDK telemetry.
+
+For live acceptance, use the transport summary as the network proof. A confirmed response has an HTTP
+status and provider request ID and reports the returned model plus token usage. This prevents a Plexus
+measurement/accounting event from being mistaken for evidence that a remote provider call actually occurred.

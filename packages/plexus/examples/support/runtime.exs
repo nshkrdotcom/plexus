@@ -1,3 +1,5 @@
+Code.require_file("typesafe_metrics.exs", __DIR__)
+
 defmodule Plexus.Examples.Support.Runtime do
   @moduledoc false
 
@@ -22,7 +24,9 @@ defmodule Plexus.Examples.Support.Runtime do
     opts = [api_key: api_key]
     opts = maybe_put_env(opts, :base_url, "TYPESAFE_BASE_URL")
     opts = maybe_put_first_env(opts, :model, ["TYPESAFE_MODEL", "TYPESAFE_DEFAULT_MODEL"])
-    TypeSafeSDK.new_client(opts)
+    client = TypeSafeSDK.new_client(opts)
+    Plexus.Examples.Support.TypeSafeMetrics.register_client(client)
+    client
   end
 
   def token_budget(opts, expected_calls, config \\ []) do

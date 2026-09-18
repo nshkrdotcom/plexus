@@ -37,6 +37,8 @@ The format is based on Keep a Changelog and this project adheres to Semantic Ver
 
 ## [0.1.0] - 2026-09-17
 
+- Added privacy-safe live TypeSafe transport evidence to dataset examples, including HTTP status, provider request IDs, returned models, token totals, and a bounded direct metering probe.
+
 ### Added
 
 - Initial release of `plexus`

@@ -51,3 +51,20 @@ Plexus already has controlled characterization for actor birth, measurement/coal
 These examples exercise Plexus directly. They intentionally contain no Phoenix, LiveView, web UI, or visualization layer. Interactive visualization belongs in the separate Plexus LiveView poncho repository.
 
 See [DATASETS.md](DATASETS.md) for source/provenance details.
+
+## Live TypeSafe transport evidence
+
+Every dataset-backed run creates its TypeSafe client through `examples/support/runtime.exs`.
+The shared runtime installs a privacy-safe TypeSafe telemetry collector before semantic work begins.
+
+At process exit each run prints a `TYPESAFE LIVE TRANSPORT SUMMARY` containing the selected endpoint,
+requested model and transport, evaluate counts, confirmed HTTP response counts, HTTP status distribution,
+returned model distribution, input/output token totals, retry counts, and provider request IDs.
+
+A response counts as a **confirmed HTTP response** only when TypeSafeSDK telemetry contains both an HTTP
+status and a non-empty provider request ID. The collector never records API keys, semantic state, prompts,
+request bodies, response bodies, authorization headers, or other customer content.
+
+Application-level `semantic measurements` and confirmed TypeSafe HTTP responses are deliberately reported
+separately: the former demonstrates Plexus scheduling/accounting; the latter proves that the remote TypeSafe
+service actually answered the semantic request.
