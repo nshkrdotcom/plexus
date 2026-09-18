@@ -263,6 +263,7 @@ defmodule Plexus.IncidentCommanderExampleTest do
     opts = [
       topology: topology,
       signal_every: 1,
+      semantic_confirmations: 1,
       hypothesis_update_every: 1,
       trigger_probability: 0.5,
       branch_width: 1,

@@ -42,7 +42,7 @@ Prune synchronously cancels queued/active work, terminates leaves first, then re
 
 ## P10 Provenance and repair
 
-Dependency edges retain schema version, upstream epoch and evidence. Recursive invalidation marks nodes stale and enqueues prioritized repair work. Applications drain the repair queue and submit an epoch-checked repair; stale completions cannot overwrite a newer invalidation. The kernel does not prescribe the semantic repair algorithm.
+Dependency edges retain schema version, upstream epoch and evidence. Recursive invalidation marks nodes stale and enqueues prioritized repair work. Further upstream changes continue advancing a stale node's epoch, while a repair already pending for that node is not queued or notified again until the pending repair clears. Applications submit epoch-checked repairs, so older semantic results cannot overwrite newer evidence. The kernel does not prescribe the semantic repair algorithm.
 
 ## P11 Record/replay
 
