@@ -1,0 +1,23 @@
+/_build/
+/deps/
+/doc/
+/cover/
+/.elixir_ls/
+/var/
+
+*.beam
+*.plt
+*.plt.hash
+.env
+
+__pycache__/
+*.pyc
+
+# Standalone Poncho build outputs and local release delivery.
+_build/
+deps/
+doc/
+cover/
+target/
+var/
+_release_stage/
