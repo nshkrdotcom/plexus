@@ -20,14 +20,20 @@ defmodule Plexus.Run.Owner do
     tables = %{
       config: table(:set),
       nodes: table(:set),
-      node_classes: table(:bag),
-      edges: table(:bag),
+      node_classes: table(:ordered_set),
+      edges: table(:ordered_set),
       cache: table(:set),
       contracts: table(:set),
       events: table(:ordered_set),
       replay: table(:set),
       waiters: table(:bag),
-      activity: table(:set)
+      activity: table(:set),
+      timers: table(:set),
+      repairs: table(:ordered_set),
+      budget_accounts: table(:set),
+      lifecycle_locks: table(:set),
+      index_fields: table(:set),
+      population_indexes: table(:ordered_set)
     }
 
     max_population = Keyword.get(opts, :max_population, :infinity)
@@ -103,7 +109,11 @@ defmodule Plexus.Run.Owner do
         {:noreply, state}
 
       {{actor_id, pid}, monitors} ->
-        Plexus.Run.actor_down(state.run_id, actor_id, pid)
+        [{:config, config}] = :ets.lookup(state.tables.config, :config)
+
+        unless Map.get(config, :stopping, false),
+          do: Plexus.Run.actor_down(state.run_id, actor_id, pid)
+
         {:noreply, %{state | monitors: monitors}}
     end
   end

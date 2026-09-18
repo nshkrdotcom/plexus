@@ -80,7 +80,7 @@ defmodule Plexus.Belief do
     end
 
     p = probability(left) * (1.0 - damping) + probability(right) * damping
-    %__MODULE__{kind: :bernoulli, raw: {left.raw, right.raw}, value: p, calibrated: p, upper: p}
+    %__MODULE__{kind: :bernoulli, raw: {left.raw, right.raw}, value: p, calibrated: nil, upper: p}
   end
 
   def combine(

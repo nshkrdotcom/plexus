@@ -16,6 +16,8 @@ defmodule Plexus.Actor.Command do
           | {:belief, term()}
           | {:budget, :reserve | :refund, :measure | :expand | :tokens | :population,
              non_neg_integer()}
+          | {:population, tuple()}
+          | {:credits, :grant | :reserve | :refund | :transfer | :close, list()}
           | {:prune, term()}
           | {:sleep, timeout()}
           | {:wake_on, term()}

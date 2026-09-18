@@ -7,7 +7,9 @@ defmodule Plexus.Actor.Interpreter do
 
   alias Plexus.Actor.{Activity, Command}
   alias Plexus.{Budget, Event, Graph, Measure, Record, Run, Schedule}
+  alias Plexus.Budget.Accounts
   alias Plexus.Expand.Queue, as: ExpandQueue
+  alias Plexus.Population.Operators
   alias Plexus.Run.Config
   alias Plexus.Schedule.Quiescence
 
@@ -20,7 +22,11 @@ defmodule Plexus.Actor.Interpreter do
   @doc false
   @spec execute_now(term(), map()) :: :ok
   def execute_now(run_id, %{context: context, commands: commands} = envelope) do
-    Enum.each(commands, &execute(run_id, context, &1))
+    Enum.each(commands, fn command ->
+      ticket = Map.get(envelope, :activity)
+      if is_nil(ticket) or Activity.active?(ticket), do: execute(run_id, context, command)
+    end)
+
     :ok
   after
     if ticket = Map.get(envelope, :activity), do: Activity.finish(ticket)
@@ -106,13 +112,35 @@ defmodule Plexus.Actor.Interpreter do
       else: Budget.refund(budget, meter, amount)
   end
 
+  defp execute(run_id, context, {:population, operation}) do
+    case Operators.execute(run_id, operation) do
+      {:error, reason} ->
+        deliver(run_id, context.actor_id, {:plexus, :command_error, :population, reason})
+
+      _ ->
+        :ok
+    end
+  end
+
+  defp execute(run_id, context, {:credits, action, args}) do
+    result =
+      if action in [:grant, :reserve, :refund, :transfer, :close],
+        do: apply(Accounts, action, [run_id | args]),
+        else: {:error, :unsupported_credit_action}
+
+    case result do
+      {:error, reason} ->
+        deliver(run_id, context.actor_id, {:plexus, :command_error, :credits, reason})
+
+      _ ->
+        :ok
+    end
+  end
+
   defp execute(run_id, _context, {:prune, actor_id}), do: Run.prune(run_id, actor_id)
 
   defp execute(run_id, context, {:sleep, timeout}) when is_integer(timeout) and timeout >= 0 do
-    config = Config.fetch!(run_id)
-    Quiescence.add(config.quiescence, :timers, 1)
-    Process.send_after(config.schedule_server, {:wake_actor, context.actor_id}, timeout)
-    :ok
+    Schedule.sleep(run_id, context.actor_id, timeout)
   end
 
   defp execute(run_id, context, {:wake_on, event}) do
@@ -125,26 +153,24 @@ defmodule Plexus.Actor.Interpreter do
   end
 
   defp execute(run_id, context, {:complete, result}) do
-    case Graph.get(run_id, context.actor_id) do
-      %{status: :complete} ->
+    result =
+      Graph.get_and_update(run_id, context.actor_id, fn attrs ->
+        if attrs[:status] == :complete,
+          do: attrs,
+          else: attrs |> Map.put(:result, result) |> Map.put(:status, :complete)
+      end)
+
+    case result do
+      {:ok, %{status: :complete}} ->
         :ok
 
-      nil ->
+      {:error, :not_found} ->
         :ok
 
-      _attrs ->
-        Graph.update(run_id, context.actor_id, fn attrs ->
-          attrs |> Map.put(:result, result) |> Map.put(:status, :complete)
-        end)
-
+      {:ok, _attrs} ->
         config = Config.fetch!(run_id)
-        current = Quiescence.get(config.quiescence, :actors)
-        if current > 0, do: Quiescence.add(config.quiescence, :actors, -1)
-
-        Record.append(run_id, :actor_complete, %{
-          actor_id: context.actor_id,
-          has_result: not is_nil(result)
-        })
+        Quiescence.add(config.quiescence, :actors, -1)
+        Record.append(run_id, :actor_complete, %{actor_id: context.actor_id, has_result: true})
     end
   end
 

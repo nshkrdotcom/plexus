@@ -2,11 +2,12 @@ defmodule Plexus.Graph do
   @moduledoc """
   Per-run lock-free node and typed-edge graph.
 
-  Nodes live in an ETS `:set`. Edges live in an ETS `:bag` and are stored in
+  Nodes live in an ETS `:set`. Edges live in an ETS `:ordered_set` and are stored in
   both outgoing and incoming directions, avoiding children-list read/modify/write
   races and the global graph GenServer from the original scaffold.
   """
 
+  alias Plexus.Population.Index
   alias Plexus.Run.Config
 
   @type edge_type :: atom()
@@ -25,22 +26,30 @@ defmodule Plexus.Graph do
     new_class = Map.get(attrs, :class)
 
     if old_class != nil and old_class != new_class do
-      :ets.delete_object(config.tables.node_classes, {{:class, old_class}, actor_id})
+      :ets.delete(config.tables.node_classes, class_key(old_class, actor_id))
     end
 
     if new_class != nil do
-      :ets.insert(config.tables.node_classes, {{:class, new_class}, actor_id})
+      :ets.insert(config.tables.node_classes, {class_key(new_class, actor_id), actor_id})
     end
 
     :ets.insert(config.tables.nodes, {actor_id, attrs})
+    Index.update(config, actor_id, attrs)
     :ok
   end
 
   @spec update(term(), term(), (map() -> map())) :: :ok | {:error, :not_found}
   def update(run_id, actor_id, fun) when is_function(fun, 1) do
     config = Config.fetch!(run_id)
-    update_row(config, actor_id, fun)
+
+    case update_row(config, actor_id, fun) do
+      {:ok, _previous} -> :ok
+      error -> error
+    end
   end
+
+  @doc false
+  def get_and_update(run_id, actor_id, fun), do: update_row(Config.fetch!(run_id), actor_id, fun)
 
   defp update_row(config, actor_id, fun) do
     case :ets.lookup(config.tables.nodes, actor_id) do
@@ -50,11 +59,7 @@ defmodule Plexus.Graph do
       [{^actor_id, attrs}] ->
         updated = fun.(attrs)
 
-        match = [
-          {{:"$1", :"$2"},
-           [{:"=:=", :"$1", {:const, actor_id}}, {:"=:=", :"$2", {:const, attrs}}],
-           [{{:"$1", {:const, updated}}}]}
-        ]
+        match = update_match(actor_id, attrs, updated)
 
         case :ets.select_replace(config.tables.nodes, match) do
           0 ->
@@ -62,15 +67,41 @@ defmodule Plexus.Graph do
 
           1 ->
             index_class(config, actor_id, updated)
-            :ok
+            Index.update(config, actor_id, updated)
+            {:ok, attrs}
         end
     end
   end
 
+  defp update_match(actor_id, attrs, updated) do
+    if match_variable?(actor_id) do
+      [
+        {{:"$1", :"$2"}, [{:"=:=", :"$1", {:const, actor_id}}, {:"=:=", :"$2", {:const, attrs}}],
+         [{{:"$1", {:const, updated}}}]}
+      ]
+    else
+      [{{actor_id, :"$1"}, [{:"=:=", :"$1", {:const, attrs}}], [{:const, {actor_id, updated}}]}]
+    end
+  end
+
+  defp match_variable?(value) when is_atom(value),
+    do: value == :_ or String.starts_with?(Atom.to_string(value), "$")
+
+  defp match_variable?(value) when is_tuple(value),
+    do: value |> Tuple.to_list() |> Enum.any?(&match_variable?/1)
+
+  defp match_variable?(value) when is_list(value), do: Enum.any?(value, &match_variable?/1)
+  defp match_variable?(value) when is_map(value), do: true
+  defp match_variable?(_), do: false
+
   defp index_class(config, actor_id, attrs) do
     if class = Map.get(attrs, :class),
-      do: :ets.insert(config.tables.node_classes, {{:class, class}, actor_id})
+      do: :ets.insert(config.tables.node_classes, {class_key(class, actor_id), actor_id})
   end
+
+  @doc false
+  def class_key(class, actor_id),
+    do: {:erlang.term_to_binary(class), :erlang.term_to_binary(actor_id)}
 
   @spec get(term(), term()) :: map() | nil
   def get(run_id, actor_id) do
@@ -92,8 +123,8 @@ defmodule Plexus.Graph do
   def by_class(run_id, class) do
     config = Config.fetch!(run_id)
 
-    :ets.lookup(config.tables.node_classes, {:class, class})
-    |> Enum.flat_map(fn {{:class, ^class}, actor_id} ->
+    :ets.match_object(config.tables.node_classes, {{:erlang.term_to_binary(class), :_}, :_})
+    |> Enum.flat_map(fn {_key, actor_id} ->
       case :ets.lookup(config.tables.nodes, actor_id) do
         [{^actor_id, %{class: ^class} = attrs}] -> [{actor_id, attrs}]
         [_] -> []
@@ -113,8 +144,17 @@ defmodule Plexus.Graph do
       when is_atom(type) and is_number(weight) do
     config = Config.fetch!(run_id)
     edge = config.tables.edges
-    :ets.insert(edge, {{:out, from, type}, to, weight, provenance})
-    :ets.insert(edge, {{:in, to, type}, from, weight, provenance})
+
+    :ets.insert(
+      edge,
+      {edge_key(:out, from, type, to, weight, provenance), {type, to, weight, provenance}}
+    )
+
+    :ets.insert(
+      edge,
+      {edge_key(:in, to, type, from, weight, provenance), {type, from, weight, provenance}}
+    )
+
     :ok
   end
 
@@ -144,7 +184,7 @@ defmodule Plexus.Graph do
 
     case :ets.lookup(config.tables.nodes, actor_id) do
       [{^actor_id, %{class: class}}] ->
-        :ets.delete_object(config.tables.node_classes, {{:class, class}, actor_id})
+        :ets.delete(config.tables.node_classes, class_key(class, actor_id))
 
       _ ->
         :ok
@@ -165,22 +205,27 @@ defmodule Plexus.Graph do
   @spec prune(term(), term()) :: :ok
   def prune(run_id, actor_id), do: Plexus.Run.prune(run_id, actor_id)
 
-  defp edges(run_id, direction, actor_id, :all) do
-    config = Config.fetch!(run_id)
+  defp edges(run_id, direction, actor_id, type) do
+    table = Config.fetch!(run_id).tables.edges
 
-    :ets.match_object(config.tables.edges, {{direction, actor_id, :_}, :_, :_, :_})
-    |> Enum.map(fn {{^direction, ^actor_id, type}, node, weight, provenance} ->
+    edge_rows(table, direction, actor_id, type)
+    |> Enum.map(fn {_key, {type, node, weight, provenance}} ->
       %{type: type, node: node, weight: weight, provenance: provenance}
     end)
   end
 
-  defp edges(run_id, direction, actor_id, type) when is_atom(type) do
-    config = Config.fetch!(run_id)
+  defp edge_rows(table, direction, actor_id, type) do
+    encoded_type = if type == :all, do: :_, else: :erlang.term_to_binary(type)
 
-    :ets.lookup(config.tables.edges, {direction, actor_id, type})
-    |> Enum.map(fn {{^direction, ^actor_id, ^type}, node, weight, provenance} ->
-      %{type: type, node: node, weight: weight, provenance: provenance}
-    end)
+    :ets.match_object(
+      table,
+      {{direction, :erlang.term_to_binary(actor_id), encoded_type, :_}, :_}
+    )
+  end
+
+  defp edge_key(direction, actor_id, type, node, weight, provenance) do
+    {direction, :erlang.term_to_binary(actor_id), :erlang.term_to_binary(type),
+     :erlang.term_to_binary({node, weight, provenance})}
   end
 
   defp do_subtree(run_id, actor_id, visited) do
@@ -194,10 +239,12 @@ defmodule Plexus.Graph do
   end
 
   defp delete_edges_for(table, actor_id) do
-    :ets.match_delete(table, {{:out, actor_id, :_}, :_, :_, :_})
-    :ets.match_delete(table, {{:in, actor_id, :_}, :_, :_, :_})
-    :ets.match_delete(table, {{:out, :_, :_}, actor_id, :_, :_})
-    :ets.match_delete(table, {{:in, :_, :_}, actor_id, :_, :_})
+    for {direction, reverse} <- [out: :in, in: :out],
+        {key, {type, node, weight, provenance}} <- edge_rows(table, direction, actor_id, :all) do
+      :ets.delete(table, key)
+      :ets.delete(table, edge_key(reverse, node, type, actor_id, weight, provenance))
+    end
+
     :ok
   end
 end

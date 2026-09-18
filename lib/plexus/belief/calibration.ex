@@ -42,15 +42,38 @@ defmodule Plexus.Belief.Calibration do
     |> Enum.reduce(0.0, fn row, acc -> acc + row.count / total * row.absolute_gap end)
   end
 
+  @spec brier_score([sample()]) :: float()
+  def brier_score(samples) do
+    samples
+    |> validate_samples!()
+    |> Enum.map(fn {p, y} ->
+      :math.pow(p - if(truth?(y), do: 1.0, else: 0.0), 2)
+    end)
+    |> average()
+  end
+
+  @spec log_loss([sample()]) :: float()
+  def log_loss(samples) do
+    samples
+    |> validate_samples!()
+    |> Enum.map(fn {p, y} ->
+      p = min(max(p, 1.0e-12), 1.0 - 1.0e-12)
+      if truth?(y), do: -:math.log(p), else: -:math.log(1.0 - p)
+    end)
+    |> average()
+  end
+
   @spec fit_isotonic([sample()]) :: model()
   def fit_isotonic(samples) do
     blocks =
       samples
       |> validate_samples!()
+      |> Enum.group_by(&elem(&1, 0), &elem(&1, 1))
       |> Enum.sort_by(&elem(&1, 0))
       |> Enum.map(fn {p, observed} ->
-        y = if truth?(observed), do: 1.0, else: 0.0
-        %{min: p, max: p, weight: 1, sum: y, value: y}
+        weight = length(observed)
+        sum = Enum.count(observed, &truth?/1) * 1.0
+        %{min: p, max: p, weight: weight, sum: sum, value: sum / weight}
       end)
       |> pava([])
       |> Enum.reverse()

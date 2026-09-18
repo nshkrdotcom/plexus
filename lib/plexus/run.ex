@@ -8,7 +8,7 @@ defmodule Plexus.Run do
   """
 
   alias Plexus.Actor.Activity
-  alias Plexus.{Budget, Graph, Measure, Record, Registry, Telemetry}
+  alias Plexus.{Budget, Graph, Measure, Record, Registry, Schedule, Telemetry}
   alias Plexus.Expand.Queue, as: ExpandQueue
   alias Plexus.Run.{Config, Names}
   alias Plexus.Schedule.Quiescence
@@ -36,6 +36,7 @@ defmodule Plexus.Run do
   def stop_run(run, reason \\ :normal) do
     run_id = run_id(run)
     _ = Record.append(run_id, :run_stop_requested, %{reason: bounded_reason(reason)})
+    _ = Config.update(run_id, &Map.put(&1, :stopping, true))
 
     case GenServer.whereis(Names.run_supervisor(run_id)) do
       nil -> {:error, :not_found}
@@ -109,6 +110,9 @@ defmodule Plexus.Run do
     config = Config.fetch!(run_id)
 
     with {:ok, pid} <- Registry.lookup(run_id, actor_id) do
+      Schedule.cancel_actor(run_id, actor_id)
+      Measure.cancel_actor(run_id, actor_id)
+      ExpandQueue.cancel_actor(run_id, actor_id)
       supervisor = actor_partition(config, actor_id)
       terminate_actor_child(supervisor, pid, config, run_id, actor_id)
     end
@@ -117,7 +121,7 @@ defmodule Plexus.Run do
   defp terminate_actor_child(supervisor, pid, config, run_id, actor_id) do
     case DynamicSupervisor.terminate_child(supervisor, pid) do
       :ok ->
-        unregister_actor(config, run_id, actor_id)
+        unregister_actor(config, run_id, actor_id, pid)
 
       {:error, :not_found} = error ->
         error
@@ -134,28 +138,70 @@ defmodule Plexus.Run do
         if GenServer.whereis(Names.expand_queue(run_id)),
           do: ExpandQueue.cancel_actor(run_id, actor_id)
 
-        unregister_actor(Config.fetch!(run_id), run_id, actor_id)
+        unregister_actor(Config.fetch!(run_id), run_id, actor_id, pid)
 
       _ ->
         :ok
     end
   end
 
-  defp unregister_actor(config, run_id, actor_id) do
-    case :ets.take(config.tables.nodes, actor_id) do
-      [] ->
+  defp unregister_actor(config, run_id, actor_id, expected_pid \\ nil) do
+    with_actor_lock(config, actor_id, fn ->
+      unregister_locked(config, run_id, actor_id, expected_pid)
+    end)
+  end
+
+  defp unregister_locked(config, run_id, actor_id, expected_pid) do
+    case Graph.get(run_id, actor_id) do
+      nil ->
         :ok
 
-      [{^actor_id, attrs}] ->
-        Activity.cancel_actor(run_id, actor_id)
-        :ets.match_delete(config.tables.waiters, {:_, actor_id})
-        :ets.match_delete(config.tables.node_classes, {:_, actor_id})
-        Graph.delete_node(run_id, actor_id)
-        Budget.refund(config.budget, :population, 1)
-        if attrs.status != :complete, do: Quiescence.add(config.quiescence, :actors, -1)
-        Record.append(run_id, :actor_death, %{actor_id: actor_id})
-        Telemetry.emit(run_id, [:actor, :stop], %{}, %{actor_id: actor_id})
-        :ok
+      attrs ->
+        if Map.get(attrs, :pid) == expected_pid,
+          do: remove_actor(config, run_id, actor_id, attrs),
+          else: :ok
+    end
+  end
+
+  defp remove_actor(config, run_id, actor_id, attrs) do
+    Schedule.cancel_actor(run_id, actor_id)
+    :ets.match_delete(config.tables.waiters, {:_, actor_id})
+    Graph.delete_node(run_id, actor_id)
+    Budget.refund(config.budget, :population, 1)
+    if attrs.status != :complete, do: Quiescence.add(config.quiescence, :actors, -1)
+    Record.append(run_id, :actor_death, %{actor_id: actor_id})
+    Telemetry.emit(run_id, [:actor, :stop], %{}, %{actor_id: actor_id})
+    :ok
+  end
+
+  defp with_actor_lock(config, actor_id, fun) do
+    table = config.tables.lifecycle_locks
+
+    if :ets.insert_new(table, {actor_id, self()}) do
+      try do
+        fun.()
+      after
+        :ets.delete_object(table, {actor_id, self()})
+      end
+    else
+      await_actor_lock(config, actor_id, fun)
+    end
+  end
+
+  defp await_actor_lock(config, actor_id, fun) do
+    case :ets.lookup(config.tables.lifecycle_locks, actor_id) do
+      [{^actor_id, owner}] when owner == self() ->
+        fun.()
+
+      [{^actor_id, owner}] ->
+        if Process.alive?(owner),
+          do: Process.sleep(1),
+          else: :ets.delete_object(config.tables.lifecycle_locks, {actor_id, owner})
+
+        with_actor_lock(config, actor_id, fun)
+
+      [] ->
+        with_actor_lock(config, actor_id, fun)
     end
   end
 
@@ -166,6 +212,7 @@ defmodule Plexus.Run do
     ids = Graph.subtree(run_id, actor_id)
 
     Enum.each(ids, fn id ->
+      Schedule.cancel_actor(run_id, id)
       Measure.cancel_actor(run_id, id)
       ExpandQueue.cancel_actor(run_id, id)
     end)
@@ -226,6 +273,7 @@ defmodule Plexus.Run do
 
     attrs = %{
       module: module,
+      init_arg: Keyword.get(opts, :init_arg, %{}),
       class: class,
       parent: parent_id,
       depth: depth,
@@ -236,11 +284,23 @@ defmodule Plexus.Run do
       started_at: System.monotonic_time()
     }
 
+    with_actor_lock(config, actor_id, fn -> insert_actor(config, actor_id, attrs, child_opts) end)
+  end
+
+  defp insert_actor(config, actor_id, attrs, child_opts) do
     if :ets.insert_new(config.tables.nodes, {actor_id, attrs}) do
-      :ets.insert(config.tables.node_classes, {{:class, class}, actor_id})
-      if parent_id != nil, do: Graph.attach_child(config.run_id, parent_id, actor_id)
+      :ets.insert(config.tables.node_classes, {Graph.class_key(attrs.class, actor_id), actor_id})
+      if attrs.parent != nil, do: Graph.attach_child(config.run_id, attrs.parent, actor_id)
       Quiescence.add(config.quiescence, :actors, 1)
-      start_registered_actor(config, module, actor_id, parent_id, class, child_opts)
+
+      start_registered_actor(
+        config,
+        attrs.module,
+        actor_id,
+        attrs.parent,
+        attrs.class,
+        child_opts
+      )
     else
       Budget.refund(config.budget, :population, 1)
       {:error, :already_registered}

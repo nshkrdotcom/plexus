@@ -42,6 +42,7 @@ defmodule Plexus.Record.File do
     with {:ok, stat} <- File.stat(path),
          :ok <- check(stat.size <= @max_bytes, :file_too_large),
          {:ok, json} <- File.read(path),
+         :ok <- check(byte_size(json) <= @max_bytes, :file_too_large),
          {:ok, envelope} <- Jason.decode(json),
          {:ok, payload} <- decode(envelope),
          :ok <- check(payload.manifest == manifest(run_id), :incompatible_manifest),
@@ -83,7 +84,8 @@ defmodule Plexus.Record.File do
     }
   end
 
-  defp decode(%{"version" => 1, "sha256" => expected, "payload" => encoded}) do
+  defp decode(%{"version" => 1, "sha256" => expected, "payload" => encoded})
+       when is_binary(expected) and is_binary(encoded) do
     with {:ok, bytes} <- Base.decode64(encoded),
          :ok <- check(checksum(bytes) == expected, :checksum_mismatch),
          :ok <- check(not match?(<<131, 80, _::binary>>, bytes), :compressed_payload_forbidden) do
@@ -114,10 +116,14 @@ defmodule Plexus.Record.File do
 
   defp safe?(_, depth) when depth > 128, do: false
   defp safe?(value, _) when is_atom(value) or is_number(value) or is_binary(value), do: true
-  defp safe?(value, depth) when is_list(value), do: Enum.all?(value, &safe?(&1, depth + 1))
+  defp safe?(value, depth) when is_list(value), do: safe_list?(value, depth)
   defp safe?(value, depth) when is_tuple(value), do: safe?(Tuple.to_list(value), depth + 1)
   defp safe?(value, depth) when is_map(value), do: safe?(Map.to_list(value), depth + 1)
   defp safe?(_, _), do: false
+
+  defp safe_list?([], _depth), do: true
+  defp safe_list?([head | tail], depth), do: safe?(head, depth + 1) and safe_list?(tail, depth)
+  defp safe_list?(_, _depth), do: false
 
   defp check(true, _), do: :ok
   defp check(false, reason), do: {:error, reason}

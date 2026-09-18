@@ -26,7 +26,7 @@ defmodule Plexus.Registry do
 
   defp lookup_key(key) do
     case Registry.lookup(__MODULE__, key) do
-      [{pid, _value}] -> {:ok, pid}
+      [{pid, _value}] -> if Process.alive?(pid), do: {:ok, pid}, else: {:error, :not_found}
       [] -> {:error, :not_found}
     end
   end

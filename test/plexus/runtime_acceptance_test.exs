@@ -24,6 +24,7 @@ defmodule Plexus.RuntimeAcceptanceTest do
   use ExUnit.Case, async: true
 
   alias Plexus.{Budget, Graph, Run}
+  alias Plexus.Run.Config
   alias Plexus.Schedule.Quiescence
   alias TypeSafeSDK.Test
 
@@ -126,6 +127,71 @@ defmodule Plexus.RuntimeAcceptanceTest do
     eventually(fn -> Graph.count(Run.run_id(run)) == 0 end)
     assert Budget.used(Run.config(run).budget, :population) == 0
     assert Quiescence.get(Run.config(run).quiescence, :actors) == 0
+  end
+
+  test "prune cancels timers and queued BSP effects before removing an actor" do
+    run = run()
+    id = Run.run_id(run)
+    {:ok, _} = birth(run, :parent)
+    Plexus.Actor.dispatch(%{run_id: id, actor_id: :parent}, {:sleep, 60_000})
+    assert Quiescence.get(Run.config(run).quiescence, :timers) == 1
+    Plexus.schedule(run, {:bsp, []})
+
+    Plexus.Actor.dispatch(
+      %{run_id: id, actor_id: :parent},
+      {:spawn, :child, Plexus.RuntimeAcceptanceTest.Actor, %{}, actor_id: :late}
+    )
+
+    :ok = Run.prune(run, :parent)
+    Plexus.barrier(run)
+    assert Graph.count(id) == 0
+    assert Quiescence.quiescent?(Run.config(run).quiescence)
+  end
+
+  test "concurrent completion retires exactly once" do
+    run = run()
+    {:ok, _} = birth(run, :done)
+    context = %{run_id: Run.run_id(run), actor_id: :done}
+
+    1..100
+    |> Task.async_stream(fn _ -> Plexus.Actor.dispatch(context, {:complete, :ok}) end)
+    |> Stream.run()
+
+    assert Quiescence.get(Run.config(run).quiescence, :actors) == 0
+    Run.terminate_actor(run, :done)
+    assert Quiescence.get(Run.config(run).quiescence, :actors) == 0
+  end
+
+  @tag capture_log: true
+  test "owner death replaces ETS and restarts the resource island without stale directory pointers" do
+    run = run()
+    id = Run.run_id(run)
+    old_table = Run.config(run).tables.nodes
+    {:ok, actor} = birth(run, :victim)
+    ref = Process.monitor(actor)
+    Process.exit(run, :kill)
+    assert_receive {:DOWN, ^ref, :process, ^actor, _}, 2_000
+
+    eventually(fn ->
+      case Config.fetch(id) do
+        {:ok, config} -> config.tables.nodes != old_table
+        _ -> false
+      end
+    end)
+
+    assert :ets.info(old_table) == :undefined
+    assert Graph.count(id) == 0
+    assert :ok = Plexus.stop_run(id)
+  end
+
+  test "an actor can prune itself without waiting for its own callback shutdown" do
+    run = run()
+    {:ok, pid} = birth(run, :self)
+    monitor = Process.monitor(pid)
+    Run.cast(run, :self, {:commands, {:prune, :self}})
+    assert_receive {:DOWN, ^monitor, :process, ^pid, _}, 500
+    eventually(fn -> Graph.count(Run.run_id(run)) == 0 end)
+    assert Quiescence.quiescent?(Run.config(run).quiescence)
   end
 
   defp eventually(fun, attempts \\ 100)

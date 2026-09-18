@@ -43,4 +43,19 @@ defmodule Plexus.Contract do
     state_digest = :crypto.hash(:sha256, Jason.encode!(state)) |> Base.encode16(case: :lower)
     "#{state_digest}:#{Prepared.fingerprint(prepared)}"
   end
+
+  @doc "Memo identity including effective evaluation options; operational batching controls are excluded."
+  @spec memo_key(term(), Prepared.t(), keyword()) :: String.t()
+  def memo_key(state, prepared, opts) do
+    semantic = opts |> Keyword.drop([:batch, :cancellation, :telemetry_metadata]) |> Enum.sort()
+    base = memo_key(state, prepared)
+
+    if semantic == [],
+      do: base,
+      else:
+        base <>
+          ":" <>
+          (:crypto.hash(:sha256, :erlang.term_to_binary(semantic, [:deterministic]))
+           |> Base.encode16(case: :lower))
+  end
 end

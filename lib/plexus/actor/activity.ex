@@ -11,6 +11,13 @@ defmodule Plexus.Actor.Activity do
     {run_id, ticket}
   end
 
+  def active?({run_id, ticket}) do
+    case Config.fetch(run_id) do
+      {:ok, config} -> :ets.member(config.tables.activity, ticket)
+      _ -> false
+    end
+  end
+
   def finish({run_id, ticket}) do
     case Config.fetch(run_id) do
       {:ok, config} ->

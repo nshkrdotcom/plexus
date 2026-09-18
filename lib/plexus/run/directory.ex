@@ -17,11 +17,33 @@ defmodule Plexus.Run.Directory do
         write_concurrency: true
       ])
 
-    {:ok, table}
+    {:ok, %{table: table, monitors: %{}}}
   end
 
   @spec put(term(), :ets.tid()) :: true
-  def put(run_id, config_table), do: :ets.insert(@table, {run_id, config_table})
+  def put(run_id, config_table) do
+    true = :ets.insert(@table, {run_id, config_table})
+    GenServer.cast(__MODULE__, {:monitor_owner, run_id, config_table, self()})
+    true
+  end
+
+  @impl true
+  def handle_cast({:monitor_owner, run_id, table, owner}, state) do
+    ref = Process.monitor(owner)
+    {:noreply, %{state | monitors: Map.put(state.monitors, ref, {run_id, table})}}
+  end
+
+  @impl true
+  def handle_info({:DOWN, ref, :process, _pid, _reason}, state) do
+    case Map.pop(state.monitors, ref) do
+      {nil, _} ->
+        {:noreply, state}
+
+      {{run_id, table}, monitors} ->
+        :ets.delete_object(@table, {run_id, table})
+        {:noreply, %{state | monitors: monitors}}
+    end
+  end
 
   @spec fetch(term()) :: {:ok, :ets.tid()} | :error
   def fetch(run_id) do

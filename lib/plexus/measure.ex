@@ -18,7 +18,7 @@ defmodule Plexus.Measure do
 
     case ContractRegistry.resolve(run_id, contract_ref) do
       {:ok, entry} ->
-        memo_key = Contract.memo_key(state, entry.prepared)
+        memo_key = Contract.memo_key(state, entry.prepared, opts)
 
         case replay_or_cache(run_id, config, memo_key) do
           {:hit, result, source} ->
@@ -114,7 +114,7 @@ defmodule Plexus.Measure do
   end
 
   defp coalescer_key(fingerprint, opts, batch) do
-    stable_opts = Keyword.drop(opts, [:cancellation, :telemetry_metadata])
+    stable_opts = opts |> Keyword.drop([:cancellation, :telemetry_metadata]) |> Enum.sort()
 
     :crypto.hash(:sha256, :erlang.term_to_binary({fingerprint, stable_opts, batch}))
     |> Base.encode16(case: :lower)

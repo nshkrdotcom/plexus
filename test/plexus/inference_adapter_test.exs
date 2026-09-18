@@ -1,7 +1,7 @@
 defmodule Plexus.InferenceAdapterTest do
   use ExUnit.Case, async: true
 
-  alias Plexus.Expand.InferenceAdapter
+  alias Plexus.Expand.{InferenceAdapter, Materializer}
 
   test "published inference completion preserves structured objects and trace accounting" do
     client =
@@ -62,5 +62,45 @@ defmodule Plexus.InferenceAdapterTest do
 
     assert {:error, :cancelled} =
              InferenceAdapter.expand(client, "expand", cancellation: cancellation)
+  end
+
+  @tag capture_log: true
+  test "required unknown capabilities fail startup while explicit support starts" do
+    semantic = TypeSafeSDK.Test.client()
+    on_exit(fn -> TypeSafeSDK.Test.close(semantic) end)
+    client = Inference.client!(adapter: Inference.Adapters.Mock)
+
+    assert {:error, _} =
+             Plexus.start_run(
+               client: semantic,
+               inference_client: client,
+               expand: [required_capabilities: [:json_schema]]
+             )
+
+    supported = %{client | capabilities: [Inference.Capability.new(:json_schema, :supported)]}
+
+    assert {:ok, run} =
+             Plexus.start_run(
+               client: semantic,
+               inference_client: supported,
+               expand: [required_capabilities: [:json_schema]]
+             )
+
+    Plexus.stop_run(run)
+  end
+
+  test "materializer rejects unknown remote atoms and emits normal admitted commands" do
+    name = "untrusted_class_#{System.unique_integer([:positive])}"
+    object = %{"proposals" => [%{"id" => "x", "class" => name, "content" => "text"}]}
+
+    assert_raise ArgumentError, fn ->
+      Materializer.commands(object, fn _ -> __MODULE__ end)
+    end
+
+    assert_raise ArgumentError, fn -> String.to_existing_atom(name) end
+    object = %{"proposals" => [%{"id" => "x", "class" => "candidate", "content" => "text"}]}
+
+    assert [{:spawn, :candidate, __MODULE__, %{content: "text"}, _}] =
+             Materializer.commands(object, fn "candidate" -> __MODULE__ end)
   end
 end

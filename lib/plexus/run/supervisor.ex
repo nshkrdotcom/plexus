@@ -21,6 +21,7 @@ defmodule Plexus.Run.Supervisor do
 
     children = [
       {Plexus.Run.Owner, opts},
+      {Plexus.Budget.Accounts, run_id: run_id},
       {Task.Supervisor, name: Names.task_supervisor(run_id), max_children: task_limit},
       {Task.Supervisor,
        name: Names.expand_task_supervisor(run_id), max_children: max(expand_concurrency, 1)},
