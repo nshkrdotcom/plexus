@@ -42,6 +42,7 @@ defmodule Plexus.MixProject do
   defp deps do
     [
       {:typesafe_sdk, "~> 0.4.0"},
+      {:inference, "~> 0.4.1"},
       {:pristine, "~> 0.4.0"},
       {:telemetry, "~> 1.3"},
       {:jason, "~> 1.4"},

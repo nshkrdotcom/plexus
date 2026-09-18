@@ -13,6 +13,7 @@ defmodule Plexus.Run.Owner do
 
   @impl true
   def init(opts) do
+    Process.flag(:trap_exit, true)
     run_id = Keyword.fetch!(opts, :id)
     client = Keyword.fetch!(opts, :client)
 
@@ -25,7 +26,8 @@ defmodule Plexus.Run.Owner do
       contracts: table(:set),
       events: table(:ordered_set),
       replay: table(:set),
-      waiters: table(:bag)
+      waiters: table(:bag),
+      activity: table(:set)
     }
 
     max_population = Keyword.get(opts, :max_population, :infinity)
@@ -68,6 +70,7 @@ defmodule Plexus.Run.Owner do
       default_batch: Keyword.get(opts, :batch, Application.get_env(:plexus, :default_batch, [])),
       cache: Keyword.get(opts, :cache, Application.get_env(:plexus, :default_cache, [])),
       replay: Keyword.get(opts, :replay, :off),
+      replay_identity: Keyword.get(opts, :replay_identity, %{}),
       schedule: Schedule.normalize(Keyword.get(opts, :schedule, :async)),
       inference_client: Keyword.get(opts, :inference_client),
       expand_adapter: Keyword.get(opts, :expand_adapter),
@@ -77,7 +80,7 @@ defmodule Plexus.Run.Owner do
     :ets.insert(tables.config, {:config, config})
     true = Directory.put(run_id, tables.config)
 
-    {:ok, %{run_id: run_id, tables: tables}, {:continue, :attach_telemetry}}
+    {:ok, %{run_id: run_id, tables: tables, monitors: %{}}, {:continue, :attach_telemetry}}
   end
 
   @impl true
@@ -85,6 +88,24 @@ defmodule Plexus.Run.Owner do
     Telemetry.attach_typesafe(state.run_id)
     Telemetry.emit(state.run_id, [:run, :start], %{system_time: System.system_time()}, %{})
     {:noreply, state}
+  end
+
+  @impl true
+  def handle_cast({:monitor_actor, actor_id, pid}, state) do
+    ref = Process.monitor(pid)
+    {:noreply, %{state | monitors: Map.put(state.monitors, ref, {actor_id, pid})}}
+  end
+
+  @impl true
+  def handle_info({:DOWN, ref, :process, _pid, _reason}, state) do
+    case Map.pop(state.monitors, ref) do
+      {nil, _} ->
+        {:noreply, state}
+
+      {{actor_id, pid}, monitors} ->
+        Plexus.Run.actor_down(state.run_id, actor_id, pid)
+        {:noreply, %{state | monitors: monitors}}
+    end
   end
 
   @impl true

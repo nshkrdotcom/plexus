@@ -38,10 +38,38 @@ defmodule Plexus.Graph do
 
   @spec update(term(), term(), (map() -> map())) :: :ok | {:error, :not_found}
   def update(run_id, actor_id, fun) when is_function(fun, 1) do
-    case get(run_id, actor_id) do
-      nil -> {:error, :not_found}
-      attrs -> put(run_id, actor_id, fun.(attrs))
+    config = Config.fetch!(run_id)
+    update_row(config, actor_id, fun)
+  end
+
+  defp update_row(config, actor_id, fun) do
+    case :ets.lookup(config.tables.nodes, actor_id) do
+      [] ->
+        {:error, :not_found}
+
+      [{^actor_id, attrs}] ->
+        updated = fun.(attrs)
+
+        match = [
+          {{:"$1", :"$2"},
+           [{:"=:=", :"$1", {:const, actor_id}}, {:"=:=", :"$2", {:const, attrs}}],
+           [{{:"$1", {:const, updated}}}]}
+        ]
+
+        case :ets.select_replace(config.tables.nodes, match) do
+          0 ->
+            update_row(config, actor_id, fun)
+
+          1 ->
+            index_class(config, actor_id, updated)
+            :ok
+        end
     end
+  end
+
+  defp index_class(config, actor_id, attrs) do
+    if class = Map.get(attrs, :class),
+      do: :ets.insert(config.tables.node_classes, {{:class, class}, actor_id})
   end
 
   @spec get(term(), term()) :: map() | nil
@@ -67,7 +95,8 @@ defmodule Plexus.Graph do
     :ets.lookup(config.tables.node_classes, {:class, class})
     |> Enum.flat_map(fn {{:class, ^class}, actor_id} ->
       case :ets.lookup(config.tables.nodes, actor_id) do
-        [{^actor_id, attrs}] -> [{actor_id, attrs}]
+        [{^actor_id, %{class: ^class} = attrs}] -> [{actor_id, attrs}]
+        [_] -> []
         [] -> []
       end
     end)

@@ -7,16 +7,43 @@ defmodule Plexus.Actor do
   interpose budgets, batching, topology, scheduling and cancellation.
   """
 
-  alias Plexus.Actor.{Context, Interpreter}
+  alias Plexus.Actor.{Activity, Context, Interpreter}
 
   defmacro __using__(_opts) do
     quote do
       use TypeSafeSDK.OTP.Server
+      @before_compile Plexus.Actor
+
+      def handle_cast(_message, state), do: {:noreply, state}
+      def handle_call(_message, _from, state), do: {:reply, {:error, :unsupported_call}, state}
+      defoverridable handle_cast: 2, handle_call: 3
 
       def cast(pid, message), do: GenServer.cast(pid, message)
       def call(pid, message, timeout \\ 5_000), do: GenServer.call(pid, message, timeout)
 
       defoverridable cast: 2, call: 3
+    end
+  end
+
+  defmacro __before_compile__(_env) do
+    quote do
+      defoverridable handle_cast: 2, handle_call: 3
+
+      def handle_cast({:plexus_tracked, ticket, message}, state) do
+        super(message, state)
+      after
+        Activity.finish(ticket)
+      end
+
+      def handle_cast(message, state), do: super(message, state)
+
+      def handle_call({:plexus_tracked, ticket, message}, from, state) do
+        super(message, from, state)
+      after
+        Activity.finish(ticket)
+      end
+
+      def handle_call(message, from, state), do: super(message, from, state)
     end
   end
 

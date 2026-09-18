@@ -17,6 +17,7 @@ defmodule Plexus.Measure.Coalescer do
 
   @impl true
   def init(opts) do
+    Process.flag(:trap_exit, true)
     run_id = Keyword.fetch!(opts, :run_id)
     entry = Keyword.fetch!(opts, :entry)
     config = Config.fetch!(run_id)
@@ -151,6 +152,14 @@ defmodule Plexus.Measure.Coalescer do
     end
   end
 
+  @impl true
+  def terminate(_reason, state) do
+    Enum.each(state.in_flight, fn {_ref, batch} ->
+      Pristine.Cancellation.cancel(batch.cancellation)
+      Task.shutdown(batch.task, :brutal_kill)
+    end)
+  end
+
   defp launch_batch(state) do
     {keys, rest} = Enum.split(state.order, state.max_batch)
     entries = Enum.map(keys, &Map.fetch!(state.pending, &1))
@@ -184,6 +193,7 @@ defmodule Plexus.Measure.Coalescer do
         batch = %{
           entries: entries,
           cancellation: cancellation,
+          task: task,
           started_at: System.monotonic_time()
         }
 
@@ -206,6 +216,11 @@ defmodule Plexus.Measure.Coalescer do
       end)
 
     {:ok, task}
+  rescue
+    error in RuntimeError ->
+      if String.starts_with?(error.message, "reached the maximum number of tasks"),
+        do: {:error, :task_supervisor_saturated},
+        else: reraise(error, __STACKTRACE__)
   catch
     :exit, _reason -> {:error, :task_supervisor_saturated}
   end

@@ -9,7 +9,7 @@ defmodule Plexus.Schedule do
   implementation.
   """
 
-  alias Plexus.Actor.Interpreter
+  alias Plexus.Actor.{Activity, Interpreter}
   alias Plexus.Run.{Config, Names}
 
   @type regime ::
@@ -26,6 +26,9 @@ defmodule Plexus.Schedule do
 
   @spec dispatch(term(), map()) :: :ok
   def dispatch(run_id, envelope) do
+    ticket = Activity.begin(run_id, envelope.context.actor_id)
+    envelope = Map.put(envelope, :activity, ticket)
+
     case Config.fetch!(run_id).schedule do
       :async -> Interpreter.execute_now(run_id, envelope)
       _ -> GenServer.cast(Names.schedule_server(run_id), {:dispatch, envelope})

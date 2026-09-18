@@ -27,6 +27,7 @@ defmodule Plexus.Expand.Queue do
 
   @impl true
   def init(opts) do
+    Process.flag(:trap_exit, true)
     adapter = Keyword.get(opts, :adapter)
     client = Keyword.get(opts, :client)
 
@@ -113,7 +114,7 @@ defmodule Plexus.Expand.Queue do
 
       {entry, active} ->
         Process.demonitor(ref, [:flush])
-        finish(state.run_id, entry.item, result)
+        finish(state.run_id, entry, result)
         {:noreply, dispatch(%{state | active: active})}
     end
   end
@@ -124,7 +125,7 @@ defmodule Plexus.Expand.Queue do
         {:noreply, state}
 
       {entry, active} ->
-        finish(state.run_id, entry.item, {:error, :expand_task_exit})
+        finish(state.run_id, entry, {:error, :expand_task_exit})
         {:noreply, dispatch(%{state | active: active})}
     end
   end
@@ -141,6 +142,7 @@ defmodule Plexus.Expand.Queue do
     {active, cancelled_active} =
       Enum.reduce(state.active, {%{}, []}, fn {ref, entry}, {kept, cancelled} ->
         if entry.item.actor_id == actor_id do
+          Pristine.Cancellation.cancel(entry.cancellation)
           Task.shutdown(entry.task, :brutal_kill)
           {kept, [entry | cancelled]}
         else
@@ -165,9 +167,11 @@ defmodule Plexus.Expand.Queue do
     adapter = state.adapter
     client = state.client
 
+    cancellation = Pristine.Cancellation.new()
+
     task =
       Task.Supervisor.async_nolink(config.expand_task_supervisor, fn ->
-        adapter.expand(client, item.spec, item.opts)
+        adapter.expand(client, item.spec, Keyword.put(item.opts, :cancellation, cancellation))
       end)
 
     Record.append(state.run_id, :expansion_start, %{
@@ -177,24 +181,65 @@ defmodule Plexus.Expand.Queue do
 
     Telemetry.emit(state.run_id, [:expand, :start], %{}, %{actor_id: item.actor_id})
 
-    entry = %{item: item, task: task, started_at: System.monotonic_time()}
+    entry = %{
+      item: item,
+      task: task,
+      cancellation: cancellation,
+      started_at: System.monotonic_time()
+    }
+
     state = %{state | pending: rest, active: Map.put(state.active, task.ref, entry)}
     dispatch(state)
   end
 
-  defp finish(run_id, item, result) do
+  @impl true
+  def terminate(_reason, state) do
+    Enum.each(state.active, fn {_ref, entry} ->
+      Pristine.Cancellation.cancel(entry.cancellation)
+      Task.shutdown(entry.task, :brutal_kill)
+    end)
+  end
+
+  defp finish(run_id, entry, result) do
+    item = entry.item
+    duration = System.monotonic_time() - entry.started_at
+    accounting = accounting(result)
+    Budget.consume(Config.fetch!(run_id).budget, :tokens, accounting.tokens)
     result = normalize_result(result)
     if match?({:error, _}, result), do: refund(run_id)
     decrement_expansions(run_id, 1)
 
     Record.append(run_id, :expansion_stop, %{
       actor_id: item.actor_id,
+      duration_native: duration,
+      accounting: accounting,
       outcome: if(match?({:ok, _}, result), do: :ok, else: :error)
     })
 
-    Telemetry.emit(run_id, [:expand, :stop], %{}, %{actor_id: item.actor_id})
+    Telemetry.emit(run_id, [:expand, :stop], %{duration: duration, tokens: accounting.tokens}, %{
+      actor_id: item.actor_id
+    })
+
     deliver(run_id, item.actor_id, item.tag, result)
   end
+
+  defp accounting({:ok, %Inference.Response{} = response}) do
+    trace = response.trace || %{}
+    usage = response.usage || Map.get(trace, :usage) || %{}
+
+    tokens =
+      Map.get(usage, :total_tokens) ||
+        Map.get(usage, :input_tokens, 0) + Map.get(usage, :output_tokens, 0)
+
+    %{
+      tokens: tokens,
+      usage: usage,
+      cost: response.cost || Map.get(trace, :cost),
+      duration_ms: Map.get(trace, :duration_ms)
+    }
+  end
+
+  defp accounting(_), do: %{tokens: 0, usage: %{}, cost: nil, duration_ms: nil}
 
   defp normalize_result({:ok, _} = result), do: result
   defp normalize_result({:error, _} = result), do: result

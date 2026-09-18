@@ -7,6 +7,7 @@ defmodule Plexus.Run do
   supervisors, and graph/cache/record operations go directly to per-run ETS.
   """
 
+  alias Plexus.Actor.Activity
   alias Plexus.{Budget, Graph, Measure, Record, Registry, Telemetry}
   alias Plexus.Expand.Queue, as: ExpandQueue
   alias Plexus.Run.{Config, Names}
@@ -18,6 +19,11 @@ defmodule Plexus.Run do
   def start_run(opts) do
     run_id = Keyword.get(opts, :id, make_ref())
     opts = Keyword.put(opts, :id, run_id)
+
+    opts =
+      if Keyword.get(opts, :inference_client),
+        do: Keyword.put_new(opts, :expand_adapter, Plexus.Expand.InferenceAdapter),
+        else: opts
 
     case DynamicSupervisor.start_child(Plexus.RunSupervisor, {Plexus.Run.Supervisor, opts}) do
       {:ok, _supervisor} -> Registry.lookup_run(run_id)
@@ -80,7 +86,8 @@ defmodule Plexus.Run do
 
     case Registry.lookup(run_id, actor_id) do
       {:ok, pid} ->
-        GenServer.cast(pid, message)
+        ticket = Activity.begin(run_id, actor_id)
+        GenServer.cast(pid, {:plexus_tracked, ticket, message})
         :ok
 
       {:error, :not_found} = error ->
@@ -91,7 +98,8 @@ defmodule Plexus.Run do
   @spec call(t(), term(), term(), timeout()) :: term()
   def call(run, actor_id, message, timeout \\ 5_000) do
     with {:ok, pid} <- Registry.lookup(run_id(run), actor_id) do
-      GenServer.call(pid, message, timeout)
+      ticket = Activity.begin(run_id(run), actor_id)
+      GenServer.call(pid, {:plexus_tracked, ticket, message}, timeout)
     end
   end
 
@@ -116,21 +124,38 @@ defmodule Plexus.Run do
     end
   end
 
-  defp unregister_actor(config, run_id, actor_id) do
-    was_active? = actor_active?(run_id, actor_id)
-    :ets.match_delete(config.tables.waiters, {:_, actor_id})
-    Graph.delete_node(run_id, actor_id)
-    Budget.refund(config.budget, :population, 1)
-    if was_active?, do: safe_counter_add(config.quiescence, :actors, -1)
-    Record.append(run_id, :actor_death, %{actor_id: actor_id})
-    Telemetry.emit(run_id, [:actor, :stop], %{}, %{actor_id: actor_id})
-    :ok
+  @doc false
+  def actor_down(run_id, actor_id, pid) do
+    case Graph.get(run_id, actor_id) do
+      %{pid: ^pid} ->
+        if GenServer.whereis(Names.measure_supervisor(run_id)),
+          do: Measure.cancel_actor(run_id, actor_id)
+
+        if GenServer.whereis(Names.expand_queue(run_id)),
+          do: ExpandQueue.cancel_actor(run_id, actor_id)
+
+        unregister_actor(Config.fetch!(run_id), run_id, actor_id)
+
+      _ ->
+        :ok
+    end
   end
 
-  defp actor_active?(run_id, actor_id) do
-    case Graph.get(run_id, actor_id) do
-      %{status: :complete} -> false
-      _ -> true
+  defp unregister_actor(config, run_id, actor_id) do
+    case :ets.take(config.tables.nodes, actor_id) do
+      [] ->
+        :ok
+
+      [{^actor_id, attrs}] ->
+        Activity.cancel_actor(run_id, actor_id)
+        :ets.match_delete(config.tables.waiters, {:_, actor_id})
+        :ets.match_delete(config.tables.node_classes, {:_, actor_id})
+        Graph.delete_node(run_id, actor_id)
+        Budget.refund(config.budget, :population, 1)
+        if attrs.status != :complete, do: Quiescence.add(config.quiescence, :actors, -1)
+        Record.append(run_id, :actor_death, %{actor_id: actor_id})
+        Telemetry.emit(run_id, [:actor, :stop], %{}, %{actor_id: actor_id})
+        :ok
     end
   end
 
@@ -223,11 +248,14 @@ defmodule Plexus.Run do
   end
 
   defp start_registered_actor(config, module, actor_id, parent_id, class, child_opts) do
-    result =
-      DynamicSupervisor.start_child(actor_partition(config, actor_id), {module, child_opts})
+    spec = module.child_spec(child_opts) |> Map.put(:restart, :temporary)
+    result = DynamicSupervisor.start_child(actor_partition(config, actor_id), spec)
 
     case result do
       {:ok, pid} ->
+        Graph.update(config.run_id, actor_id, &Map.put(&1, :pid, pid))
+        GenServer.cast(Names.owner(config.run_id), {:monitor_actor, actor_id, pid})
+
         Record.append(config.run_id, :actor_birth, %{
           actor_id: actor_id,
           parent_id: parent_id,
@@ -282,11 +310,6 @@ defmodule Plexus.Run do
       %{depth: depth} -> depth
       _ -> 0
     end
-  end
-
-  defp safe_counter_add(ref, counter, delta) do
-    current = Quiescence.get(ref, counter)
-    if delta >= 0 or current + delta >= 0, do: Quiescence.add(ref, counter, delta), else: :ok
   end
 
   defp bounded_reason(reason) when reason in [:normal, :shutdown], do: reason

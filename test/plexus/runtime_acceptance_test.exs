@@ -79,4 +79,65 @@ defmodule Plexus.RuntimeAcceptanceTest do
              DynamicSupervisor.count_children(pid).active > 0
            end)
   end
+
+  test "queued managed messages prevent quiescence after completion" do
+    run = run()
+    {:ok, pid} = birth(run, :done, init_arg: %{complete: true})
+    :sys.suspend(pid)
+    Run.cast(run, :done, {:commands, []})
+    assert Quiescence.get(Run.config(run).quiescence, :messages) == 1
+    refute Quiescence.quiescent?(Run.config(run).quiescence)
+    :sys.resume(pid)
+    assert :pong = Run.call(run, :done, :ping)
+    assert Quiescence.quiescent?(Run.config(run).quiescence)
+  end
+
+  test "BSP command envelopes remain in flight until released" do
+    run = run(schedule: {:bsp, []})
+    Plexus.Actor.dispatch(%{run_id: Run.run_id(run), actor_id: :root}, {:edge, :child, :a, :b, 1})
+    assert Quiescence.get(Run.config(run).quiescence, :messages) == 1
+    Plexus.barrier(run)
+    assert Quiescence.get(Run.config(run).quiescence, :messages) == 0
+  end
+
+  test "concurrent graph updates never lose increments" do
+    run = run()
+    id = Run.run_id(run)
+    Graph.put(id, :counter, %{value: 0})
+
+    1..500
+    |> Task.async_stream(
+      fn _ -> Graph.update(id, :counter, &Map.update!(&1, :value, fn v -> v + 1 end)) end,
+      max_concurrency: 40
+    )
+    |> Stream.run()
+
+    assert Graph.get(id, :counter).value == 500
+  end
+
+  @tag capture_log: true
+  test "partition loss retires actors and credits without restarting orphan nodes" do
+    run = run(actor_partitions: 1)
+    {:ok, pid} = birth(run, :victim)
+    ref = Process.monitor(pid)
+    [{_, partition, _, _}] = Supervisor.which_children(Run.config(run).actor_supervisors)
+    Process.exit(partition, :kill)
+    assert_receive {:DOWN, ^ref, :process, ^pid, _}
+    eventually(fn -> Graph.count(Run.run_id(run)) == 0 end)
+    assert Budget.used(Run.config(run).budget, :population) == 0
+    assert Quiescence.get(Run.config(run).quiescence, :actors) == 0
+  end
+
+  defp eventually(fun, attempts \\ 100)
+  defp eventually(fun, 0), do: assert(fun.())
+
+  defp eventually(fun, attempts) do
+    if fun.(),
+      do: :ok,
+      else:
+        (
+          Process.sleep(5)
+          eventually(fun, attempts - 1)
+        )
+  end
 end

@@ -5,7 +5,7 @@ defmodule Plexus.Actor.Interpreter do
   Cross-cutting policy belongs here instead of in strategy modules.
   """
 
-  alias Plexus.Actor.Command
+  alias Plexus.Actor.{Activity, Command}
   alias Plexus.{Budget, Event, Graph, Measure, Record, Run, Schedule}
   alias Plexus.Expand.Queue, as: ExpandQueue
   alias Plexus.Run.Config
@@ -19,9 +19,11 @@ defmodule Plexus.Actor.Interpreter do
 
   @doc false
   @spec execute_now(term(), map()) :: :ok
-  def execute_now(run_id, %{context: context, commands: commands}) do
+  def execute_now(run_id, %{context: context, commands: commands} = envelope) do
     Enum.each(commands, &execute(run_id, context, &1))
     :ok
+  after
+    if ticket = Map.get(envelope, :activity), do: Activity.finish(ticket)
   end
 
   defp execute(run_id, context, {:spawn, class, module, init_arg, opts}) do
