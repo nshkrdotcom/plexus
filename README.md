@@ -12,21 +12,27 @@
 </p>
 
 <p align="center">
-  <b>A single-node BEAM kernel for massively asynchronous semantic computation.</b><br>
-  Plexus turns <code>typesafe_sdk</code> 0.4.x into a coordination substrate for large semantic populations.
+  <b>High-concurrency actor runtime for large-scale semantic graphs and search.</b><br>
+  Coordinate thousands of evaluating actors with automatic request coalescing, graph topology, and strict token budgets.
 </p>
 
 ---
 
-TypeSafe remains the measurement engine; Plexus owns the things a population needs around it: cheap births, typed topology, declarative actor effects, coalesced measurement, budgets, scheduling regimes, replay, calibration, pruning, and a separate expansion queue.
+Plexus is an Elixir runtime for workloads that require large populations of concurrent actors—such as hypothesis swarms, Monte Carlo Tree Search, belief graphs, and spatiotemporal clustering.
 
-The design rule is simple: **ship primitives, not a catalog of hard-coded patterns.** Particle filters, asynchronous belief graphs, MCTS, branch-and-bound, semantic cellular automata, hypothesis populations, and recursive map/reduce should be strategies assembled from the same small kernel.
+Instead of each actor firing independent, uncoordinated API calls, Plexus acts as the coordination layer:
+- **Fast actor lifecycle** — Spawn and supervise thousands of concurrent actors across partitioned supervisors without coordinator mailbox bottlenecks.
+- **Typed graph topology** — Maintain parent/child, dependency, and neighbor relationships directly in fast, run-isolated ETS tables.
+- **Request coalescing** — Intercept evaluation requests across actors, automatically deduplicating identical calls and batching them into bounded windows.
+- **Budget & scheduling control** — Enforce atomic token and cost limits, with support for both asynchronous execution and step-by-step barrier synchronization (BSP).
+
+Rather than locking you into rigid agent patterns, Plexus provides composable primitives so you can assemble search trees, belief graphs, particle filters, hypothesis swarms, or recursive map/reduce workflows from the same core runtime.
 
 ## Packages
 
 | Package | Description |
 | :--- | :--- |
-| [`plexus`](packages/plexus/) | Core kernel — population runtime, actor interpreter, typed topology, measurement coalescing, budgets, scheduling, replay, calibration, and expansion queue. |
+| [`plexus`](packages/plexus/) | Core runtime — actor supervision, typed topology, measurement coalescing, budgets, scheduling, replay, calibration, and expansion queue. |
 
 ## Quick start
 
@@ -57,18 +63,18 @@ client = TypeSafeSDK.new_client(api_key: System.fetch_env!("TYPESAFE_API_KEY"))
 
 See the [package README](packages/plexus/README.md) for the full API walkthrough, actor examples, calibration, expansion, and guides.
 
-## Kernel primitives
+## Core primitives
 
-- **Population** — per-run metadata, secondary indexes, top-k/Pareto, seeded sampling and population operators.
-- **Typed topology** — per-run ETS ordered-set edges such as `:child`, `:supports`, `:contradicts`, `:depends_on`, `:neighbor`, or application-defined edge types.
-- **Local measurement** — named prepared contracts, memoization, replay, dedupe, coalescing, and `evaluate_many/4` as the normal framework path.
-- **Scheduling regime** — `:async`, BSP buffering/barriers, bounded command progress and queued priority ordering.
-- **Belief state** — explicit Bernoulli/categorical/ordinal projections with raw values retained.
-- **Budget/admission** — atomic meters plus explicit hierarchical credit accounts.
-- **Selection/pruning** — process cancellation/termination before topology deletion.
-- **Expansion** — a separate priority queue, fail-closed capabilities, neutral streams/monitoring, accounting and proposal materialization.
-- **Provenance/invalidation** — `:depends_on` edges plus epoch/stale repair helpers.
-- **Run record/replay** — append-only events and versioned, checksummed fixed-response files.
+- **Population runtime** — Per-run metadata, secondary indexes, top-k/Pareto tracking, and seeded sampling.
+- **Typed topology** — Fast in-memory edges in ETS (e.g., `:child`, `:supports`, `:contradicts`, `:depends_on`, `:neighbor`, or custom edge types).
+- **Measurement coalescing** — Named prepared contracts with automatic deduplication, memoization, and batching via `TypeSafeSDK.evaluate_many/4`.
+- **Scheduling regimes** — Support for asynchronous dispatch, Bulk Synchronous Parallel (BSP) barriers, and prioritized command queues.
+- **Belief state** — Track confidence distributions (Bernoulli, categorical, ordinal) alongside raw evaluation values.
+- **Budgets & admission** — Atomic token and cost meters with hierarchical credit accounts.
+- **Selection & pruning** — Coordinated actor termination and graph cleanup.
+- **Generative expansion** — Dedicated priority queue and supervision for LLM proposals, isolated from measurement traffic.
+- **Provenance & invalidation** — Dependency tracking with epoch-based cache invalidation.
+- **Run recording & replay** — Append-only event logs and deterministic replay fixtures.
 
 ## Architecture
 
@@ -101,7 +107,7 @@ plexus/
 
 ## Non-goals
 
-Plexus is intentionally single-node. It does not provide multi-node distribution, durable process/mailbox persistence, provider abstraction, a general workflow DSL, prompt management, or tool-calling agent loops. Provider concerns belong in the inference layer; transport/retries remain TypeSafe/Pristine concerns.
+Plexus is focused on single-node execution. It does not handle distributed multi-node clusters, durable mailbox persistence across node crashes, or high-level prompt engineering and chat loops. Transport retries and provider APIs remain the responsibility of TypeSafe and the inference layer.
 
 ## License
 

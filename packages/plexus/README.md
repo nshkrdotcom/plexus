@@ -4,19 +4,23 @@
 
 # Plexus
 
-**A single-node BEAM kernel for massively asynchronous semantic computation.**
+**High-concurrency actor runtime for large-scale semantic graphs and search.**
 
-Plexus turns `typesafe_sdk` 0.4.x into a coordination substrate for large semantic populations. TypeSafe remains the measurement engine; Plexus owns the things a population needs around it: cheap births, typed topology, declarative actor effects, coalesced measurement, budgets, scheduling regimes, replay, calibration, pruning, and a separate expansion queue.
+Plexus is an Elixir runtime for workloads that require large populations of concurrent actors—such as hypothesis swarms, Monte Carlo Tree Search, belief graphs, and spatiotemporal clustering.
 
-The design rule is simple: **ship primitives, not a catalog of hard-coded patterns.** Particle filters, asynchronous belief graphs, MCTS, branch-and-bound, semantic cellular automata, hypothesis populations, and recursive map/reduce should be strategies assembled from the same small kernel.
+Instead of each actor firing independent, uncoordinated API calls, Plexus acts as the coordination layer:
+- **Fast actor lifecycle** — Spawn and supervise thousands of concurrent actors across partitioned supervisors without coordinator mailbox bottlenecks.
+- **Typed graph topology** — Maintain parent/child, dependency, and neighbor relationships directly in fast, run-isolated ETS tables.
+- **Request coalescing** — Intercept evaluation requests across actors, automatically deduplicating identical calls and batching them into bounded windows.
+- **Budget & scheduling control** — Enforce atomic token and cost limits, with support for both asynchronous execution and step-by-step barrier synchronization (BSP).
 
-> Status: this repository is still `0.1.0` and the current kernel pass was authored without an Elixir runtime in the authoring environment. The source is intentionally explicit about what is implemented versus what requires BEAM-side validation. See [HANDOFF.md](HANDOFF.md).
+Rather than locking you into rigid agent patterns, Plexus provides composable primitives so you can assemble search trees, belief graphs, particle filters, hypothesis swarms, or recursive map/reduce workflows from the same core runtime.
 
-## Why Plexus exists
+> **Status**: Plexus is currently in early development (`0.1.0`). See [HANDOFF.md](HANDOFF.md).
 
-`typesafe_sdk` already provides prepared semantic contracts, typed noul/choice/score answers, batching, cancellation, telemetry, deterministic test fixtures, and an OTP facade. Plexus does **not** rebuild those capabilities.
+## How it works
 
-Plexus adds a population runtime around them:
+Actors declare what they want to evaluate. Plexus intercepts these effects, coalesces matching requests, and runs them as batched evaluations through TypeSafe, returning the results directly to the requesting actors.
 
 ```text
 Actor local state
@@ -35,28 +39,26 @@ Actor local state
                                       └─ TypeSafeSDK.evaluate_many/4
 ```
 
-Independent actors no longer need to issue independent HTTP requests. Requests sharing a prepared-contract fingerprint and evaluation options are deduplicated and closed into bounded batches by size or delay.
+Independent actors do not need to manage individual HTTP requests or rate limits. Requests sharing a prepared contract and evaluation options are deduplicated and grouped into bounded batches by size or delay window before hitting the measurement backend.
 
-## Kernel primitives
+## Core primitives
 
-The kernel implements the following primitives, with precise semantics and limits in the guides:
+- **Population runtime** — Per-run metadata, secondary indexes, top-k/Pareto tracking, and seeded sampling.
+- **Typed topology** — Fast in-memory edges in ETS (such as `:child`, `:supports`, `:contradicts`, `:depends_on`, `:neighbor`, or custom edge types).
+- **Measurement coalescing** — Named prepared contracts with automatic deduplication, memoization, and batching through `TypeSafeSDK.evaluate_many/4`.
+- **Scheduling regimes** — Support for asynchronous execution, Bulk Synchronous Parallel (BSP) barriers, and prioritized command queues.
+- **Belief state** — Track confidence distributions (Bernoulli, categorical, ordinal) alongside raw evaluation values.
+- **Quiescence counters** — Run-scoped lock-free counters for termination and quiescence detection.
+- **Budgets & admission** — Atomic token and cost meters with hierarchical credit accounts.
+- **Selection & pruning** — Coordinated actor termination and graph cleanup.
+- **Generative expansion** — Dedicated priority queue and supervision for LLM proposals, isolated from measurement traffic.
+- **Provenance & invalidation** — Dependency tracking with epoch-based cache invalidation.
+- **Run recording & replay** — Append-only event logs and deterministic replay fixtures.
+- **Stop & reduce** — Composable termination predicates and population reducers.
 
-- **Population** — per-run metadata, secondary indexes, top-k/Pareto, seeded sampling and population operators.
-- **Typed topology** — per-run ETS ordered-set edges such as `:child`, `:supports`, `:contradicts`, `:depends_on`, `:neighbor`, or application-defined edge types.
-- **Local measurement** — named prepared contracts, memoization, replay, dedupe, coalescing, and `evaluate_many/4` as the normal framework path.
-- **Scheduling regime** — `:async`, BSP buffering/barriers, bounded command progress and queued priority ordering.
-- **Belief state** — explicit Bernoulli/categorical/ordinal projections with raw values retained.
-- **Quiescence counters** — run-scoped lock-free counters exposed to stop logic.
-- **Budget/admission** — atomic meters plus explicit hierarchical credit accounts.
-- **Selection/pruning** — process cancellation/termination before topology deletion.
-- **Expansion** — Hex `inference` 0.4.1, a separate priority queue, fail-closed capabilities, neutral streams/monitoring, accounting and proposal materialization. Physical cancellation depends on provider support.
-- **Provenance/invalidation** — `:depends_on` edges plus epoch/stale repair helpers.
-- **Run record/replay** — append-only events and versioned, checksummed fixed-response files.
-- **Stop/reduce** — composable predicates and population reducers.
+## Architecture
 
-## Hot-path architecture
-
-The original scaffold serialized node birth through a run GenServer and a global graph GenServer. The current architecture removes those hot mailboxes:
+Plexus uses partitioned dynamic supervisors and per-run ETS tables to avoid bottlenecking on a single coordinator process:
 
 ```text
 Plexus.Supervisor
@@ -74,7 +76,7 @@ Plexus.Supervisor
         └── Expand.Queue
 ```
 
-Node birth is now one partitioned supervisor start plus lock-free ETS inserts for node/topology metadata. Each run owns its tables, so teardown destroys the run's data without walking a global store.
+Spawning an actor only requires starting a worker in the partitioned supervisor and writing edge metadata to ETS. Each run manages its own ETS tables, allowing clean and immediate table destruction when the run finishes.
 
 ## Installation
 
@@ -86,7 +88,7 @@ def deps do
 end
 ```
 
-Plexus depends on `typesafe_sdk ~> 0.4.0`, `pristine ~> 0.4.0` for physical batch cancellation tokens, and `telemetry ~> 1.3` for run/SDK event integration.
+Plexus integrates with `typesafe_sdk`, `pristine` (for cancellation tokens), and `telemetry` for event dispatching.
 
 ## Start a run
 
@@ -120,11 +122,11 @@ Plexus.register_contract(run, :bounds,
 )
 ```
 
-The prepared fingerprint becomes the cache key component, coalescer partition key, and comparability handle for experiments that hold semantics fixed while changing topology or scheduling.
+The prepared fingerprint serves as the cache key, coalescer partition key, and comparability handle for experiments where you hold semantics fixed while changing topology or scheduling.
 
 ## Actors declare effects
 
-`Plexus.Actor` still uses `TypeSafeSDK.OTP.Server`, so direct `{:evaluate, ...}` remains available as a low-level escape hatch. The framework path is `Plexus.Actor.dispatch/2`:
+`Plexus.Actor` builds on `TypeSafeSDK.OTP.Server`, so direct `{:evaluate, ...}` remains available as a lower-level escape hatch when needed. The standard framework path is `Plexus.Actor.dispatch/2`:
 
 ```elixir
 defmodule MyApp.Region do
@@ -168,26 +170,26 @@ defmodule MyApp.Region do
 end
 ```
 
-TypeSafeSDK 0.4.x calls `handle_evaluation(result, tag, state)` for its direct OTP path. Plexus-managed measurement results instead arrive as `{:plexus, :measurement, tag, result}` so they can pass through cache/coalescing/budget policy first.
+Direct evaluations via TypeSafe trigger `handle_evaluation(result, tag, state)`. In contrast, Plexus-managed measurements return as `{:plexus, :measurement, tag, result}` so they pass through caching, request coalescing, and budget accounting first.
 
-## Dataset-backed example applications
+## Example applications
 
-`examples/` contains six runnable applications built on standard datasets rather than toy records:
+The `examples/` directory contains six runnable applications built on realistic datasets rather than toy records:
 
-- **SWE-bench Verified issue swarm** — semantic issue routing evaluated post hoc against fixed patch-shape labels.
-- **NYC 311 city signal tracker** — large report populations form spatiotemporal incident clusters; only dense clusters spend semantic budget.
-- **GAIA incident commander** — provenance-linked root-cause hypotheses over MicroSS traces/logs with injected-fault ground truth.
-- **deps.dev dependency upgrade search** — compares real resolved dependency graphs, measures changed-node risk, then runs a pruned actor beam search over migration order.
-- **SciFact research evidence graph** — support/contradiction edges evaluated against public scientific fact-verification labels.
-- **NOAA Storm Events alert swarm** — large dormant historical event populations wake by day, aggregate into state/day actors, and use sparse Jev interpretation.
+- **SWE-bench Verified issue swarm** — Semantic issue routing evaluated against real patch-shape labels.
+- **NYC 311 city signal tracker** — Spatiotemporal incident clustering over service request feeds, where only dense clusters allocate semantic budget.
+- **GAIA incident commander** — Root-cause hypothesis graphs over microservice traces and logs with fault injection ground truth.
+- **deps.dev dependency upgrade search** — Resolves dependency trees, evaluates changed-node risk, and runs a pruned beam search over migration order.
+- **SciFact research evidence graph** — Support/contradiction graph evaluated against scientific claims.
+- **NOAA Storm Events alert swarm** — Processes storm event feeds by waking daily worker populations and aggregating state-level impacts.
 
-Each example includes a fetch step for the real upstream dataset. Downloads land under `.plexus-data/` by default and are ignored by Git; tiny committed fixtures exist only for offline parser tests. The examples deliberately separate actor-population scale from semantic-call scale.
+Each example includes a script to fetch the upstream dataset into `.plexus-data/` (ignored by Git). Minimal test fixtures are included in the repository for offline testing.
 
 See the [example catalog](examples/README.md), [dataset notes](examples/DATASETS.md), and [example applications guide](guides/examples.md).
 
 ## Controlled scheduling experiments
 
-The same actor code can be run asynchronously or under BSP:
+The same actor code can run asynchronously or under Bulk Synchronous Parallel (BSP) barriers:
 
 ```elixir
 Plexus.schedule(run, :async)
@@ -196,11 +198,11 @@ Plexus.schedule(run, {:bsp, []})
 {:ok, round, released_commands} = Plexus.barrier(run)
 ```
 
-Replay mode is intended to hold semantic responses fixed while execution order changes. Record once, export the run's `{memo_key, result}` entries with `Plexus.replay_entries/1`, load them into a fresh `replay: :replay` run with `Plexus.load_replay/2`, and then change only the scheduling regime. Use `Plexus.Record.File.write/2` and `load/2` for versioned files with matching contract/config manifests.
+Replay mode allows holding model responses fixed while testing different scheduling regimes or actor topologies. Record a run once, export the `{memo_key, result}` entries with `Plexus.replay_entries/1`, load them into a fresh run with `replay: :replay`, and compare behavior under different execution orders. Use `Plexus.Record.File.write/2` and `load/2` for versioned files with matching contract manifests.
 
-## Calibration is part of the kernel, not an afterthought
+## Calibration and belief state
 
-Do not treat raw noul values as calibrated Bayesian likelihoods without evidence. Plexus includes a dependency-free reliability-diagram data path and isotonic calibrator:
+Raw model scores often require calibration before they can be treated as reliable probabilities. Plexus provides reliability diagrams and isotonic calibration out of the box:
 
 ```elixir
 samples = [{0.1, false}, {0.3, false}, {0.7, true}, {0.9, true}]
@@ -209,21 +211,21 @@ model = Plexus.Belief.Calibration.fit_isotonic(samples)
 calibrated_p = Plexus.Belief.Calibration.apply(model, 0.63)
 ```
 
-The raw TypeSafe answer remains attached to `Plexus.Belief`; calibration is an explicit application/experiment choice.
+The raw TypeSafe response remains accessible on `Plexus.Belief`; calibration is an explicit step when needed by your application.
 
-## Expansion is a separate tier
+## Generative expansion
 
-Expensive generative work never shares the measurement queue. `Plexus.Expand.Queue` has its own task supervisor, concurrency limit, priority ordering, capability preflight seam, and standard strict proposal schema:
+Generative tasks (such as synthesizing new proposals or hypotheses) run on a dedicated queue separate from fast measurement contracts. `Plexus.Expand.Queue` provides its own task supervision, concurrency controls, priority ordering, and strict proposal schema validation:
 
 ```elixir
 Plexus.Expand.Schema.proposals()
 ```
 
-Supply an `inference_client` to use `Plexus.Expand.InferenceAdapter`, backed by the published Hex dependency. See the expansion guide for stream monitoring, capability checks and provider-specific cancellation limits.
+Provide an `inference_client` to use `Plexus.Expand.InferenceAdapter`. See the [expansion guide](guides/expansion.md) for details on capability checks, stream monitoring, and provider cancellation handling.
 
 ## Observability
 
-Plexus emits `[:plexus, ...]` events for run/actor/measurement/expansion lifecycle and attaches a run-filtered handler to TypeSafeSDK semantic telemetry. TypeSafe token measurements feed the run budget ledger. The event log intentionally records bounded metadata rather than prompts, states, credentials, or raw transport bodies.
+Plexus emits `[:plexus, ...]` telemetry events across actor lifecycles, measurements, and expansion queues. It also attaches a run-scoped handler to TypeSafe telemetry to update token budget ledgers in real time. Event logs track operational metadata and counters without logging sensitive payload bodies or credentials.
 
 ```elixir
 Plexus.budget(run)
@@ -246,7 +248,7 @@ Plexus.events(run)
 
 ## Non-goals
 
-Plexus is intentionally single-node. It does not provide multi-node distribution, durable process/mailbox persistence, provider abstraction, a general workflow DSL, prompt management, or tool-calling agent loops. Provider concerns belong in the inference layer; transport/retries remain TypeSafe/Pristine concerns.
+Plexus is focused on single-node execution. It does not handle distributed multi-node clusters, durable mailbox persistence across node crashes, or high-level prompt engineering and chat loops. Transport retries and provider APIs remain the responsibility of TypeSafe and the inference layer.
 
 ## License
 

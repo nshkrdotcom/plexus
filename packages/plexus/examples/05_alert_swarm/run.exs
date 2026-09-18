@@ -140,11 +140,28 @@ defmodule Plexus.Examples.AlertSwarm.RegionDay do
   def handle_evaluation(_, _, state), do: {:noreply, state}
 
   defp finalize(%{semantic: true} = state) do
-    input = base_result(state) |> Map.put(:narrative_examples, Enum.reverse(state.narratives))
+    input =
+      state
+      |> measurement_result()
+      |> Map.put(:narrative_examples, Enum.reverse(state.narratives))
+
     Actor.dispatch(state.context, {:measure, :compound, input, state.contract, []})
   end
 
   defp finalize(state), do: Actor.dispatch(state.context, {:complete, base_result(state)})
+
+  defp measurement_result(state) do
+    {day, region} = state.key
+
+    state
+    |> base_result()
+    |> Map.put(:key, %{day: day, state: region})
+    |> Map.update!(:event_types, fn event_types ->
+      Enum.map(event_types, fn {event_type, count} ->
+        %{event_type: event_type, count: count}
+      end)
+    end)
+  end
 
   defp base_result(state) do
     %{
