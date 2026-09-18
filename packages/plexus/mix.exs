@@ -107,7 +107,7 @@ defmodule Plexus.MixProject do
         "guides/testing-and-release.md",
         "guides/experiments.md",
         "guides/examples.md",
-        "examples/README.md",
+        {"examples/README.md", [filename: "examples", title: "Examples"]},
         "examples/DATASETS.md",
         "HANDOFF.md",
         "CHANGELOG.md",

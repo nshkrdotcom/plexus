@@ -3,7 +3,7 @@ defmodule Plexus.Examples.Support.Data do
 
   def jsonl!(path) do
     path
-    |> File.stream!([], :line)
+    |> File.stream!(:line, [])
     |> Stream.map(&String.trim/1)
     |> Stream.reject(&(&1 == ""))
     |> Stream.map(&Jason.decode!/1)
@@ -20,7 +20,7 @@ defmodule Plexus.Examples.Support.Data do
   end
 
   def csv_maps!(path) do
-    stream = File.stream!(path, [], :line)
+    stream = File.stream!(path, :line, [])
 
     Stream.transform(stream, %{buffer: "", header: nil}, fn line, state ->
       buffer = state.buffer <> line
