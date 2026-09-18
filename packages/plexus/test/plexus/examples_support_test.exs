@@ -56,4 +56,50 @@ defmodule Plexus.ExamplesSupportTest do
     assert Runtime.normalize_cli_args(["--limit", "3"]) ==
              ["--limit", "3"]
   end
+
+  test "balanced CSV sampling does not exhaust the first file" do
+    dir =
+      Path.join(
+        System.tmp_dir!(),
+        "plexus-balanced-csv-#{System.unique_integer([:positive])}"
+      )
+
+    File.mkdir_p!(dir)
+    on_exit(fn -> File.rm_rf!(dir) end)
+
+    first = Path.join(dir, "first.csv")
+    second = Path.join(dir, "second.csv")
+
+    File.write!(
+      first,
+      """
+      timestamp,service
+      2021-07-01T00:00:01,a
+      2021-07-01T00:00:02,a
+      2021-07-01T00:00:03,a
+      """
+    )
+
+    File.write!(
+      second,
+      """
+      timestamp,service
+      2021-07-01T00:00:01,b
+      2021-07-01T00:00:02,b
+      2021-07-01T00:00:03,b
+      """
+    )
+
+    rows =
+      Data.balanced_csv_maps!(
+        [first, second],
+        ["timestamp"],
+        "2021-07-01",
+        4
+      )
+
+    assert length(rows) == 4
+    assert Enum.count(rows, &(&1["service"] == "a")) == 2
+    assert Enum.count(rows, &(&1["service"] == "b")) == 2
+  end
 end

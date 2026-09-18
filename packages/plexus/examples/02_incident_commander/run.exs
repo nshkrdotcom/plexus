@@ -301,9 +301,16 @@ defmodule Plexus.Examples.IncidentCommander do
     |> Map.new(fn {service, summary} ->
       {service,
        %{
-         calls: Enum.sort_by(summary.calls, fn {_name, count} -> -count end) |> Enum.take(8),
+         calls:
+           summary.calls
+           |> Enum.sort_by(fn {_name, count} -> -count end)
+           |> Enum.take(8)
+           |> Enum.map(fn {name, count} -> %{service: name, count: count} end),
          called_by:
-           Enum.sort_by(summary.called_by, fn {_name, count} -> -count end) |> Enum.take(8)
+           summary.called_by
+           |> Enum.sort_by(fn {_name, count} -> -count end)
+           |> Enum.take(8)
+           |> Enum.map(fn {name, count} -> %{service: name, count: count} end)
        }}
     end)
   end
@@ -317,12 +324,7 @@ defmodule Plexus.Examples.IncidentCommander do
   end
 
   defp rows_for_day(files, day, limit) do
-    files
-    |> Stream.flat_map(&Data.csv_maps!/1)
-    |> Stream.filter(fn row ->
-      String.starts_with?(row["timestamp"] || row["datetime"] || "", day)
-    end)
-    |> Enum.take(limit)
+    Data.balanced_csv_maps!(files, ["timestamp", "datetime"], day, limit)
   end
 
   defp path_kind?(path, kind), do: path |> String.downcase() |> String.contains?("/#{kind}/")

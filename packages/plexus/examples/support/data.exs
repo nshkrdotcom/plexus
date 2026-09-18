@@ -104,4 +104,30 @@ defmodule Plexus.Examples.Support.Data do
 
   defp parse_chars([char | rest], fields, field, quoted),
     do: parse_chars(rest, fields, [char | field], quoted)
+
+  def balanced_csv_maps!(files, fields, prefix, limit)
+      when is_list(files) and is_list(fields) and is_binary(prefix) and
+             is_integer(limit) and limit > 0 do
+    file_count = max(length(files), 1)
+    per_file_limit = max(div(limit + file_count - 1, file_count), 1)
+
+    files
+    |> Enum.flat_map(fn path ->
+      path
+      |> csv_maps!()
+      |> Stream.filter(fn row ->
+        value =
+          Enum.find_value(fields, fn field ->
+            case row[field] do
+              value when is_binary(value) and value != "" -> value
+              _ -> nil
+            end
+          end)
+
+        is_binary(value) and String.starts_with?(value, prefix)
+      end)
+      |> Enum.take(per_file_limit)
+    end)
+    |> Enum.take(limit)
+  end
 end
