@@ -76,17 +76,17 @@ defmodule Plexus.Run do
          :ok <- admit_depth(config.max_depth, depth),
          :ok <- admit_population(config.max_population, run_id),
          :ok <- Budget.reserve(config.budget, :population, 1) do
-      do_start_actor(
-        config,
-        module,
-        actor_id,
-        parent_id,
-        class,
-        metadata,
-        activity_mode,
-        depth,
-        opts
-      )
+      actor = %{
+        module: module,
+        actor_id: actor_id,
+        parent_id: parent_id,
+        class: class,
+        metadata: metadata,
+        activity_mode: activity_mode,
+        depth: depth
+      }
+
+      do_start_actor(config, actor, opts)
     end
   end
 
@@ -253,17 +253,17 @@ defmodule Plexus.Run do
   @spec config(t()) :: map()
   def config(run), do: Config.fetch!(run_id(run))
 
-  defp do_start_actor(
-         config,
-         module,
-         actor_id,
-         parent_id,
-         class,
-         metadata,
-         activity_mode,
-         depth,
-         opts
-       ) do
+  defp do_start_actor(config, actor, opts) do
+    %{
+      module: module,
+      actor_id: actor_id,
+      parent_id: parent_id,
+      class: class,
+      metadata: metadata,
+      activity_mode: activity_mode,
+      depth: depth
+    } = actor
+
     telemetry_metadata =
       opts
       |> Keyword.get(:evaluation_options, [])

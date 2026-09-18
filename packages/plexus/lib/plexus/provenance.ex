@@ -21,21 +21,26 @@ defmodule Plexus.Provenance do
   def invalidate(run_id, upstream_id, opts \\ []) do
     invalidated = do_invalidate(run_id, upstream_id, %{}) |> Map.keys()
 
-    if Keyword.get(opts, :notify, false) do
-      invalidated
-      |> Enum.reject(&(&1 == upstream_id))
-      |> Enum.each(fn actor_id ->
-        case Graph.get(run_id, actor_id) do
-          %{epoch: epoch} ->
-            _ = Run.cast(run_id, actor_id, {:plexus, :invalidated, upstream_id, epoch})
-
-          _ ->
-            :ok
-        end
-      end)
-    end
+    if Keyword.get(opts, :notify, false),
+      do: notify_invalidated(run_id, upstream_id, invalidated)
 
     invalidated
+  end
+
+  defp notify_invalidated(run_id, upstream_id, invalidated) do
+    invalidated
+    |> Enum.reject(&(&1 == upstream_id))
+    |> Enum.each(&notify_invalidated_actor(run_id, upstream_id, &1))
+  end
+
+  defp notify_invalidated_actor(run_id, upstream_id, actor_id) do
+    case Graph.get(run_id, actor_id) do
+      %{epoch: epoch} ->
+        _ = Run.cast(run_id, actor_id, {:plexus, :invalidated, upstream_id, epoch})
+
+      _ ->
+        :ok
+    end
   end
 
   @spec repair(term(), term(), non_neg_integer() | nil) :: :ok | {:error, term()}

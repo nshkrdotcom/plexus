@@ -13,8 +13,8 @@ defmodule Plexus.IncidentCommanderExampleTest do
   alias Plexus.Examples.IncidentCommander
   alias Plexus.Examples.IncidentCommander.{Chronology, Hypothesis, Replay, Topology}
   alias Plexus.Examples.Support.Runtime
-  alias Plexus.Schedule.Quiescence
   alias Plexus.{Graph, Run}
+  alias Plexus.Schedule.Quiescence
   alias TypeSafeSDK.Test
 
   @fixture_dir Path.expand("../fixtures/examples/gaia_living", __DIR__)
@@ -250,34 +250,32 @@ defmodule Plexus.IncidentCommanderExampleTest do
       |> Test.stub_callback(fn request ->
         state = request.body |> Jason.decode!() |> Map.fetch!("state")
 
-        cond do
-          Map.has_key?(state, "hypothesis_service") ->
-            n = :atomics.add_get(call_count, 1, 1)
+        if Map.has_key?(state, "hypothesis_service") do
+          n = :atomics.add_get(call_count, 1, 1)
 
-            if n == 1 do
-              send(owner, {:first_hypothesis_measurement_started, self()})
+          if n == 1 do
+            send(owner, {:first_hypothesis_measurement_started, self()})
 
-              receive do
-                :release_first_hypothesis_measurement -> :ok
-              after
-                2_000 -> raise "test did not release first hypothesis measurement"
-              end
+            receive do
+              :release_first_hypothesis_measurement -> :ok
+            after
+              2_000 -> raise "test did not release first hypothesis measurement"
             end
+          end
 
-            {:answers,
-             [
-               root_cause: {:noul, if(n == 1, do: 0.15, else: 0.82)},
-               next_action: {:choice, "observe", 0.96},
-               evidence_strength: {:score, 3, 0.94}
-             ]}
-
-          true ->
-            {:answers,
-             [
-               anomaly_relevance: {:noul, 0.95},
-               failure_mode: {:choice, "request_path_error", 0.97},
-               diagnostic_strength: {:score, 3, 0.95}
-             ]}
+          {:answers,
+           [
+             root_cause: {:noul, if(n == 1, do: 0.15, else: 0.82)},
+             next_action: {:choice, "observe", 0.96},
+             evidence_strength: {:score, 3, 0.94}
+           ]}
+        else
+          {:answers,
+           [
+             anomaly_relevance: {:noul, 0.95},
+             failure_mode: {:choice, "request_path_error", 0.97},
+             diagnostic_strength: {:score, 3, 0.95}
+           ]}
         end
       end)
 
