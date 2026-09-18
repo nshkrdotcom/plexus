@@ -1,6 +1,15 @@
-# Plexus
+<p align="center">
+  <img src="assets/plexus.svg" alt="Plexus" width="200" height="200"/>
+</p>
 
-![Plexus logo](assets/plexus.svg)
+<p align="center">
+  <a href="https://hex.pm/packages/plexus"><img src="https://img.shields.io/hexpm/v/plexus.svg" alt="Hex.pm"/></a>
+  <a href="https://hexdocs.pm/plexus"><img src="https://img.shields.io/badge/hex-docs-blue.svg" alt="HexDocs"/></a>
+  <a href="https://github.com/nshkrdotcom/plexus"><img src="https://img.shields.io/badge/GitHub-repo-black?logo=github" alt="GitHub"/></a>
+  <a href="https://hex.pm/packages/plexus"><img src="https://img.shields.io/hexpm/l/plexus.svg" alt="License"/></a>
+</p>
+
+# Plexus
 
 **Plexus** is a BEAM-native semantic actor substrate built to **show off `typesafe_sdk` 0.4.0 directly**, not hide it behind a second runtime.
 
