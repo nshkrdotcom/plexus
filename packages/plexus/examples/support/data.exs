@@ -11,7 +11,11 @@ defmodule Plexus.Examples.Support.Data do
 
   def write_jsonl!(path, rows) do
     File.mkdir_p!(Path.dirname(path))
-    File.open!(path, [:write], fn io -> Enum.each(rows, &IO.write(io, Jason.encode!(&1) <> "\n")) end)
+
+    File.open!(path, [:write], fn io ->
+      Enum.each(rows, &IO.write(io, Jason.encode!(&1) <> "\n"))
+    end)
+
     path
   end
 
@@ -42,7 +46,10 @@ defmodule Plexus.Examples.Support.Data do
   def extract_tar_gz!(archive, destination) do
     File.mkdir_p!(destination)
 
-    case :erl_tar.extract(String.to_charlist(archive), [:compressed, {:cwd, String.to_charlist(destination)}]) do
+    case :erl_tar.extract(String.to_charlist(archive), [
+           :compressed,
+           {:cwd, String.to_charlist(destination)}
+         ]) do
       :ok -> destination
       {:error, reason} -> raise "could not extract #{archive}: #{inspect(reason)}"
     end
@@ -51,6 +58,7 @@ defmodule Plexus.Examples.Support.Data do
   def parse_number(nil), do: nil
   def parse_number(""), do: nil
   def parse_number(value) when is_number(value), do: value
+
   def parse_number(value) do
     case Float.parse(to_string(value)) do
       {number, _} -> number
@@ -82,11 +90,18 @@ defmodule Plexus.Examples.Support.Data do
   end
 
   defp parse_chars([], fields, field, quoted), do: {fields, field, quoted}
-  defp parse_chars([?", ?" | rest], fields, field, true), do: parse_chars(rest, fields, [?" | field], true)
-  defp parse_chars([?" | rest], fields, field, quoted), do: parse_chars(rest, fields, field, not quoted)
+
+  defp parse_chars([?", ?" | rest], fields, field, true),
+    do: parse_chars(rest, fields, [?" | field], true)
+
+  defp parse_chars([?" | rest], fields, field, quoted),
+    do: parse_chars(rest, fields, field, not quoted)
+
   defp parse_chars([?, | rest], fields, field, false) do
     value = field |> Enum.reverse() |> to_string()
     parse_chars(rest, [value | fields], [], false)
   end
-  defp parse_chars([char | rest], fields, field, quoted), do: parse_chars(rest, fields, [char | field], quoted)
+
+  defp parse_chars([char | rest], fields, field, quoted),
+    do: parse_chars(rest, fields, [char | field], quoted)
 end

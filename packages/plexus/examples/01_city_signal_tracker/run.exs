@@ -4,7 +4,6 @@ Code.require_file("../support/metrics.exs", __DIR__)
 
 alias Plexus.Examples.Support.{Data, Metrics, Runtime}
 
-
 defmodule Plexus.Examples.CitySignal.Cluster do
   use Plexus.Actor
   alias Plexus.Actor
@@ -60,7 +59,11 @@ defmodule Plexus.Examples.CitySignal.Cluster do
   end
 
   def handle_cast({:plexus, :measurement, :cluster, {:error, error}}, state) do
-    Actor.dispatch(state.context, {:complete, %{key: state.key, error: inspect(error), report_count: state.count}})
+    Actor.dispatch(
+      state.context,
+      {:complete, %{key: state.key, error: inspect(error), report_count: state.count}}
+    )
+
     {:noreply, state}
   end
 
@@ -83,13 +86,13 @@ defmodule Plexus.Examples.CitySignal.Cluster do
   defp top(map, n), do: map |> Enum.sort_by(fn {_k, v} -> -v end) |> Enum.take(n)
 end
 
-
 defmodule Plexus.Examples.CitySignal.Report do
   use Plexus.Actor
   alias Plexus.Actor
 
   @impl true
-  def init(args), do: {:ok, %{context: Actor.context(args), record: args.record, cluster: args.cluster}}
+  def init(args),
+    do: {:ok, %{context: Actor.context(args), record: args.record, cluster: args.cluster}}
 
   @impl true
   def handle_cast(:route, state) do
@@ -98,13 +101,13 @@ defmodule Plexus.Examples.CitySignal.Report do
       {:send, state.cluster, {:report, state.record}},
       {:complete, :routed}
     ])
+
     {:noreply, state}
   end
 
   @impl true
   def handle_evaluation(_, _, state), do: {:noreply, state}
 end
-
 
 defmodule Plexus.Examples.CitySignal do
   alias Plexus.Examples.CitySignal.{Cluster, Report}
@@ -146,47 +149,65 @@ defmodule Plexus.Examples.CitySignal do
       raise "no NYC 311 clusters met --min-cluster #{min_cluster}; widen the fetch window or lower the threshold"
     end
 
-    run = Runtime.start_run!(
-      max_population: selected_count + max_clusters + 100,
-      budgets: [
-        measure: max_clusters,
-        population: selected_count + max_clusters + 100,
-        tokens: Runtime.token_budget(opts, length(grouped), per_call: 6_000, floor: 250_000)
-      ]
-    )
+    run =
+      Runtime.start_run!(
+        max_population: selected_count + max_clusters + 100,
+        budgets: [
+          measure: max_clusters,
+          population: selected_count + max_clusters + 100,
+          tokens: Runtime.token_budget(opts, length(grouped), per_call: 6_000, floor: 250_000)
+        ]
+      )
 
     try do
-      prepared = TypeSafeSDK.prepare!(
-        coherent: TypeSafeSDK.noul("Do these co-located reports plausibly represent one shared operational incident rather than ordinary background demand?"),
-        theme:
-          TypeSafeSDK.choice(
-            "What operational theme best describes this cluster?",
-            infrastructure: "Utility, street, building, or physical infrastructure",
-            sanitation: "Waste, cleanliness, pests, or environmental sanitation",
-            safety: "Public safety or hazardous condition",
-            noise: "Noise or quality-of-life disturbance",
-            housing: "Housing or property condition",
-            transportation: "Road, transit, vehicle, or traffic condition",
-            other: "No single listed theme fits"
-          ),
-        strength:
-          TypeSafeSDK.score(
-            "How strong is the evidence that this cluster represents a distinct local incident?",
-            ["background", "weak", "moderate", "strong"]
-          )
-      )
+      prepared =
+        TypeSafeSDK.prepare!(
+          coherent:
+            TypeSafeSDK.noul(
+              "Do these co-located reports plausibly represent one shared operational incident rather than ordinary background demand?"
+            ),
+          theme:
+            TypeSafeSDK.choice(
+              "What operational theme best describes this cluster?",
+              infrastructure: "Utility, street, building, or physical infrastructure",
+              sanitation: "Waste, cleanliness, pests, or environmental sanitation",
+              safety: "Public safety or hazardous condition",
+              noise: "Noise or quality-of-life disturbance",
+              housing: "Housing or property condition",
+              transportation: "Road, transit, vehicle, or traffic condition",
+              other: "No single listed theme fits"
+            ),
+          strength:
+            TypeSafeSDK.score(
+              "How strong is the evidence that this cluster represents a distinct local incident?",
+              ["background", "weak", "moderate", "strong"]
+            )
+        )
 
       :ok = Plexus.register_contract(run, :city_cluster, prepared, version: 1)
 
       Enum.each(grouped, fn {key, rows} ->
         cluster_id = {:cluster, key}
-        {:ok, _} = Plexus.start_actor(run, module: Cluster, actor_id: cluster_id, class: :cluster,
-          init_arg: %{key: key, expected: length(rows), contract: :city_cluster})
+
+        {:ok, _} =
+          Plexus.start_actor(run,
+            module: Cluster,
+            actor_id: cluster_id,
+            class: :cluster,
+            init_arg: %{key: key, expected: length(rows), contract: :city_cluster}
+          )
 
         Enum.each(rows, fn record ->
           report_id = {:report, record["unique_key"]}
-          {:ok, _} = Plexus.start_actor(run, module: Report, actor_id: report_id, class: :report,
-            init_arg: %{record: record, cluster: cluster_id})
+
+          {:ok, _} =
+            Plexus.start_actor(run,
+              module: Report,
+              actor_id: report_id,
+              class: :report,
+              init_arg: %{record: record, cluster: cluster_id}
+            )
+
           Plexus.cast({run, report_id}, :route)
         end)
       end)
@@ -198,7 +219,6 @@ defmodule Plexus.Examples.CitySignal do
       Runtime.stop(run)
     end
   end
-
 
   defp cluster_counts(path, grid) do
     Data.jsonl!(path)
@@ -223,6 +243,7 @@ defmodule Plexus.Examples.CitySignal do
     h = String.to_integer(hour)
     date <> "T" <> String.pad_leading(Integer.to_string(div(h, 3) * 3), 2, "0")
   end
+
   defp time_bucket(other), do: String.slice(other, 0, 13)
 
   defp report(run, source_count, routed_count) do
@@ -230,6 +251,7 @@ defmodule Plexus.Examples.CitySignal do
     clusters = Graph.by_class(id, :cluster)
 
     IO.puts("\nNYC 311 city signal tracker")
+
     Metrics.print_table([
       {"source records", source_count},
       {"routed report actors", routed_count},
@@ -239,8 +261,10 @@ defmodule Plexus.Examples.CitySignal do
     ])
 
     IO.puts("\nHighest-signal clusters:")
+
     Runtime.top_complete(run, :cluster, 12, fn result ->
-      (result[:coherent] || 0.0) * (1.0 + (result[:strength] || 0.0)) * :math.log(1.0 + (result[:report_count] || 0))
+      (result[:coherent] || 0.0) * (1.0 + (result[:strength] || 0.0)) *
+        :math.log(1.0 + (result[:report_count] || 0))
     end)
     |> Enum.each(fn {_id, attrs} -> IO.inspect(attrs.result) end)
   end
@@ -248,7 +272,14 @@ end
 
 {opts, _, _} =
   OptionParser.parse(System.argv(),
-    strict: [data_dir: :string, max_clusters: :integer, min_cluster: :integer, grid: :float, token_budget: :integer, timeout_ms: :integer]
+    strict: [
+      data_dir: :string,
+      max_clusters: :integer,
+      min_cluster: :integer,
+      grid: :float,
+      token_budget: :integer,
+      timeout_ms: :integer
+    ]
   )
 
 Plexus.Examples.CitySignal.run(opts)

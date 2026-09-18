@@ -4,7 +4,6 @@ Code.require_file("../support/metrics.exs", __DIR__)
 
 alias Plexus.Examples.Support.{Data, Metrics, Runtime}
 
-
 defmodule Plexus.Examples.IncidentCommander.Evidence do
   use Plexus.Actor
   alias Plexus.Actor
@@ -22,14 +21,19 @@ defmodule Plexus.Examples.IncidentCommander.Evidence do
   def handle_evaluation(_, _, state), do: {:noreply, state}
 end
 
-
 defmodule Plexus.Examples.IncidentCommander.Hypothesis do
   use Plexus.Actor
   alias Plexus.Actor
 
   @impl true
   def init(args) do
-    {:ok, %{context: Actor.context(args), service: args.service, evidence: args.evidence, contract: args.contract}}
+    {:ok,
+     %{
+       context: Actor.context(args),
+       service: args.service,
+       evidence: args.evidence,
+       contract: args.contract
+     }}
   end
 
   @impl true
@@ -78,7 +82,6 @@ defmodule Plexus.Examples.IncidentCommander.Hypothesis do
   def handle_evaluation(_, _, state), do: {:noreply, state}
 end
 
-
 defmodule Plexus.Examples.IncidentCommander do
   alias Plexus.Examples.IncidentCommander.{Evidence, Hypothesis}
   alias Plexus.Examples.Support.{Data, Metrics, Runtime}
@@ -87,7 +90,12 @@ defmodule Plexus.Examples.IncidentCommander do
   def run(opts) do
     data_dir = opts[:data_dir] || Runtime.data_dir("gaia")
     source = opts[:source_dir] || Path.join([data_dir, "GAIA-DataSet", "MicroSS"])
-    unless File.dir?(source), do: raise("missing GAIA MicroSS directory #{source}; run fetch.exs first or pass --source-dir")
+
+    unless File.dir?(source),
+      do:
+        raise(
+          "missing GAIA MicroSS directory #{source}; run fetch.exs first or pass --source-dir"
+        )
 
     day = opts[:day] || "2021-07-01"
     max_rows = opts[:max_rows] || 100_000
@@ -111,34 +119,50 @@ defmodule Plexus.Examples.IncidentCommander do
       |> Enum.sort_by(fn {_service, row} -> -(row.trace_failures + row.log_signals) end)
       |> Enum.take(max_services)
 
-    if services == [], do: raise("no GAIA evidence rows found for #{day}; choose another --day or inspect the downloaded dataset")
+    if services == [],
+      do:
+        raise(
+          "no GAIA evidence rows found for #{day}; choose another --day or inspect the downloaded dataset"
+        )
 
-    comparison = Enum.map(services, fn {service, row} -> %{service: service, evidence_count: row.trace_failures + row.log_signals} end)
+    comparison =
+      Enum.map(services, fn {service, row} ->
+        %{service: service, evidence_count: row.trace_failures + row.log_signals}
+      end)
 
-    run = Runtime.start_run!(
-      max_population: max_services * 2 + 100,
-      budgets: [
-        measure: max_services,
-        population: max_services * 2 + 100,
-        tokens: Runtime.token_budget(opts, length(services), per_call: 12_000, floor: 250_000)
-      ]
-    )
+    run =
+      Runtime.start_run!(
+        max_population: max_services * 2 + 100,
+        budgets: [
+          measure: max_services,
+          population: max_services * 2 + 100,
+          tokens: Runtime.token_budget(opts, length(services), per_call: 12_000, floor: 250_000)
+        ]
+      )
 
     try do
-      contract = TypeSafeSDK.prepare!(
-        root_cause: TypeSafeSDK.noul("Is the named candidate service plausibly the root cause, rather than merely a downstream victim, of the observed incident evidence?"),
-        failure_mode:
-          TypeSafeSDK.choice(
-            "Which failure mode best explains the evidence for this service?",
-            resource_exhaustion: "CPU, memory, connection, or other resource exhaustion",
-            dependency_failure: "Failure caused by an upstream or downstream dependency",
-            request_path_error: "Application/request path or RPC error",
-            configuration: "Configuration or deployment fault",
-            unknown: "Evidence is insufficient to distinguish a mode"
-          ),
-        evidence_strength:
-          TypeSafeSDK.score("How diagnostically strong is the evidence for this service as root cause?", ["weak", "limited", "useful", "strong"])
-      )
+      contract =
+        TypeSafeSDK.prepare!(
+          root_cause:
+            TypeSafeSDK.noul(
+              "Is the named candidate service plausibly the root cause, rather than merely a downstream victim, of the observed incident evidence?"
+            ),
+          failure_mode:
+            TypeSafeSDK.choice(
+              "Which failure mode best explains the evidence for this service?",
+              resource_exhaustion: "CPU, memory, connection, or other resource exhaustion",
+              dependency_failure: "Failure caused by an upstream or downstream dependency",
+              request_path_error: "Application/request path or RPC error",
+              configuration: "Configuration or deployment fault",
+              unknown: "Evidence is insufficient to distinguish a mode"
+            ),
+          evidence_strength:
+            TypeSafeSDK.score(
+              "How diagnostically strong is the evidence for this service as root cause?",
+              ["weak", "limited", "useful", "strong"]
+            )
+        )
+
       :ok = Plexus.register_contract(run, :gaia_root_cause, contract, version: 1)
       run_id = Run.run_id(run)
 
@@ -183,7 +207,13 @@ defmodule Plexus.Examples.IncidentCommander do
         end
       end)
 
-      Runtime.await_class_complete!(run, :hypothesis, length(services), opts[:timeout_ms] || 180_000)
+      Runtime.await_class_complete!(
+        run,
+        :hypothesis,
+        length(services),
+        opts[:timeout_ms] || 180_000
+      )
+
       Runtime.await_quiescent!(run, 30_000)
       report(run, day, truth)
     after
@@ -199,7 +229,9 @@ defmodule Plexus.Examples.IncidentCommander do
 
     logs =
       business_rows
-      |> Enum.filter(fn row -> Regex.match?(~r/(error|warning|fail|timeout|exception)/i, row["message"] || "") end)
+      |> Enum.filter(fn row ->
+        Regex.match?(~r/(error|warning|fail|timeout|exception)/i, row["message"] || "")
+      end)
       |> Enum.group_by(&(&1["service"] || "unknown"))
 
     relationships = relationship_summaries(trace_edges)
@@ -216,7 +248,10 @@ defmodule Plexus.Examples.IncidentCommander do
          trace_failures: length(service_traces),
          log_signals: length(service_logs),
          trace_examples:
-           Enum.take(Enum.map(service_traces, &Map.take(&1, ["url", "status_code", "message"])), 5),
+           Enum.take(
+             Enum.map(service_traces, &Map.take(&1, ["url", "status_code", "message"])),
+             5
+           ),
          log_examples: Enum.take(Enum.map(service_logs, & &1["message"]), 5),
          calls: relation.calls,
          called_by: relation.called_by
@@ -267,7 +302,8 @@ defmodule Plexus.Examples.IncidentCommander do
       {service,
        %{
          calls: Enum.sort_by(summary.calls, fn {_name, count} -> -count end) |> Enum.take(8),
-         called_by: Enum.sort_by(summary.called_by, fn {_name, count} -> -count end) |> Enum.take(8)
+         called_by:
+           Enum.sort_by(summary.called_by, fn {_name, count} -> -count end) |> Enum.take(8)
        }}
     end)
   end
@@ -283,7 +319,9 @@ defmodule Plexus.Examples.IncidentCommander do
   defp rows_for_day(files, day, limit) do
     files
     |> Stream.flat_map(&Data.csv_maps!/1)
-    |> Stream.filter(fn row -> String.starts_with?(row["timestamp"] || row["datetime"] || "", day) end)
+    |> Stream.filter(fn row ->
+      String.starts_with?(row["timestamp"] || row["datetime"] || "", day)
+    end)
     |> Enum.take(limit)
   end
 
@@ -291,12 +329,15 @@ defmodule Plexus.Examples.IncidentCommander do
 
   defp report(run, day, truth) do
     id = Run.run_id(run)
+
     top =
       Runtime.top_complete(run, :hypothesis, 10, fn result ->
-        (result[:root_probability] || 0.0) * (1.0 + (result[:evidence_strength] || 0.0)) * :math.log(1.0 + (result[:evidence_count] || 0))
+        (result[:root_probability] || 0.0) * (1.0 + (result[:evidence_strength] || 0.0)) *
+          :math.log(1.0 + (result[:evidence_count] || 0))
       end)
 
     truth_services = truth |> Enum.map(& &1.service) |> Enum.reject(&is_nil/1) |> Enum.uniq()
+
     predicted =
       case List.first(top) do
         nil -> nil
@@ -304,6 +345,7 @@ defmodule Plexus.Examples.IncidentCommander do
       end
 
     IO.puts("\nGAIA incident commander — #{day}")
+
     Metrics.print_table([
       {"hypotheses", length(Graph.by_class(id, :hypothesis))},
       {"semantic measurements", Plexus.budget(run).measure.used},
@@ -319,7 +361,15 @@ end
 
 {opts, _, _} =
   OptionParser.parse(System.argv(),
-    strict: [data_dir: :string, source_dir: :string, day: :string, max_rows: :integer, max_services: :integer, token_budget: :integer, timeout_ms: :integer]
+    strict: [
+      data_dir: :string,
+      source_dir: :string,
+      day: :string,
+      max_rows: :integer,
+      max_services: :integer,
+      token_budget: :integer,
+      timeout_ms: :integer
+    ]
   )
 
 Plexus.Examples.IncidentCommander.run(opts)

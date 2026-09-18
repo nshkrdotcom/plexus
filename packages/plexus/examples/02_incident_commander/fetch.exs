@@ -9,8 +9,10 @@ micross = Path.join(repo, "MicroSS")
 File.mkdir_p!(data_dir)
 
 git = System.find_executable("git") || raise "git is required to acquire the GAIA dataset"
-seven_zip = System.find_executable("7z") || System.find_executable("7zz") ||
-  raise "7z/7zz is required to extract GAIA MicroSS split archives (Ubuntu: apt install p7zip-full)"
+
+seven_zip =
+  System.find_executable("7z") || System.find_executable("7zz") ||
+    raise "7z/7zz is required to extract GAIA MicroSS split archives (Ubuntu: apt install p7zip-full)"
 
 unless File.dir?(repo) do
   IO.puts("Cloning the official GAIA release-v1.0 metadata into #{repo}")
@@ -18,7 +20,15 @@ unless File.dir?(repo) do
   {_, status} =
     System.cmd(
       git,
-      ["clone", "--depth", "1", "--branch", "release-v1.0", "https://github.com/CloudWise-OpenSource/GAIA-DataSet.git", repo],
+      [
+        "clone",
+        "--depth",
+        "1",
+        "--branch",
+        "release-v1.0",
+        "https://github.com/CloudWise-OpenSource/GAIA-DataSet.git",
+        repo
+      ],
       env: [{"GIT_LFS_SKIP_SMUDGE", "1"}],
       stderr_to_stdout: true,
       into: IO.stream(:stdio, :line)

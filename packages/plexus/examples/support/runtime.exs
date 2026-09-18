@@ -55,11 +55,15 @@ defmodule Plexus.Examples.Support.Runtime do
   def await_class_complete!(run, class, expected, timeout_ms \\ 120_000) do
     run_id = Run.run_id(run)
 
-    await!(fn ->
-      Graph.by_class(run_id, class)
-      |> Enum.count(fn {_id, attrs} -> attrs[:status] == :complete end)
-      |> Kernel.>=(expected)
-    end, timeout_ms, "#{inspect(class)} actors to complete")
+    await!(
+      fn ->
+        Graph.by_class(run_id, class)
+        |> Enum.count(fn {_id, attrs} -> attrs[:status] == :complete end)
+        |> Kernel.>=(expected)
+      end,
+      timeout_ms,
+      "#{inspect(class)} actors to complete"
+    )
   end
 
   def await_quiescent!(run, timeout_ms \\ 120_000) do
@@ -70,20 +74,29 @@ defmodule Plexus.Examples.Support.Runtime do
 
   def await_messages_drained!(run, timeout_ms \\ 120_000) do
     quiescence = Run.config(run).quiescence
-    await!(fn -> Quiescence.get(quiescence, :messages) == 0 end, timeout_ms, "managed messages to drain")
+
+    await!(
+      fn -> Quiescence.get(quiescence, :messages) == 0 end,
+      timeout_ms,
+      "managed messages to drain"
+    )
   end
 
   def await_actor_ids_complete!(run, actor_ids, timeout_ms \\ 120_000) do
     run_id = Run.run_id(run)
 
-    await!(fn ->
-      Enum.all?(actor_ids, fn actor_id ->
-        case Graph.get(run_id, actor_id) do
-          %{status: :complete} -> true
-          _ -> false
-        end
-      end)
-    end, timeout_ms, "selected actors to complete")
+    await!(
+      fn ->
+        Enum.all?(actor_ids, fn actor_id ->
+          case Graph.get(run_id, actor_id) do
+            %{status: :complete} -> true
+            _ -> false
+          end
+        end)
+      end,
+      timeout_ms,
+      "selected actors to complete"
+    )
   end
 
   def await!(predicate, timeout_ms, label) when is_function(predicate, 0) do
@@ -108,8 +121,12 @@ defmodule Plexus.Examples.Support.Runtime do
 
   defp do_await(predicate, deadline, label) do
     cond do
-      predicate.() -> :ok
-      System.monotonic_time(:millisecond) >= deadline -> raise "timed out waiting for #{label}"
+      predicate.() ->
+        :ok
+
+      System.monotonic_time(:millisecond) >= deadline ->
+        raise "timed out waiting for #{label}"
+
       true ->
         Process.sleep(25)
         do_await(predicate, deadline, label)

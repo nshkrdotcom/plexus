@@ -4,7 +4,6 @@ Code.require_file("../support/metrics.exs", __DIR__)
 
 alias Plexus.Examples.Support.{Data, Metrics, Runtime}
 
-
 defmodule Plexus.Examples.AlertSwarm.Event do
   use Plexus.Actor
   alias Plexus.Actor
@@ -37,14 +36,13 @@ defmodule Plexus.Examples.AlertSwarm.Event do
       {:send, state.target, {:storm_event, state.record}},
       {:complete, :delivered}
     ])
+
     {:noreply, state}
   end
 
   @impl true
   def handle_evaluation(_, _, state), do: {:noreply, state}
 end
-
-
 
 defmodule Plexus.Examples.AlertSwarm.SubscriptionCounter do
   use Plexus.Actor
@@ -56,7 +54,10 @@ defmodule Plexus.Examples.AlertSwarm.SubscriptionCounter do
   @impl true
   def handle_cast(:subscribed, state) do
     count = state.count + 1
-    if count == state.expected, do: Actor.dispatch(state.context, {:complete, %{subscriptions: count}})
+
+    if count == state.expected,
+      do: Actor.dispatch(state.context, {:complete, %{subscriptions: count}})
+
     {:noreply, %{state | count: count}}
   end
 
@@ -72,9 +73,18 @@ defmodule Plexus.Examples.AlertSwarm.RegionDay do
   def init(args) do
     {:ok,
      %{
-       context: Actor.context(args), key: args.key, expected: args.expected,
-       semantic: args.semantic, contract: args.contract, count: 0,
-       types: %{}, deaths: 0, injuries: 0, property: 0.0, crop: 0.0, narratives: []
+       context: Actor.context(args),
+       key: args.key,
+       expected: args.expected,
+       semantic: args.semantic,
+       contract: args.contract,
+       count: 0,
+       types: %{},
+       deaths: 0,
+       injuries: 0,
+       property: 0.0,
+       crop: 0.0,
+       narratives: []
      }}
   end
 
@@ -84,8 +94,11 @@ defmodule Plexus.Examples.AlertSwarm.RegionDay do
       state
       | count: state.count + 1,
         types: Map.update(state.types, record["EVENT_TYPE"] || "unknown", 1, &(&1 + 1)),
-        deaths: state.deaths + integer(record["DEATHS_DIRECT"]) + integer(record["DEATHS_INDIRECT"]),
-        injuries: state.injuries + integer(record["INJURIES_DIRECT"]) + integer(record["INJURIES_INDIRECT"]),
+        deaths:
+          state.deaths + integer(record["DEATHS_DIRECT"]) + integer(record["DEATHS_INDIRECT"]),
+        injuries:
+          state.injuries + integer(record["INJURIES_DIRECT"]) +
+            integer(record["INJURIES_INDIRECT"]),
         property: state.property + damage(record["DAMAGE_PROPERTY"]),
         crop: state.crop + damage(record["DAMAGE_CROPS"]),
         narratives: take_narrative(state.narratives, record["EVENT_NARRATIVE"])
@@ -102,13 +115,24 @@ defmodule Plexus.Examples.AlertSwarm.RegionDay do
 
     Actor.dispatch(state.context, [
       {:belief, compound},
-      {:complete, base_result(state) |> Map.merge(%{compound: compound.value, posture: posture.value, semantic_severity: severity.value})}
+      {:complete,
+       base_result(state)
+       |> Map.merge(%{
+         compound: compound.value,
+         posture: posture.value,
+         semantic_severity: severity.value
+       })}
     ])
+
     {:noreply, state}
   end
 
   def handle_cast({:plexus, :measurement, :compound, {:error, error}}, state) do
-    Actor.dispatch(state.context, {:complete, base_result(state) |> Map.put(:error, inspect(error))})
+    Actor.dispatch(
+      state.context,
+      {:complete, base_result(state) |> Map.put(:error, inspect(error))}
+    )
+
     {:noreply, state}
   end
 
@@ -119,6 +143,7 @@ defmodule Plexus.Examples.AlertSwarm.RegionDay do
     input = base_result(state) |> Map.put(:narrative_examples, Enum.reverse(state.narratives))
     Actor.dispatch(state.context, {:measure, :compound, input, state.contract, []})
   end
+
   defp finalize(state), do: Actor.dispatch(state.context, {:complete, base_result(state)})
 
   defp base_result(state) do
@@ -137,6 +162,7 @@ defmodule Plexus.Examples.AlertSwarm.RegionDay do
   defp integer(nil), do: 0
   defp integer(""), do: 0
   defp integer(value) when is_integer(value), do: value
+
   defp integer(value) do
     case Integer.parse(to_string(value)) do
       {number, _} -> number
@@ -146,8 +172,10 @@ defmodule Plexus.Examples.AlertSwarm.RegionDay do
 
   defp damage(nil), do: 0.0
   defp damage(""), do: 0.0
+
   defp damage(value) do
     string = value |> to_string() |> String.trim() |> String.upcase()
+
     {number, suffix} =
       case Float.parse(string) do
         {parsed, rest} -> {parsed, String.trim(rest)}
@@ -170,7 +198,6 @@ defmodule Plexus.Examples.AlertSwarm.RegionDay do
   defp take_narrative(list, text) when length(list) < 4, do: [String.slice(text, 0, 1_000) | list]
   defp take_narrative(list, _), do: list
 end
-
 
 defmodule Plexus.Examples.AlertSwarm do
   alias Plexus.Examples.AlertSwarm.{Event, RegionDay, SubscriptionCounter}
@@ -205,29 +232,44 @@ defmodule Plexus.Examples.AlertSwarm do
 
     population_limit = actor_event_count + length(grouped) + 101
 
-    run = Runtime.start_run!(
-      max_population: population_limit,
-      budgets: [
-        measure: max_semantic,
-        population: population_limit,
-        tokens: Runtime.token_budget(opts, MapSet.size(semantic_keys), per_call: 12_000, floor: 250_000)
-      ]
-    )
+    run =
+      Runtime.start_run!(
+        max_population: population_limit,
+        budgets: [
+          measure: max_semantic,
+          population: population_limit,
+          tokens:
+            Runtime.token_budget(opts, MapSet.size(semantic_keys),
+              per_call: 12_000,
+              floor: 250_000
+            )
+        ]
+      )
 
     try do
-      contract = TypeSafeSDK.prepare!(
-        compound: TypeSafeSDK.noul("Do the storm events and narratives in this state/day form a coherent compound operational incident rather than unrelated weather reports?"),
-        posture:
-          TypeSafeSDK.choice(
-            "What operational posture best matches the combined impact?",
-            monitor: "Monitor; limited immediate operational consequences",
-            prepare: "Prepare resources for material but contained consequences",
-            respond: "Active response is warranted due to significant impacts",
-            recover: "Primary concern is recovery from already-realized damage"
-          ),
-        severity:
-          TypeSafeSDK.score("How severe is the combined operational impact?", ["minor", "moderate", "major", "extreme"])
-      )
+      contract =
+        TypeSafeSDK.prepare!(
+          compound:
+            TypeSafeSDK.noul(
+              "Do the storm events and narratives in this state/day form a coherent compound operational incident rather than unrelated weather reports?"
+            ),
+          posture:
+            TypeSafeSDK.choice(
+              "What operational posture best matches the combined impact?",
+              monitor: "Monitor; limited immediate operational consequences",
+              prepare: "Prepare resources for material but contained consequences",
+              respond: "Active response is warranted due to significant impacts",
+              recover: "Primary concern is recovery from already-realized damage"
+            ),
+          severity:
+            TypeSafeSDK.score("How severe is the combined operational impact?", [
+              "minor",
+              "moderate",
+              "major",
+              "extreme"
+            ])
+        )
+
       :ok = Plexus.register_contract(run, :storm_compound, contract, version: 1)
 
       counter_id = :storm_subscription_counter
@@ -242,11 +284,23 @@ defmodule Plexus.Examples.AlertSwarm do
 
       Enum.each(grouped, fn {key, rows} ->
         group_id = {:region_day, key}
-        {:ok, _} = Plexus.start_actor(run, module: RegionDay, actor_id: group_id, class: :region_day,
-          init_arg: %{key: key, expected: length(rows), semantic: MapSet.member?(semantic_keys, key), contract: :storm_compound})
+
+        {:ok, _} =
+          Plexus.start_actor(run,
+            module: RegionDay,
+            actor_id: group_id,
+            class: :region_day,
+            init_arg: %{
+              key: key,
+              expected: length(rows),
+              semantic: MapSet.member?(semantic_keys, key),
+              contract: :storm_compound
+            }
+          )
 
         Enum.each(rows, fn record ->
           event_id = {:storm_event, record["EVENT_ID"] || :erlang.unique_integer([:positive])}
+
           {:ok, _} =
             Plexus.start_actor(run,
               module: Event,
@@ -259,6 +313,7 @@ defmodule Plexus.Examples.AlertSwarm do
                 subscriber_counter: counter_id
               }
             )
+
           Plexus.cast({run, event_id}, :subscribe)
         end)
       end)
@@ -271,7 +326,13 @@ defmodule Plexus.Examples.AlertSwarm do
       |> Enum.sort()
       |> Enum.each(&Plexus.publish(run, {:storm_day, &1}, %{year: year}))
 
-      Runtime.await_class_complete!(run, :region_day, length(grouped), opts[:timeout_ms] || 240_000)
+      Runtime.await_class_complete!(
+        run,
+        :region_day,
+        length(grouped),
+        opts[:timeout_ms] || 240_000
+      )
+
       Runtime.await_quiescent!(run, 60_000)
       report(run, year, length(events), actor_event_count, length(grouped), max_semantic)
     after
@@ -286,6 +347,7 @@ defmodule Plexus.Examples.AlertSwarm do
   end
 
   defp event_day(nil), do: nil
+
   defp event_day(value) do
     case Regex.run(~r/^(\d{2}-[A-Z]{3}-\d{2})/i, value) do
       [_, day] -> String.upcase(day)
@@ -300,6 +362,7 @@ defmodule Plexus.Examples.AlertSwarm do
   end
 
   defp numeric(nil), do: 0
+
   defp numeric(value) do
     case Float.parse(to_string(value)) do
       {number, _} -> number
@@ -310,13 +373,16 @@ defmodule Plexus.Examples.AlertSwarm do
   defp maybe_take(stream, 0), do: stream
   defp maybe_take(stream, n), do: Stream.take(stream, n)
 
-  defp active_year!(dir), do: dir |> Path.join("active_year.txt") |> File.read!() |> String.trim() |> String.to_integer()
+  defp active_year!(dir),
+    do:
+      dir |> Path.join("active_year.txt") |> File.read!() |> String.trim() |> String.to_integer()
 
   defp report(run, year, source_event_count, actor_event_count, group_count, semantic_limit) do
     id = Run.run_id(run)
     actual_semantic = Plexus.budget(run).measure.used
 
     IO.puts("\nNOAA Storm Events alert swarm — #{year}")
+
     Metrics.print_table([
       {"source storm-event rows", source_event_count},
       {"storm-event actors", actor_event_count},
@@ -327,13 +393,25 @@ defmodule Plexus.Examples.AlertSwarm do
     ])
 
     IO.puts("\nHighest-impact region/day results:")
+
     Runtime.top_complete(run, :region_day, 12, fn result ->
-      (result[:deaths] || 0) * 1000 + (result[:injuries] || 0) * 100 + :math.log(1.0 + (result[:property_damage_usd] || 0)) + (result[:event_count] || 0)
+      (result[:deaths] || 0) * 1000 + (result[:injuries] || 0) * 100 +
+        :math.log(1.0 + (result[:property_damage_usd] || 0)) + (result[:event_count] || 0)
     end)
     |> Enum.each(fn {_id, attrs} -> IO.inspect(attrs.result) end)
   end
 end
 
-{opts, _, _} = OptionParser.parse(System.argv(),
-  strict: [data_dir: :string, year: :integer, limit_events: :integer, semantic_groups: :integer, token_budget: :integer, timeout_ms: :integer])
+{opts, _, _} =
+  OptionParser.parse(System.argv(),
+    strict: [
+      data_dir: :string,
+      year: :integer,
+      limit_events: :integer,
+      semantic_groups: :integer,
+      token_budget: :integer,
+      timeout_ms: :integer
+    ]
+  )
+
 Plexus.Examples.AlertSwarm.run(opts)

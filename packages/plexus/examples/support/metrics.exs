@@ -9,6 +9,8 @@ defmodule Plexus.Examples.Support.Metrics do
 
   def print_table(rows) do
     rows
-    |> Enum.each(fn {label, value} -> IO.puts(String.pad_trailing(to_string(label), 28) <> to_string(value)) end)
+    |> Enum.each(fn {label, value} ->
+      IO.puts(String.pad_trailing(to_string(label), 28) <> to_string(value))
+    end)
   end
 end

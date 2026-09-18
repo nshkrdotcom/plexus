@@ -29,10 +29,14 @@ defmodule Plexus.Examples.Support.HTTP do
     request = {String.to_charlist(url), normalize_headers(headers)}
 
     case :httpc.request(:get, request, http_opts(), body_format: :binary) do
-      {:ok, {{_, status, _}, _response_headers, response}} when status in 200..299 -> response
+      {:ok, {{_, status, _}, _response_headers, response}} when status in 200..299 ->
+        response
+
       {:ok, {{_, status, _}, _response_headers, response}} ->
         raise "HTTP #{status} for #{url}: #{String.slice(response, 0, 1_000)}"
-      {:error, reason} -> raise "HTTP request failed for #{url}: #{inspect(reason)}"
+
+      {:error, reason} ->
+        raise "HTTP request failed for #{url}: #{inspect(reason)}"
     end
   end
 
@@ -56,7 +60,8 @@ defmodule Plexus.Examples.Support.HTTP do
     path
   end
 
-  def encode_path(value), do: value |> to_string() |> URI.encode_www_form() |> String.replace("+", "%20")
+  def encode_path(value),
+    do: value |> to_string() |> URI.encode_www_form() |> String.replace("+", "%20")
 
   def query(url, params) do
     separator = if String.contains?(url, "?"), do: "&", else: "?"
@@ -72,6 +77,8 @@ defmodule Plexus.Examples.Support.HTTP do
   defp http_opts, do: [autoredirect: true, timeout: 60_000, connect_timeout: 15_000]
 
   defp normalize_headers(headers) do
-    Enum.map(headers, fn {key, value} -> {String.to_charlist(to_string(key)), String.to_charlist(to_string(value))} end)
+    Enum.map(headers, fn {key, value} ->
+      {String.to_charlist(to_string(key)), String.to_charlist(to_string(value))}
+    end)
   end
 end

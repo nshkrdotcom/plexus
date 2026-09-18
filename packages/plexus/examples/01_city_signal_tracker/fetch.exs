@@ -4,14 +4,22 @@ Code.require_file("../support/runtime.exs", __DIR__)
 
 alias Plexus.Examples.Support.{Data, HTTP, Runtime}
 
-{opts, _, _} = OptionParser.parse(System.argv(), strict: [data_dir: :string, limit: :integer, days: :integer])
+{opts, _, _} =
+  OptionParser.parse(System.argv(), strict: [data_dir: :string, limit: :integer, days: :integer])
+
 data_dir = opts[:data_dir] || Runtime.data_dir("nyc-311")
 limit = opts[:limit] || 20_000
 days = opts[:days] || 7
 if limit < 1, do: raise(ArgumentError, "--limit must be at least 1")
 if days < 1, do: raise(ArgumentError, "--days must be at least 1")
 since = Date.add(Date.utc_today(), -days) |> Date.to_iso8601()
-until = DateTime.utc_now() |> DateTime.to_naive() |> NaiveDateTime.truncate(:second) |> NaiveDateTime.to_iso8601()
+
+until =
+  DateTime.utc_now()
+  |> DateTime.to_naive()
+  |> NaiveDateTime.truncate(:second)
+  |> NaiveDateTime.to_iso8601()
+
 path = Path.join(data_dir, "requests.jsonl")
 File.mkdir_p!(data_dir)
 
@@ -32,7 +40,8 @@ rows =
     take = min(page_size, remaining)
 
     params = %{
-      "$select" => "unique_key,created_date,agency,complaint_type,descriptor,location_type,borough,latitude,longitude,status",
+      "$select" =>
+        "unique_key,created_date,agency,complaint_type,descriptor,location_type,borough,latitude,longitude,status",
       "$where" =>
         "created_date >= '#{since}T00:00:00.000' AND created_date <= '#{until}' AND latitude IS NOT NULL AND longitude IS NOT NULL",
       "$order" => "created_date DESC, unique_key DESC",

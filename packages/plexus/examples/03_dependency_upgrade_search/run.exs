@@ -3,7 +3,6 @@ Code.require_file("../support/metrics.exs", __DIR__)
 
 alias Plexus.Examples.Support.{Metrics, Runtime}
 
-
 defmodule Plexus.Examples.DependencyUpgrade.Dependency do
   use Plexus.Actor
 
@@ -93,7 +92,6 @@ defmodule Plexus.Examples.DependencyUpgrade.Dependency do
   def handle_evaluation(_, _, state), do: {:noreply, state}
 end
 
-
 defmodule Plexus.Examples.DependencyUpgrade.Plan do
   use Plexus.Actor
 
@@ -130,7 +128,6 @@ defmodule Plexus.Examples.DependencyUpgrade.Plan do
   @impl true
   def handle_evaluation(_, _, state), do: {:noreply, state}
 end
-
 
 defmodule Plexus.Examples.DependencyUpgrade do
   alias Plexus.Examples.DependencyUpgrade.{Dependency, Plan}

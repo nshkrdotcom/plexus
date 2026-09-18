@@ -4,7 +4,6 @@ Code.require_file("../support/metrics.exs", __DIR__)
 
 alias Plexus.Examples.Support.{Data, Metrics, Runtime}
 
-
 defmodule Plexus.Examples.IssueSwarm.Bucket do
   use Plexus.Actor
 
@@ -50,7 +49,6 @@ defmodule Plexus.Examples.IssueSwarm.Bucket do
   @impl true
   def handle_evaluation(_, _, state), do: {:noreply, state}
 end
-
 
 defmodule Plexus.Examples.IssueSwarm.Issue do
   use Plexus.Actor
@@ -113,7 +111,6 @@ defmodule Plexus.Examples.IssueSwarm.Issue do
   def handle_evaluation(_, _, state), do: {:noreply, state}
 end
 
-
 defmodule Plexus.Examples.IssueSwarm do
   alias Plexus.Examples.IssueSwarm.{Bucket, Issue}
   alias Plexus.Examples.Support.{Data, Metrics, Runtime}
@@ -139,6 +136,7 @@ defmodule Plexus.Examples.IssueSwarm do
         |> Map.drop(["patch", "test_patch", "eval_script", "FAIL_TO_PASS", "PASS_TO_PASS"])
         |> Map.put("_actual_fix_shape", actual)
       end)
+
     repos = annotated |> Enum.map(& &1["repo"]) |> Enum.uniq()
     population_limit = length(annotated) + length(repos) * length(@fix_shapes) + 100
 
@@ -268,12 +266,33 @@ defmodule Plexus.Examples.IssueSwarm do
     basename = Path.basename(down)
 
     cond do
-      Regex.match?(~r/(^|\/)(test|tests|spec|specs)(\/|$)/, down) -> :tests
-      String.ends_with?(down, ".md") or String.starts_with?(down, "docs/") -> :documentation
-      String.starts_with?(down, ".github/") -> :configuration_build
-      basename in ["mix.exs", "mix.lock", "pyproject.toml", "setup.py", "setup.cfg", "package.json", "package-lock.json", "tox.ini", "dockerfile"] -> :configuration_build
-      String.ends_with?(down, [".yml", ".yaml", ".toml", ".ini", ".cfg"]) -> :configuration_build
-      true -> :source_code
+      Regex.match?(~r/(^|\/)(test|tests|spec|specs)(\/|$)/, down) ->
+        :tests
+
+      String.ends_with?(down, ".md") or String.starts_with?(down, "docs/") ->
+        :documentation
+
+      String.starts_with?(down, ".github/") ->
+        :configuration_build
+
+      basename in [
+        "mix.exs",
+        "mix.lock",
+        "pyproject.toml",
+        "setup.py",
+        "setup.cfg",
+        "package.json",
+        "package-lock.json",
+        "tox.ini",
+        "dockerfile"
+      ] ->
+        :configuration_build
+
+      String.ends_with?(down, [".yml", ".yaml", ".toml", ".ini", ".cfg"]) ->
+        :configuration_build
+
+      true ->
+        :source_code
     end
   end
 

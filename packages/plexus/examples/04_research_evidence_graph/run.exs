@@ -4,14 +4,20 @@ Code.require_file("../support/metrics.exs", __DIR__)
 
 alias Plexus.Examples.Support.{Data, Metrics, Runtime}
 
-
 defmodule Plexus.Examples.ResearchGraph.Claim do
   use Plexus.Actor
   alias Plexus.Actor
 
   @impl true
   def init(args) do
-    {:ok, %{context: Actor.context(args), claim: args.claim, expected: args.expected, received: 0, predictions: []}}
+    {:ok,
+     %{
+       context: Actor.context(args),
+       claim: args.claim,
+       expected: args.expected,
+       received: 0,
+       predictions: []
+     }}
   end
 
   @impl true
@@ -20,7 +26,12 @@ defmodule Plexus.Examples.ResearchGraph.Claim do
 
     if next.received == next.expected do
       counts = next.predictions |> Enum.map(& &1.predicted) |> Enum.frequencies()
-      Actor.dispatch(next.context, {:complete, %{claim_id: state.claim["id"], claim: state.claim["claim"], relation_counts: counts}})
+
+      Actor.dispatch(
+        next.context,
+        {:complete,
+         %{claim_id: state.claim["id"], claim: state.claim["claim"], relation_counts: counts}}
+      )
     end
 
     {:noreply, next}
@@ -29,7 +40,6 @@ defmodule Plexus.Examples.ResearchGraph.Claim do
   @impl true
   def handle_evaluation(_, _, state), do: {:noreply, state}
 end
-
 
 defmodule Plexus.Examples.ResearchGraph.EvidencePair do
   use Plexus.Actor
@@ -66,6 +76,7 @@ defmodule Plexus.Examples.ResearchGraph.EvidencePair do
     strength = Plexus.Belief.from(response, :strength)
     predicted = relation.value
     edge = edge_type(predicted)
+
     result = %{
       claim_id: state.claim_id,
       document_id: state.document["doc_id"],
@@ -77,7 +88,8 @@ defmodule Plexus.Examples.ResearchGraph.EvidencePair do
 
     Actor.dispatch(state.context, [
       {:belief, relation},
-      {:edge, edge, state.context.actor_id, state.claim_actor, 1.0, %{strength: strength.value, dataset: :scifact}},
+      {:edge, edge, state.context.actor_id, state.claim_actor, 1.0,
+       %{strength: strength.value, dataset: :scifact}},
       {:send, state.claim_actor, {:evidence_result, result}},
       {:complete, result}
     ])
@@ -86,8 +98,18 @@ defmodule Plexus.Examples.ResearchGraph.EvidencePair do
   end
 
   def handle_cast({:plexus, :measurement, :evidence_relation, {:error, error}}, state) do
-    result = %{claim_id: state.claim_id, document_id: state.document["doc_id"], gold: state.gold, error: inspect(error)}
-    Actor.dispatch(state.context, [{:send, state.claim_actor, {:evidence_result, Map.put(result, :predicted, :error)}}, {:complete, result}])
+    result = %{
+      claim_id: state.claim_id,
+      document_id: state.document["doc_id"],
+      gold: state.gold,
+      error: inspect(error)
+    }
+
+    Actor.dispatch(state.context, [
+      {:send, state.claim_actor, {:evidence_result, Map.put(result, :predicted, :error)}},
+      {:complete, result}
+    ])
+
     {:noreply, state}
   end
 
@@ -98,7 +120,6 @@ defmodule Plexus.Examples.ResearchGraph.EvidencePair do
   defp edge_type(:contradict), do: :contradicts
   defp edge_type(_), do: :insufficient_evidence
 end
-
 
 defmodule Plexus.Examples.ResearchGraph do
   alias Plexus.Examples.ResearchGraph.{Claim, EvidencePair}
@@ -120,52 +141,80 @@ defmodule Plexus.Examples.ResearchGraph do
       |> Map.new(&{&1["doc_id"], &1})
 
     pairs = Enum.flat_map(claims, &pairs_for_claim(&1, corpus))
-    run = Runtime.start_run!(
-      max_population: length(claims) + length(pairs) + 100,
-      budgets: [
-        measure: length(pairs),
-        population: length(claims) + length(pairs) + 100,
-        tokens: Runtime.token_budget(opts, length(pairs), per_call: 12_000, floor: 500_000)
-      ]
-    )
+
+    run =
+      Runtime.start_run!(
+        max_population: length(claims) + length(pairs) + 100,
+        budgets: [
+          measure: length(pairs),
+          population: length(claims) + length(pairs) + 100,
+          tokens: Runtime.token_budget(opts, length(pairs), per_call: 12_000, floor: 500_000)
+        ]
+      )
 
     try do
-      prepared = TypeSafeSDK.prepare!(
-        relation:
-          TypeSafeSDK.choice(
-            "What relation does the supplied scientific abstract have to the claim?",
-            support: "The abstract provides evidence supporting the claim",
-            contradict: "The abstract provides evidence contradicting the claim",
-            not_enough_info: "The abstract does not provide enough evidence either way"
-          ),
-        strength:
-          TypeSafeSDK.score(
-            "How directly does this abstract bear on the claim?",
-            ["incidental", "weak", "moderate", "direct"]
-          )
-      )
+      prepared =
+        TypeSafeSDK.prepare!(
+          relation:
+            TypeSafeSDK.choice(
+              "What relation does the supplied scientific abstract have to the claim?",
+              support: "The abstract provides evidence supporting the claim",
+              contradict: "The abstract provides evidence contradicting the claim",
+              not_enough_info: "The abstract does not provide enough evidence either way"
+            ),
+          strength:
+            TypeSafeSDK.score(
+              "How directly does this abstract bear on the claim?",
+              ["incidental", "weak", "moderate", "direct"]
+            )
+        )
+
       :ok = Plexus.register_contract(run, :scifact_relation, prepared, version: 1)
 
       Enum.each(claims, fn claim ->
         claim_pairs = Enum.filter(pairs, &(&1.claim_id == claim["id"]))
         claim_id = {:claim, claim["id"]}
-        {:ok, _} = Plexus.start_actor(run, module: Claim, actor_id: claim_id, class: :claim,
-          init_arg: %{claim: claim, expected: max(length(claim_pairs), 1)})
+
+        {:ok, _} =
+          Plexus.start_actor(run,
+            module: Claim,
+            actor_id: claim_id,
+            class: :claim,
+            init_arg: %{claim: claim, expected: max(length(claim_pairs), 1)}
+          )
 
         Enum.each(claim_pairs, fn pair ->
           pair_id = {:evidence, claim["id"], pair.document["doc_id"]}
-          {:ok, _} = Plexus.start_actor(run, module: EvidencePair, actor_id: pair_id, class: :evidence_pair,
-            init_arg: %{
-              claim_id: claim["id"], claim_actor: claim_id, claim_text: claim["claim"],
-              document: pair.document, gold: pair.gold, contract: :scifact_relation
-            })
+
+          {:ok, _} =
+            Plexus.start_actor(run,
+              module: EvidencePair,
+              actor_id: pair_id,
+              class: :evidence_pair,
+              init_arg: %{
+                claim_id: claim["id"],
+                claim_actor: claim_id,
+                claim_text: claim["claim"],
+                document: pair.document,
+                gold: pair.gold,
+                contract: :scifact_relation
+              }
+            )
+
           Plexus.cast({run, pair_id}, :evaluate)
         end)
 
-        if claim_pairs == [], do: Plexus.cast({run, claim_id}, {:evidence_result, %{predicted: :not_enough_info}})
+        if claim_pairs == [],
+          do: Plexus.cast({run, claim_id}, {:evidence_result, %{predicted: :not_enough_info}})
       end)
 
-      Runtime.await_class_complete!(run, :evidence_pair, length(pairs), opts[:timeout_ms] || 240_000)
+      Runtime.await_class_complete!(
+        run,
+        :evidence_pair,
+        length(pairs),
+        opts[:timeout_ms] || 240_000
+      )
+
       Runtime.await_class_complete!(run, :claim, length(claims), 30_000)
       Runtime.await_quiescent!(run, 30_000)
       report(run, claims, pairs)
@@ -180,8 +229,17 @@ defmodule Plexus.Examples.ResearchGraph do
     (claim["cited_doc_ids"] || [])
     |> Enum.flat_map(fn doc_id ->
       case Map.get(corpus, doc_id) do
-        nil -> []
-        document -> [%{claim_id: claim["id"], document: document, gold: Map.get(gold, to_string(doc_id), :not_enough_info)}]
+        nil ->
+          []
+
+        document ->
+          [
+            %{
+              claim_id: claim["id"],
+              document: document,
+              gold: Map.get(gold, to_string(doc_id), :not_enough_info)
+            }
+          ]
       end
     end)
   end
@@ -208,22 +266,31 @@ defmodule Plexus.Examples.ResearchGraph do
 
   defp report(run, claims, pairs) do
     id = Run.run_id(run)
+
     results =
       Graph.by_class(id, :evidence_pair)
-      |> Enum.flat_map(fn {_id, attrs} -> if is_map(attrs[:result]), do: [attrs.result], else: [] end)
+      |> Enum.flat_map(fn {_id, attrs} ->
+        if is_map(attrs[:result]), do: [attrs.result], else: []
+      end)
+
     correct = Enum.count(results, & &1[:correct])
 
     IO.puts("\nSciFact research evidence graph")
+
     Metrics.print_table([
       {"claims", length(claims)},
       {"claim/document pairs", length(pairs)},
       {"semantic measurements", Plexus.budget(run).measure.used},
-      {"pair relation accuracy", :io_lib.format("~.1f%", [Metrics.pct(correct, length(results))]) |> IO.iodata_to_binary()},
+      {"pair relation accuracy",
+       :io_lib.format("~.1f%", [Metrics.pct(correct, length(results))]) |> IO.iodata_to_binary()},
       {"typed graph nodes", Graph.count(id)}
     ])
 
     IO.puts("\nExample completed claim graphs:")
-    Graph.by_class(id, :claim) |> Enum.take(8) |> Enum.each(fn {_id, attrs} -> IO.inspect(attrs.result) end)
+
+    Graph.by_class(id, :claim)
+    |> Enum.take(8)
+    |> Enum.each(fn {_id, attrs} -> IO.inspect(attrs.result) end)
   end
 
   defp locate_root!(data_dir) do
@@ -233,5 +300,9 @@ defmodule Plexus.Examples.ResearchGraph do
   end
 end
 
-{opts, _, _} = OptionParser.parse(System.argv(), strict: [data_dir: :string, claims: :integer, token_budget: :integer, timeout_ms: :integer])
+{opts, _, _} =
+  OptionParser.parse(System.argv(),
+    strict: [data_dir: :string, claims: :integer, token_budget: :integer, timeout_ms: :integer]
+  )
+
 Plexus.Examples.ResearchGraph.run(opts)
