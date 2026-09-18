@@ -83,7 +83,15 @@ defmodule Plexus.Examples.CitySignal.Cluster do
   defp bump(map, nil), do: map
   defp bump(map, ""), do: map
   defp bump(map, key), do: Map.update(map, key, 1, &(&1 + 1))
-  defp top(map, n), do: map |> Enum.sort_by(fn {_k, v} -> -v end) |> Enum.take(n)
+
+  defp top(map, n) do
+    map
+    |> Enum.sort_by(fn {_key, count} -> -count end)
+    |> Enum.take(n)
+    |> Enum.map(fn {label, count} ->
+      %{label: label, count: count}
+    end)
+  end
 end
 
 defmodule Plexus.Examples.CitySignal.Report do
@@ -155,7 +163,7 @@ defmodule Plexus.Examples.CitySignal do
         budgets: [
           measure: max_clusters,
           population: selected_count + max_clusters + 100,
-          tokens: Runtime.token_budget(opts, length(grouped), per_call: 6_000, floor: 250_000)
+          tokens: Runtime.token_budget(opts, map_size(grouped), per_call: 6_000, floor: 250_000)
         ]
       )
 
@@ -212,7 +220,13 @@ defmodule Plexus.Examples.CitySignal do
         end)
       end)
 
-      Runtime.await_class_complete!(run, :cluster, length(grouped), opts[:timeout_ms] || 180_000)
+      Runtime.await_class_complete!(
+        run,
+        :cluster,
+        map_size(grouped),
+        opts[:timeout_ms] || 180_000
+      )
+
       Runtime.await_quiescent!(run, 30_000)
       report(run, source_count, selected_count)
     after
