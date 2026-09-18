@@ -6,6 +6,7 @@ defmodule Plexus.Belief do
   transform and never rewrites the raw value.
   """
 
+  alias Plexus.Belief.Calibration
   alias TypeSafeSDK.{ChoiceAnswer, NoulAnswer, Response, ScoreAnswer}
 
   @enforce_keys [:kind, :raw]
@@ -101,7 +102,7 @@ defmodule Plexus.Belief do
 
   defp calibr(_p, nil), do: nil
   defp calibr(p, fun) when is_function(fun, 1), do: fun.(p)
-  defp calibr(p, model), do: Plexus.Belief.Calibration.apply(model, p)
+  defp calibr(p, model), do: Calibration.apply(model, p)
 
   defp shannon(probabilities) do
     Enum.reduce(probabilities, 0.0, fn

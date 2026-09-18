@@ -7,7 +7,8 @@ defmodule Plexus.Run do
   supervisors, and graph/cache/record operations go directly to per-run ETS.
   """
 
-  alias Plexus.{Budget, Graph, Record, Registry, Telemetry}
+  alias Plexus.{Budget, Graph, Measure, Record, Registry, Telemetry}
+  alias Plexus.Expand.Queue, as: ExpandQueue
   alias Plexus.Run.{Config, Names}
   alias Plexus.Schedule.Quiescence
 
@@ -101,26 +102,35 @@ defmodule Plexus.Run do
 
     with {:ok, pid} <- Registry.lookup(run_id, actor_id) do
       supervisor = actor_partition(config, actor_id)
+      terminate_actor_child(supervisor, pid, config, run_id, actor_id)
+    end
+  end
 
-      case DynamicSupervisor.terminate_child(supervisor, pid) do
-        :ok ->
-          was_active? =
-            case Graph.get(run_id, actor_id) do
-              %{status: :complete} -> false
-              _ -> true
-            end
+  defp terminate_actor_child(supervisor, pid, config, run_id, actor_id) do
+    case DynamicSupervisor.terminate_child(supervisor, pid) do
+      :ok ->
+        unregister_actor(config, run_id, actor_id)
 
-          :ets.match_delete(config.tables.waiters, {:_, actor_id})
-          Graph.delete_node(run_id, actor_id)
-          Budget.refund(config.budget, :population, 1)
-          if was_active?, do: safe_counter_add(config.quiescence, :actors, -1)
-          Record.append(run_id, :actor_death, %{actor_id: actor_id})
-          Telemetry.emit(run_id, [:actor, :stop], %{}, %{actor_id: actor_id})
-          :ok
+      {:error, :not_found} = error ->
+        error
+    end
+  end
 
-        {:error, :not_found} = error ->
-          error
-      end
+  defp unregister_actor(config, run_id, actor_id) do
+    was_active? = actor_active?(run_id, actor_id)
+    :ets.match_delete(config.tables.waiters, {:_, actor_id})
+    Graph.delete_node(run_id, actor_id)
+    Budget.refund(config.budget, :population, 1)
+    if was_active?, do: safe_counter_add(config.quiescence, :actors, -1)
+    Record.append(run_id, :actor_death, %{actor_id: actor_id})
+    Telemetry.emit(run_id, [:actor, :stop], %{}, %{actor_id: actor_id})
+    :ok
+  end
+
+  defp actor_active?(run_id, actor_id) do
+    case Graph.get(run_id, actor_id) do
+      %{status: :complete} -> false
+      _ -> true
     end
   end
 
@@ -131,8 +141,8 @@ defmodule Plexus.Run do
     ids = Graph.subtree(run_id, actor_id)
 
     Enum.each(ids, fn id ->
-      Plexus.Measure.cancel_actor(run_id, id)
-      Plexus.Expand.Queue.cancel_actor(run_id, id)
+      Measure.cancel_actor(run_id, id)
+      ExpandQueue.cancel_actor(run_id, id)
     end)
 
     ids

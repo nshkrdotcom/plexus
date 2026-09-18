@@ -11,7 +11,7 @@ defmodule Plexus.Budget do
 
   @type meter :: :measure | :expand | :tokens | :population
   @type limits :: %{optional(meter()) => non_neg_integer() | :infinity}
-  @type t :: %{atomics: reference(), limits: limits()}
+  @type t :: %{atomics: :atomics.atomics_ref(), limits: limits()}
 
   @spec new(keyword() | map()) :: t()
   def new(opts \\ []) do

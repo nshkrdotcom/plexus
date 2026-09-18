@@ -7,14 +7,14 @@ Plexus is a thin coordination kernel over TypeSafeSDK, not a replacement semanti
 Only three resources are global:
 
 - a partitioned `Registry`
-- `Plexus.Run.Directory`, a tiny ETS directory from `run_id` to the run's config table
+- `Run.Directory`, a tiny ETS directory from `run_id` to the run's config table
 - the `DynamicSupervisor` that owns run supervisors
 
 There is no global graph GenServer and no run GenServer on the actor-birth hot path.
 
 ## Per-run resource island
 
-Each `Plexus.Run.Supervisor` owns:
+Each `Run.Supervisor` owns:
 
 - `Run.Owner`, which owns all per-run ETS tables and lock-free counters
 - a task supervisor for measurement-batch wrappers

@@ -2,6 +2,7 @@ defmodule Plexus.Schedule.Server do
   @moduledoc false
   use GenServer
 
+  alias Plexus.Actor.Interpreter
   alias Plexus.{Record, Run, Schedule}
   alias Plexus.Run.{Config, Names}
   alias Plexus.Schedule.Quiescence
@@ -37,7 +38,7 @@ defmodule Plexus.Schedule.Server do
     # bounded-async currently preserves the central policy seam while executing
     # effects promptly; measurement/expansion concurrency remains bounded by
     # their dedicated queues.
-    Plexus.Actor.Interpreter.execute_now(state.run_id, envelope)
+    Interpreter.execute_now(state.run_id, envelope)
     {:noreply, state}
   end
 
@@ -54,7 +55,7 @@ defmodule Plexus.Schedule.Server do
   def handle_info(:drain_one, %{queued: []} = state), do: {:noreply, state}
 
   def handle_info(:drain_one, %{queued: [next | rest]} = state) do
-    Plexus.Actor.Interpreter.execute_now(state.run_id, next)
+    Interpreter.execute_now(state.run_id, next)
     if rest != [], do: send(self(), :drain_one)
     {:noreply, %{state | queued: rest}}
   end
@@ -62,7 +63,7 @@ defmodule Plexus.Schedule.Server do
   @impl true
   def handle_call(:barrier, _from, state) do
     queued = Enum.reverse(state.queued)
-    Enum.each(queued, &Plexus.Actor.Interpreter.execute_now(state.run_id, &1))
+    Enum.each(queued, &Interpreter.execute_now(state.run_id, &1))
     round = state.round + 1
     Record.append(state.run_id, :barrier, %{round: round, released: length(queued)})
     {:reply, {:ok, round, length(queued)}, %{state | round: round, queued: []}}
@@ -71,7 +72,7 @@ defmodule Plexus.Schedule.Server do
   def handle_call({:set_regime, regime}, _from, %{regime: {:bsp, _}, queued: queued} = state) do
     if queued != [] and not match?({:bsp, _}, regime) do
       released = Enum.reverse(queued)
-      Enum.each(released, &Plexus.Actor.Interpreter.execute_now(state.run_id, &1))
+      Enum.each(released, &Interpreter.execute_now(state.run_id, &1))
       round = state.round + 1
 
       Record.append(state.run_id, :barrier, %{

@@ -6,22 +6,24 @@ defmodule Plexus.Schedule.Quiescence do
   @counters [:actors, :messages, :measurements, :expansions, :timers]
   @index @counters |> Enum.with_index(1) |> Map.new()
 
-  @spec new() :: reference()
+  @type t :: :counters.counters_ref()
+
+  @spec new() :: t()
   def new, do: :counters.new(length(@counters), [:write_concurrency])
 
-  @spec add(reference(), atom(), integer()) :: :ok
+  @spec add(t(), atom(), integer()) :: :ok
   def add(ref, counter, delta) when is_integer(delta) do
     :counters.add(ref, Map.fetch!(@index, counter), delta)
     :ok
   end
 
-  @spec get(reference(), atom()) :: integer()
+  @spec get(t(), atom()) :: integer()
   def get(ref, counter), do: :counters.get(ref, Map.fetch!(@index, counter))
 
-  @spec snapshot(reference()) :: map()
+  @spec snapshot(t()) :: map()
   def snapshot(ref), do: Map.new(@counters, &{&1, get(ref, &1)})
 
-  @spec quiescent?(reference()) :: boolean()
+  @spec quiescent?(t()) :: boolean()
   def quiescent?(ref) do
     snapshot(ref)
     |> Map.values()

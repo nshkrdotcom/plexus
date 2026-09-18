@@ -26,7 +26,7 @@ defmodule Plexus.MixProject do
     [
       preferred_envs: [
         docs: :docs,
-        "hex.publish": :prod,
+        "hex.publish": :docs,
         quality: :test
       ]
     ]

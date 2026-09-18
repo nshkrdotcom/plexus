@@ -5,10 +5,13 @@ defmodule Plexus.Actor.Interpreter do
   Cross-cutting policy belongs here instead of in strategy modules.
   """
 
-  alias Plexus.{Budget, Event, Graph, Record, Run, Schedule}
+  alias Plexus.Actor.Command
+  alias Plexus.{Budget, Event, Graph, Measure, Record, Run, Schedule}
+  alias Plexus.Expand.Queue, as: ExpandQueue
   alias Plexus.Run.Config
+  alias Plexus.Schedule.Quiescence
 
-  @spec dispatch(map(), [Plexus.Actor.Command.t()] | Plexus.Actor.Command.t()) :: :ok
+  @spec dispatch(map(), [Command.t()] | Command.t()) :: :ok
   def dispatch(context, commands) do
     context = normalize_context(context)
     Schedule.dispatch(context.run_id, %{context: context, commands: List.wrap(commands)})
@@ -57,7 +60,7 @@ defmodule Plexus.Actor.Interpreter do
 
     case Budget.reserve(config.budget, :measure, 1) do
       :ok ->
-        Plexus.Measure.submit(run_id, context, tag, state, contract, opts)
+        Measure.submit(run_id, context, tag, state, contract, opts)
 
       {:error, :budget_exhausted} ->
         deliver_measure(run_id, context.actor_id, tag, {:error, {:budget_exhausted, :measure}})
@@ -69,8 +72,8 @@ defmodule Plexus.Actor.Interpreter do
 
     case Budget.reserve(config.budget, :expand, 1) do
       :ok ->
-        Plexus.Schedule.Quiescence.add(config.quiescence, :expansions, 1)
-        Plexus.Expand.Queue.submit(run_id, context, tag, spec, opts)
+        Quiescence.add(config.quiescence, :expansions, 1)
+        ExpandQueue.submit(run_id, context, tag, spec, opts)
 
       {:error, :budget_exhausted} ->
         deliver_expand(run_id, context.actor_id, tag, {:error, {:budget_exhausted, :expand}})
@@ -105,7 +108,7 @@ defmodule Plexus.Actor.Interpreter do
 
   defp execute(run_id, context, {:sleep, timeout}) when is_integer(timeout) and timeout >= 0 do
     config = Config.fetch!(run_id)
-    Plexus.Schedule.Quiescence.add(config.quiescence, :timers, 1)
+    Quiescence.add(config.quiescence, :timers, 1)
     Process.send_after(config.schedule_server, {:wake_actor, context.actor_id}, timeout)
     :ok
   end
@@ -133,8 +136,8 @@ defmodule Plexus.Actor.Interpreter do
         end)
 
         config = Config.fetch!(run_id)
-        current = Plexus.Schedule.Quiescence.get(config.quiescence, :actors)
-        if current > 0, do: Plexus.Schedule.Quiescence.add(config.quiescence, :actors, -1)
+        current = Quiescence.get(config.quiescence, :actors)
+        if current > 0, do: Quiescence.add(config.quiescence, :actors, -1)
 
         Record.append(run_id, :actor_complete, %{
           actor_id: context.actor_id,

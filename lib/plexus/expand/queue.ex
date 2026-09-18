@@ -5,6 +5,7 @@ defmodule Plexus.Expand.Queue do
 
   alias Plexus.{Budget, Record, Run, Telemetry}
   alias Plexus.Run.{Config, Names}
+  alias Plexus.Schedule.Quiescence
 
   def start_link(opts) do
     run_id = Keyword.fetch!(opts, :run_id)
@@ -204,8 +205,8 @@ defmodule Plexus.Expand.Queue do
 
   defp decrement_expansions(run_id, count) do
     config = Config.fetch!(run_id)
-    current = Plexus.Schedule.Quiescence.get(config.quiescence, :expansions)
-    Plexus.Schedule.Quiescence.add(config.quiescence, :expansions, -min(current, count))
+    current = Quiescence.get(config.quiescence, :expansions)
+    Quiescence.add(config.quiescence, :expansions, -min(current, count))
   rescue
     ArgumentError -> :ok
   end
