@@ -51,10 +51,25 @@ Actor-to-framework effects go through one interpreter so Plexus can interpose:
 
 An actor that directly starts children or directly evaluates TypeSafe has explicitly stepped outside those policies.
 
-## Shared bounded concurrency
+## Shared concurrency control
 
-Measurement coalescers launch whole batches under the run's measurement task supervisor; TypeSafeSDK then bounds the evaluations within that batch. Expansion has a completely separate task supervisor and queue.
+Measurement coalescers launch batch-wrapper tasks under the run's measurement task supervisor; TypeSafeSDK controls concurrency among the distinct evaluations in each group. Expansion has a separate task supervisor and queue. Distinct uncached TypeSafeSDK 0.4 inputs remain distinct provider requests.
 
-## Completion and managed activity
+## Completion, resident actors, and managed activity
 
-`{:complete, result}` publishes the result and retires active work while leaving the actor alive for queries. Repeated completion and later termination retire it only once. Use `Plexus.Run.cast/3` and `call/4` to include queued messages in quiescence accounting; callback wrappers release each activity ticket once. Command envelopes and timers also remain counted until execution or cancellation. Raw `send`, direct GenServer calls and direct TypeSafe OTP evaluation are escape hatches outside managed message accounting.
+The default `activity_mode: :work` means an actor counts as active work until `{:complete, result}` or termination retires its lifecycle reference. `{:complete, result}` publishes the result while leaving the process addressable for queries; repeated completion and later termination retire it only once.
+
+`activity_mode: :resident` is for long-lived entities such as system-twin services or hypotheses. A resident actor's mere existence does not keep quiescence false. Its managed messages, command envelopes, timers, measurements, and expansion work still participate in the same accounting. This allows tens of thousands of idle addressable entities without pretending they are completed jobs.
+
+```elixir
+{:ok, pid} =
+  Plexus.Run.start_actor(run,
+    module: MyServiceActor,
+    actor_id: {:service, "checkout"},
+    class: :service,
+    activity_mode: :resident,
+    init_arg: %{service: "checkout"}
+  )
+```
+
+Use `Plexus.Run.cast/3` and `call/4` to include queued messages in quiescence accounting; callback wrappers release each activity ticket once. Raw `send`, direct GenServer calls and direct TypeSafe OTP evaluation are escape hatches outside managed message accounting and should not be used when run settlement depends on quiescence.

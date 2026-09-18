@@ -11,7 +11,7 @@ Plexus is an Elixir runtime for workloads that require large populations of conc
 Instead of each actor firing independent, uncoordinated API calls, Plexus acts as the coordination layer:
 - **Fast actor lifecycle** — Spawn and supervise thousands of concurrent actors across partitioned supervisors without coordinator mailbox bottlenecks.
 - **Typed graph topology** — Maintain parent/child, dependency, and neighbor relationships directly in fast, run-isolated ETS tables.
-- **Request coalescing** — Intercept evaluation requests across actors, automatically deduplicating identical calls and batching them into bounded windows.
+- **Request coalescing** — Intercept evaluation requests across actors, automatically deduplicating identical calls and grouping them into short configurable windows.
 - **Budget & scheduling control** — Enforce atomic token and cost limits, with support for both asynchronous execution and step-by-step barrier synchronization (BSP).
 
 Rather than locking you into rigid agent patterns, Plexus provides composable primitives so you can assemble search trees, belief graphs, particle filters, hypothesis swarms, or recursive map/reduce workflows from the same core runtime.
@@ -39,7 +39,7 @@ Actor local state
                                       └─ TypeSafeSDK.evaluate_many/4
 ```
 
-Independent actors do not need to manage individual HTTP requests or rate limits. Requests sharing a prepared contract and evaluation options are deduplicated and grouped into bounded batches by size or delay window before hitting the measurement backend.
+Independent actors do not need to manage individual HTTP requests or rate limits. Requests sharing a prepared contract and evaluation options are deduplicated and grouped by size or a short configurable delay window before hitting the measurement backend.
 
 ## Core primitives
 
@@ -174,11 +174,11 @@ Direct evaluations via TypeSafe trigger `handle_evaluation(result, tag, state)`.
 
 ## Example applications
 
-The `examples/` directory contains six runnable dataset-backed workloads. `02_incident_commander` is the actor-native reference application; the other five are integration/acceptance workloads and are not presented as evidence that actor execution is inherently better than a centralized async pipeline:
+The `examples/` directory contains six runnable dataset-backed workloads. `02_incident_commander` is the actor-model reference application; the other five are integration/acceptance workloads and are not presented as evidence that actor execution is inherently better than a centralized async pipeline:
 
 - **SWE-bench Verified issue swarm** — Semantic issue routing evaluated against real patch-shape labels.
 - **NYC 311 city signal tracker** — Spatiotemporal incident clustering over service request feeds, where only dense clusters allocate semantic budget.
-- **GAIA incident commander** — Actor-native root-cause investigation: semantic results grow caller/callee hypothesis trees under shared credits and terminate on quiescence, with GAIA fault-injection ground truth.
+- **GAIA living incident commander** — Raw historical telemetry is replayed while persistent service/hypothesis actors are alive. Hypotheses revise repeatedly, message/challenge peers, react to provenance invalidation, spend local branch credit, and can have live subtrees pruned. Fault-injection labels are withheld until post-run scoring.
 - **deps.dev dependency upgrade search** — Resolves dependency trees, evaluates changed-node risk, and runs a pruned beam search over migration order.
 - **SciFact research evidence graph** — Support/contradiction graph evaluated against scientific claims.
 - **NOAA Storm Events alert swarm** — Processes storm event feeds by waking daily worker populations and aggregating state-level impacts.

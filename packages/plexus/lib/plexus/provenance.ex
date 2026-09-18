@@ -1,7 +1,7 @@
 defmodule Plexus.Provenance do
   @moduledoc "Epoch/staleness invalidation over typed `:depends_on` edges."
 
-  alias Plexus.{Graph, Record}
+  alias Plexus.{Graph, Record, Run}
   alias Plexus.Run.Config
 
   @spec depend(term(), term(), term(), term()) :: :ok
@@ -17,22 +17,48 @@ defmodule Plexus.Provenance do
     Graph.add_edge(run_id, :depends_on, derived_id, upstream_id, 1.0, provenance)
   end
 
-  @spec invalidate(term(), term()) :: [term()]
-  def invalidate(run_id, upstream_id) do
-    do_invalidate(run_id, upstream_id, %{}) |> Map.keys()
+  @spec invalidate(term(), term(), keyword()) :: [term()]
+  def invalidate(run_id, upstream_id, opts \\ []) do
+    invalidated = do_invalidate(run_id, upstream_id, %{}) |> Map.keys()
+
+    if Keyword.get(opts, :notify, false) do
+      invalidated
+      |> Enum.reject(&(&1 == upstream_id))
+      |> Enum.each(fn actor_id ->
+        case Graph.get(run_id, actor_id) do
+          %{epoch: epoch} ->
+            _ = Run.cast(run_id, actor_id, {:plexus, :invalidated, upstream_id, epoch})
+
+          _ ->
+            :ok
+        end
+      end)
+    end
+
+    invalidated
   end
 
   @spec repair(term(), term(), non_neg_integer() | nil) :: :ok | {:error, term()}
   def repair(run_id, actor_id, expected_epoch \\ nil) do
     case Graph.get_and_update(run_id, actor_id, &clear_stale(&1, expected_epoch)) do
       {:ok, attrs} ->
-        if is_nil(expected_epoch) or attrs.epoch == expected_epoch,
-          do: :ok,
-          else: {:error, :stale_epoch}
+        if is_nil(expected_epoch) or attrs.epoch == expected_epoch do
+          discard_repair(run_id, actor_id)
+          :ok
+        else
+          {:error, :stale_epoch}
+        end
 
       error ->
         error
     end
+  end
+
+  defp discard_repair(run_id, actor_id) do
+    table = Config.fetch!(run_id).tables.repairs
+    encoded = :erlang.term_to_binary(actor_id)
+    :ets.match_delete(table, {{:_, encoded}, actor_id})
+    :ok
   end
 
   defp clear_stale(attrs, expected_epoch) do

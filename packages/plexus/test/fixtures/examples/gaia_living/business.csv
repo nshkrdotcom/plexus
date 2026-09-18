@@ -1,0 +1,4 @@
+timestamp,service,message
+2021-07-01T00:00:02.000Z,redisservice1,connection timeout
+2021-07-01T00:00:04.000Z,frontend,retry failed
+2021-07-02T00:00:02.000Z,ignored,other day

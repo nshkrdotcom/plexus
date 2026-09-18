@@ -3,6 +3,8 @@ Code.require_file("../../examples/support/typesafe_metrics.exs", __DIR__)
 defmodule Plexus.Examples.TypeSafeMetricsTest do
   use ExUnit.Case, async: false
 
+  import ExUnit.CaptureIO
+
   alias Plexus.Examples.Support.TypeSafeMetrics
 
   setup do
@@ -79,6 +81,35 @@ defmodule Plexus.Examples.TypeSafeMetricsTest do
     refute inspected =~ "authorization"
     refute inspected =~ "api_key"
     refute inspected =~ "semantic state"
+  end
+
+  test "summary prints only a compact request-id sample" do
+    previous = System.get_env("TYPESAFE_METRICS_REQUEST_SAMPLE")
+    System.put_env("TYPESAFE_METRICS_REQUEST_SAMPLE", "4")
+
+    on_exit(fn ->
+      if is_nil(previous),
+        do: System.delete_env("TYPESAFE_METRICS_REQUEST_SAMPLE"),
+        else: System.put_env("TYPESAFE_METRICS_REQUEST_SAMPLE", previous)
+    end)
+
+    for n <- 1..8 do
+      :telemetry.execute(
+        [:typesafe_sdk, :evaluate, :stop],
+        %{input_tokens: 10, output_tokens: 2},
+        %{status: 200, request_id: "req_#{n}", model: "jev-test", retries: 0}
+      )
+    end
+
+    output = capture_io(fn -> TypeSafeMetrics.print_summary() end)
+
+    assert output =~ "request IDs captured           8/8"
+    assert output =~ "request ID sample             4"
+    assert output =~ "req_1"
+    assert output =~ "req_2"
+    assert output =~ "req_7"
+    assert output =~ "req_8"
+    refute output =~ "req_3 status="
   end
 
   test "tracks exceptions without inventing an HTTP response" do

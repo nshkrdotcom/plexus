@@ -1,0 +1,4 @@
+timestamp,trace_id,span_id,parent_id,service_name,status_code,url,message
+2021-07-01T00:00:01.000Z,t1,child-1,parent-1,frontend,500,/checkout,upstream timeout
+2021-07-01T00:00:03.000Z,t1,parent-1,,gateway,500,/api,gateway timeout
+2021-07-02T00:00:01.000Z,t2,other-1,,ignored,500,/ignored,other day

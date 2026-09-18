@@ -1,8 +1,8 @@
 # Plexus example applications
 
-These are dataset-backed workloads for Plexus. **`02_incident_commander` is the actor-native reference application.** The other five currently serve as real-data integration/acceptance workloads; they exercise Plexus and real TypeSafe calls, but they should not be treated as evidence that an actor architecture is superior to an ordinary centralized async pipeline.
+These are dataset-backed workloads for Plexus. **`02_incident_commander` is the actor-model reference application.** The other five currently serve as real-data integration/acceptance workloads; they exercise Plexus and real TypeSafe calls, but they should not be treated as evidence that an actor architecture is superior to an ordinary centralized async pipeline.
 
-The acceptance bar for an actor-native reference is stricter: runtime semantic results must change future population/topology before a global barrier, population size must not be known in advance, finite shared resources must affect local lifecycle decisions, and termination must emerge from quiescence/convergence/budget rather than a coordinator waiting for a fixed count.
+The reference application has a stricter bar: entities persist across many evidence epochs, raw evidence arrives while the computation is running, actors message and invalidate one another directly, semantic results change future topology/lifecycle, branch credit affects local investigation, pruning can cancel live subtrees, and termination emerges from telemetry EOF plus quiescence rather than a coordinator waiting for a fixed count.
 
 All six use recognized external datasets or APIs. Downloaded data is **not** committed to Plexus; fetchers write beneath `.plexus-data/` by default and `.gitignore` protects that directory. Pass `--data-dir` to keep datasets elsewhere.
 
@@ -22,7 +22,7 @@ The examples use real TypeSafe/Jev calls. There is no fixture-mode fallback in `
 | --- | --- | --- | --- |
 | [`00_issue_swarm`](00_issue_swarm/README.md) | SWE-bench Verified | issue actors route into repository/fix-shape populations; gold patches score a fixed prediction vocabulary post hoc | one request per issue |
 | [`01_city_signal_tracker`](01_city_signal_tracker/README.md) | NYC 311 | report actors feed spatiotemporal incident clusters | one request per selected dense cluster |
-| [`02_incident_commander`](02_incident_commander/README.md) | GAIA / MicroSS | **actor-native:** semantic decisions spawn caller/callee hypotheses under shared credits; no depth barrier; quiescence termination | one request per hypothesis actually created |
+| [`02_incident_commander`](02_incident_commander/README.md) | GAIA / MicroSS | **living system twin:** raw chronological telemetry drives persistent services, repeated hypothesis revisions, peer conflict, invalidation, branch credit and live pruning | event-driven; a hypothesis may issue many measurements over its lifetime |
 | [`03_dependency_upgrade_search`](03_dependency_upgrade_search/README.md) | deps.dev v3 | resolved dependency graph diff + semantic risk measurements + pruned migration-order beam search | only changed dependency nodes |
 | [`04_research_evidence_graph`](04_research_evidence_graph/README.md) | SciFact | claim/evidence graph with typed support/contradiction edges and gold labels | one request per claim/document pair |
 | [`05_alert_swarm`](05_alert_swarm/README.md) | NOAA Storm Events | large dormant event population awakened by historical day events | only highest-impact state/day groups |
@@ -38,11 +38,11 @@ TYPESAFE_API_KEY=... mix run examples/00_issue_swarm/run.exs --limit 50
 
 Fetch once, then rerun from the local cache. The run scripts expose workload controls rather than substituting toy datasets for the real source.
 
-## Data and cost discipline
+## Workload scale and provider calls
 
-The examples separate **dataset scale** from **semantic-call scale**. A 10,000-actor run need not make 10,000 model requests. The run summary prints the logical actor population and Plexus measurement budget usage so the relationship is visible.
+Dataset size, live actor population, and semantic-call count are separate quantities. The GAIA reference intentionally allows a long-lived actor to perform many semantic measurements as new evidence arrives; scale is driven by the real event stream rather than by a loop whose only purpose is to manufacture requests.
 
-Before a large run, inspect the example README and choose its call-driving control (`--limit`, `--max-clusters`, `--max-hypotheses`, `--claims`, or `--semantic-groups`). Token ledgers scale with the selected semantic workload rather than using a fixed demo ceiling; every run also accepts `--token-budget N` for an explicit hard limit. TypeSafeSDK 0.4 batches bound concurrency; distinct uncached inputs are still distinct transport requests.
+Before a large run, inspect the example README and choose its call-driving controls. Every run exposes an explicit semantic-work ceiling, and TypeSafe telemetry reports the calls/tokens actually consumed. In TypeSafeSDK 0.4, distinct uncached inputs remain distinct provider requests; coalescing deduplicates identical work and controls concurrency.
 
 ## Runtime-only experiments stay in `experiments/`
 

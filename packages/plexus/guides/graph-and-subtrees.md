@@ -28,4 +28,18 @@ Do not call `Graph.delete_subtree/2` when runtime cancellation is required; that
 
 ## Provenance
 
-Use `Plexus.Provenance.depend/4` for derived → upstream dependency edges. Invalidating an upstream node walks incoming `:depends_on` edges and marks dependent nodes stale.
+Use `Plexus.Provenance.depend/4` for derived → upstream dependency edges. Invalidating an upstream node walks incoming `:depends_on` edges, marks dependent nodes stale, advances their epochs, and queues repair work.
+
+For a live actor graph, opt into managed invalidation delivery:
+
+```elixir
+Plexus.Provenance.invalidate(run_id, upstream_id, notify: true)
+```
+
+Every live dependent receives:
+
+```elixir
+{:plexus, :invalidated, upstream_id, epoch}
+```
+
+The actor can fetch fresh evidence, re-evaluate, then call `Plexus.Provenance.repair/3` with the expected epoch. A newer invalidation causes `{:error, :stale_epoch}` instead of incorrectly clearing the newer stale state. Successful repair also removes that actor's queued repair entry.

@@ -54,7 +54,7 @@ defmodule Plexus.MixProject do
   end
 
   defp description do
-    "BEAM-native semantic actor substrate built on TypeSafeSDK 0.4.0 for bounded fan-out, recursive decisions, and graph-coordinated semantic work."
+    "BEAM-native semantic actor substrate built on TypeSafeSDK 0.4.0 for high-concurrency populations, recursive decisions, and graph-coordinated semantic work."
   end
 
   defp package do
@@ -70,6 +70,7 @@ defmodule Plexus.MixProject do
         ".formatter.exs",
         "CHANGELOG.md",
         "HANDOFF.md",
+        "GAIA_LIVING_TWIN_HANDOFF.md",
         "LICENSE",
         "README.md",
         "assets",
@@ -110,6 +111,7 @@ defmodule Plexus.MixProject do
         {"examples/README.md", [filename: "examples", title: "Examples"]},
         "examples/DATASETS.md",
         "HANDOFF.md",
+        "GAIA_LIVING_TWIN_HANDOFF.md",
         "CHANGELOG.md",
         "LICENSE"
       ],
@@ -117,7 +119,7 @@ defmodule Plexus.MixProject do
         Overview: ["README.md"],
         Guides: Path.wildcard("guides/*.md"),
         Examples: ["examples/README.md", "examples/DATASETS.md"],
-        Project: ["HANDOFF.md", "CHANGELOG.md", "LICENSE"]
+        Project: ["HANDOFF.md", "GAIA_LIVING_TWIN_HANDOFF.md", "CHANGELOG.md", "LICENSE"]
       ],
       groups_for_modules: [
         Core: [

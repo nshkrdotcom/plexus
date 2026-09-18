@@ -14,6 +14,7 @@ defmodule Plexus.ReleaseConsistencyTest do
           "README.md",
           "CHANGELOG.md",
           "HANDOFF.md",
+          "GAIA_LIVING_TWIN_HANDOFF.md",
           "LICENSE",
           "assets/plexus.svg",
           "guides/index.md",
@@ -37,6 +38,7 @@ defmodule Plexus.ReleaseConsistencyTest do
   test "example applications are packaged, ignored safely, and have entrypoints" do
     package_files = Mix.Project.config()[:package][:files]
     assert "examples" in package_files
+    assert "GAIA_LIVING_TWIN_HANDOFF.md" in package_files
 
     gitignore = File.read!(".gitignore")
     assert gitignore =~ "/.plexus-data/"
@@ -59,6 +61,11 @@ defmodule Plexus.ReleaseConsistencyTest do
     end
 
     assert File.exists?("examples/02_incident_commander/application.exs"),
-           "missing actor-native GAIA application module"
+           "missing GAIA living-system application module"
+
+    for path <- ["chronology.exs", "topology.exs", "progress.exs"] do
+      assert File.exists?(Path.join(["examples", "02_incident_commander", path])),
+             "missing GAIA living-system component: #{path}"
+    end
   end
 end

@@ -14,6 +14,17 @@ defmodule Plexus.RuntimeAcceptanceTest.Actor do
   end
 
   @impl true
+  def handle_cast({:hold, owner}, state) do
+    send(owner, {:resident_holding, self()})
+
+    receive do
+      :release_resident -> :ok
+    end
+
+    {:noreply, state}
+  end
+
+  @impl true
   def handle_call(:ping, _from, state), do: {:reply, :pong, state}
 
   @impl true
@@ -64,6 +75,33 @@ defmodule Plexus.RuntimeAcceptanceTest do
     assert :ok = Run.terminate_actor(run, :early)
     assert Quiescence.get(config.quiescence, :actors) == 0
     assert Budget.used(config.budget, :population) == 0
+  end
+
+  test "resident actors stay addressable without preventing idle quiescence" do
+    run = run()
+    {:ok, pid} = birth(run, :resident, activity_mode: :resident)
+    config = Run.config(run)
+
+    assert Process.alive?(pid)
+    assert Graph.get(config.run_id, :resident).activity_mode == :resident
+    assert Quiescence.get(config.quiescence, :actors) == 0
+    assert Quiescence.quiescent?(config.quiescence)
+
+    assert :ok = Run.cast(run, :resident, {:hold, self()})
+    assert_receive {:resident_holding, ^pid}, 500
+    refute Quiescence.quiescent?(config.quiescence)
+
+    send(pid, :release_resident)
+    eventually(fn -> Quiescence.quiescent?(config.quiescence) end)
+  end
+
+  test "actor activity mode rejects unsupported values" do
+    run = run()
+
+    assert {:error, {:invalid_activity_mode, :unknown}} =
+             birth(run, :bad_mode, activity_mode: :unknown)
+
+    assert Graph.get(Run.run_id(run), :bad_mode) == nil
   end
 
   test "actor ids are isolated and births use all configured partitions" do

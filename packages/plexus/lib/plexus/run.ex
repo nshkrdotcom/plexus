@@ -35,7 +35,7 @@ defmodule Plexus.Run do
   @spec stop_run(t(), term()) :: :ok | {:error, :not_found}
   def stop_run(run, reason \\ :normal) do
     run_id = run_id(run)
-    _ = Record.append(run_id, :run_stop_requested, %{reason: bounded_reason(reason)})
+    _ = Record.append(run_id, :run_stop_requested, %{reason: sanitized_reason(reason)})
     _ = Config.update(run_id, &Map.put(&1, :stopping, true))
 
     case GenServer.whereis(Names.run_supervisor(run_id)) do
@@ -68,13 +68,25 @@ defmodule Plexus.Run do
     parent_id = Keyword.get(opts, :parent_id)
     class = Keyword.get(opts, :class, module)
     metadata = Keyword.get(opts, :metadata, %{})
+    activity_mode = Keyword.get(opts, :activity_mode, :work)
     depth = depth(run_id, parent_id)
 
-    with :ok <- ensure_actor_absent(run_id, actor_id),
+    with :ok <- validate_activity_mode(activity_mode),
+         :ok <- ensure_actor_absent(run_id, actor_id),
          :ok <- admit_depth(config.max_depth, depth),
          :ok <- admit_population(config.max_population, run_id),
          :ok <- Budget.reserve(config.budget, :population, 1) do
-      do_start_actor(config, module, actor_id, parent_id, class, metadata, depth, opts)
+      do_start_actor(
+        config,
+        module,
+        actor_id,
+        parent_id,
+        class,
+        metadata,
+        activity_mode,
+        depth,
+        opts
+      )
     end
   end
 
@@ -172,7 +184,13 @@ defmodule Plexus.Run do
     Budget.refund(config.budget, :population, 1)
     Quiescence.retire_actor(config, attrs.lifecycle_ref)
     Record.append(run_id, :actor_death, %{actor_id: actor_id})
-    Telemetry.emit(run_id, [:actor, :stop], %{}, %{actor_id: actor_id})
+
+    Telemetry.emit(run_id, [:actor, :stop], %{}, %{
+      actor_id: actor_id,
+      class: Map.get(attrs, :class),
+      activity_mode: Map.get(attrs, :activity_mode, :work)
+    })
+
     :ok
   end
 
@@ -235,7 +253,17 @@ defmodule Plexus.Run do
   @spec config(t()) :: map()
   def config(run), do: Config.fetch!(run_id(run))
 
-  defp do_start_actor(config, module, actor_id, parent_id, class, metadata, depth, opts) do
+  defp do_start_actor(
+         config,
+         module,
+         actor_id,
+         parent_id,
+         class,
+         metadata,
+         activity_mode,
+         depth,
+         opts
+       ) do
     telemetry_metadata =
       opts
       |> Keyword.get(:evaluation_options, [])
@@ -281,6 +309,7 @@ defmodule Plexus.Run do
       depth: depth,
       metadata: metadata,
       status: :active,
+      activity_mode: activity_mode,
       lifecycle_ref: make_ref(),
       epoch: 0,
       stale: false,
@@ -294,8 +323,11 @@ defmodule Plexus.Run do
     if :ets.insert_new(config.tables.nodes, {actor_id, attrs}) do
       :ets.insert(config.tables.node_classes, {Graph.class_key(attrs.class, actor_id), actor_id})
       if attrs.parent != nil, do: Graph.attach_child(config.run_id, attrs.parent, actor_id)
-      Quiescence.add(config.quiescence, :actors, 1)
-      :ets.insert(config.tables.active_actors, {attrs.lifecycle_ref})
+
+      if attrs.activity_mode == :work do
+        Quiescence.add(config.quiescence, :actors, 1)
+        :ets.insert(config.tables.active_actors, {attrs.lifecycle_ref})
+      end
 
       start_registered_actor(
         config,
@@ -320,13 +352,22 @@ defmodule Plexus.Run do
         Graph.update(config.run_id, actor_id, &Map.put(&1, :pid, pid))
         GenServer.cast(Names.owner(config.run_id), {:monitor_actor, actor_id, pid})
 
+        attrs = Graph.get(config.run_id, actor_id) || %{}
+        activity_mode = Map.get(attrs, :activity_mode, :work)
+
         Record.append(config.run_id, :actor_birth, %{
           actor_id: actor_id,
           parent_id: parent_id,
-          class: class
+          class: class,
+          activity_mode: activity_mode
         })
 
-        Telemetry.emit(config.run_id, [:actor, :start], %{}, %{actor_id: actor_id, class: class})
+        Telemetry.emit(config.run_id, [:actor, :start], %{}, %{
+          actor_id: actor_id,
+          class: class,
+          activity_mode: activity_mode
+        })
+
         {:ok, pid}
 
       other ->
@@ -342,6 +383,9 @@ defmodule Plexus.Run do
   defp actor_partition(config, actor_id) do
     {:via, PartitionSupervisor, {config.actor_supervisors, actor_id}}
   end
+
+  defp validate_activity_mode(mode) when mode in [:work, :resident], do: :ok
+  defp validate_activity_mode(mode), do: {:error, {:invalid_activity_mode, mode}}
 
   defp ensure_actor_absent(run_id, actor_id) do
     case Registry.lookup(run_id, actor_id) do
@@ -376,7 +420,7 @@ defmodule Plexus.Run do
     end
   end
 
-  defp bounded_reason(reason) when reason in [:normal, :shutdown], do: reason
-  defp bounded_reason({:shutdown, _}), do: :shutdown
-  defp bounded_reason(_reason), do: :other
+  defp sanitized_reason(reason) when reason in [:normal, :shutdown], do: reason
+  defp sanitized_reason({:shutdown, _}), do: :shutdown
+  defp sanitized_reason(_reason), do: :other
 end

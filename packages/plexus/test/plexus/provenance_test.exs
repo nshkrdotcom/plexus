@@ -1,3 +1,19 @@
+defmodule Plexus.ProvenanceTest.Probe do
+  use Plexus.Actor
+
+  @impl true
+  def init(args), do: {:ok, args}
+
+  @impl true
+  def handle_cast({:plexus, :invalidated, upstream_id, epoch}, state) do
+    send(state.owner, {:invalidated, state.actor_id, upstream_id, epoch})
+    {:noreply, state}
+  end
+
+  @impl true
+  def handle_evaluation(_, _, state), do: {:noreply, state}
+end
+
 defmodule Plexus.ProvenanceTest do
   use ExUnit.Case, async: true
   alias Plexus.{Graph, Provenance, Run}
@@ -26,5 +42,38 @@ defmodule Plexus.ProvenanceTest do
     assert Graph.get(id, :high).stale
     assert :ok = Provenance.repair(id, :high, Graph.get(id, :high).epoch)
     refute Graph.get(id, :high).stale
+  end
+
+  test "live invalidation notifies resident dependents and repair clears queued work" do
+    client = TypeSafeSDK.Test.client()
+    {:ok, run} = Plexus.start_run(client: client)
+
+    on_exit(fn ->
+      Plexus.stop_run(run)
+      TypeSafeSDK.Test.close(client)
+    end)
+
+    id = Run.run_id(run)
+    Graph.put(id, :source, %{})
+
+    {:ok, _pid} =
+      Run.start_actor(run,
+        module: Plexus.ProvenanceTest.Probe,
+        actor_id: :dependent,
+        activity_mode: :resident,
+        init_arg: %{owner: self(), actor_id: :dependent}
+      )
+
+    :ok = Provenance.depend(id, :dependent, :source, %{kind: :live_evidence})
+    invalidated = Provenance.invalidate(id, :source, notify: true)
+
+    assert :dependent in invalidated
+    assert_receive {:invalidated, :dependent, :source, epoch}, 500
+    assert Graph.get(id, :dependent).stale
+    assert Graph.get(id, :dependent).epoch == epoch
+
+    assert :ok = Provenance.repair(id, :dependent, epoch)
+    refute Graph.get(id, :dependent).stale
+    assert :empty = Provenance.next_repair(id)
   end
 end

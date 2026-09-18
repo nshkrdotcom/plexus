@@ -137,7 +137,10 @@ defmodule Plexus.Examples.Support.TypeSafeMetrics do
           "request IDs captured           #{length(summary.requests)}/#{summary.confirmed_http_responses}"
         )
 
-        Enum.each(summary.requests, fn request ->
+        request_sample = request_sample(summary.requests, request_sample_size())
+        IO.puts("request ID sample             #{length(request_sample)}")
+
+        Enum.each(request_sample, fn request ->
           IO.puts(
             "  #{request.request_id} status=#{request.status} " <>
               "model=#{request.model || "<unknown>"} " <>
@@ -286,6 +289,33 @@ defmodule Plexus.Examples.Support.TypeSafeMetrics do
       |> Enum.take(@max_request_records)
 
     %{state | requests: requests}
+  end
+
+  defp request_sample(_requests, size) when size <= 0, do: []
+
+  defp request_sample(requests, size) do
+    count = length(requests)
+
+    if count <= size do
+      requests
+    else
+      head_count = div(size + 1, 2)
+      tail_count = size - head_count
+      Enum.take(requests, head_count) ++ Enum.take(requests, -tail_count)
+    end
+  end
+
+  defp request_sample_size do
+    case System.get_env("TYPESAFE_METRICS_REQUEST_SAMPLE") do
+      nil ->
+        10
+
+      value ->
+        case Integer.parse(value) do
+          {size, ""} when size >= 0 -> size
+          _ -> 10
+        end
+    end
   end
 
   defp integer(value) when is_integer(value), do: value
