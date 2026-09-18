@@ -73,7 +73,13 @@ defmodule Plexus.Schedule.Server do
       released = Enum.reverse(queued)
       Enum.each(released, &Plexus.Actor.Interpreter.execute_now(state.run_id, &1))
       round = state.round + 1
-      Record.append(state.run_id, :barrier, %{round: round, released: length(released), reason: :regime_change})
+
+      Record.append(state.run_id, :barrier, %{
+        round: round,
+        released: length(released),
+        reason: :regime_change
+      })
+
       {:reply, :ok, %{state | regime: regime, round: round, queued: []}}
     else
       {:reply, :ok, %{state | regime: regime}}

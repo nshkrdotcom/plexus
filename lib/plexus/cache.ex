@@ -11,8 +11,12 @@ defmodule Plexus.Cache do
     now = System.monotonic_time(:millisecond)
 
     case :ets.lookup(config.tables.cache, key) do
-      [{^key, :infinity, value}] -> {:ok, value}
-      [{^key, expires_at, value}] when expires_at > now -> {:ok, value}
+      [{^key, :infinity, value}] ->
+        {:ok, value}
+
+      [{^key, expires_at, value}] when expires_at > now ->
+        {:ok, value}
+
       [{^key, _expires_at, _value}] ->
         :ets.delete(config.tables.cache, key)
         :miss

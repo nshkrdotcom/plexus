@@ -14,11 +14,21 @@ defmodule Plexus.ScheduleTest do
       Test.close(client)
     end)
 
-    context = %{run: run_id, run_id: run_id, actor_id: :root, parent_id: nil, class: :test, metadata: %{}}
+    context = %{
+      run: run_id,
+      run_id: run_id,
+      actor_id: :root,
+      parent_id: nil,
+      class: :test,
+      metadata: %{}
+    }
+
     :ok = Actor.dispatch(context, {:edge, :supports, :root, :candidate, 1.0})
 
     assert Graph.outgoing(run_id, :root, :supports) == []
     assert {:ok, 1, 1} = Plexus.barrier(run)
-    assert [%{node: :candidate}] = Enum.map(Graph.outgoing(run_id, :root, :supports), &Map.take(&1, [:node]))
+
+    assert [%{node: :candidate}] =
+             Enum.map(Graph.outgoing(run_id, :root, :supports), &Map.take(&1, [:node]))
   end
 end

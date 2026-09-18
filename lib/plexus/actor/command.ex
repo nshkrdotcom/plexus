@@ -14,7 +14,8 @@ defmodule Plexus.Actor.Command do
           | {:measure, term(), term(), term(), keyword()}
           | {:expand, term(), term(), keyword()}
           | {:belief, term()}
-          | {:budget, :reserve | :refund, :measure | :expand | :tokens | :population, non_neg_integer()}
+          | {:budget, :reserve | :refund, :measure | :expand | :tokens | :population,
+             non_neg_integer()}
           | {:prune, term()}
           | {:sleep, timeout()}
           | {:wake_on, term()}

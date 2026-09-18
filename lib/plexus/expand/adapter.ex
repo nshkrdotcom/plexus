@@ -9,6 +9,7 @@ defmodule Plexus.Expand.Adapter do
   """
 
   @callback capabilities(client :: term()) :: map()
-  @callback expand(client :: term(), spec :: term(), opts :: keyword()) :: {:ok, term()} | {:error, term()}
+  @callback expand(client :: term(), spec :: term(), opts :: keyword()) ::
+              {:ok, term()} | {:error, term()}
   @optional_callbacks capabilities: 1
 end

@@ -15,7 +15,8 @@ defmodule Plexus.Expand.Materializer do
       class = class_atom(class_name)
 
       spawn =
-        {:spawn, class, module, %{content: content}, actor_id: id, parent_id: parent, metadata: %{proposal: true}}
+        {:spawn, class, module, %{content: content},
+         actor_id: id, parent_id: parent, metadata: %{proposal: true}}
 
       edges =
         proposal

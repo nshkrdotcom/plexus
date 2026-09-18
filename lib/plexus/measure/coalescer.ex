@@ -26,13 +26,20 @@ defmodule Plexus.Measure.Coalescer do
     delay_ms = Keyword.get(batch, :delay_ms, Keyword.get(config.default_batch, :delay_ms, 10))
 
     max_in_flight_batches =
-      Keyword.get(batch, :max_in_flight_batches, Keyword.get(config.default_batch, :max_in_flight_batches, 4))
+      Keyword.get(
+        batch,
+        :max_in_flight_batches,
+        Keyword.get(config.default_batch, :max_in_flight_batches, 4)
+      )
 
     max_concurrency =
       Keyword.get(batch, :max_concurrency, Keyword.get(config.default_batch, :max_concurrency, 8))
 
-    unless is_integer(max_batch) and max_batch > 0, do: raise(ArgumentError, "batch max must be positive")
-    unless is_integer(delay_ms) and delay_ms >= 0, do: raise(ArgumentError, "batch delay_ms must be non-negative")
+    unless is_integer(max_batch) and max_batch > 0,
+      do: raise(ArgumentError, "batch max must be positive")
+
+    unless is_integer(delay_ms) and delay_ms >= 0,
+      do: raise(ArgumentError, "batch delay_ms must be non-negative")
 
     unless is_integer(max_in_flight_batches) and max_in_flight_batches > 0,
       do: raise(ArgumentError, "max_in_flight_batches must be positive")
@@ -71,14 +78,20 @@ defmodule Plexus.Measure.Coalescer do
 
         :error ->
           entry = %{memo_key: memo_key, state: state_input, waiters: [waiter]}
-          {%{state | pending: Map.put(state.pending, memo_key, entry), order: state.order ++ [memo_key]}, false}
+
+          {%{
+             state
+             | pending: Map.put(state.pending, memo_key, entry),
+               order: state.order ++ [memo_key]
+           }, false}
       end
 
     if duplicate?, do: Budget.refund(config.budget, :measure, 1)
 
     state = ensure_timer(state)
 
-    if length(state.order) >= state.max_batch and map_size(state.in_flight) < state.max_in_flight_batches do
+    if length(state.order) >= state.max_batch and
+         map_size(state.in_flight) < state.max_in_flight_batches do
       send(self(), :flush)
     end
 
@@ -121,9 +134,16 @@ defmodule Plexus.Measure.Coalescer do
 
   def handle_info({:DOWN, ref, :process, _pid, reason}, state) do
     case Map.pop(state.in_flight, ref) do
-      {nil, _} -> {:noreply, state}
+      {nil, _} ->
+        {:noreply, state}
+
       {batch, in_flight} ->
-        results = List.duplicate({:error, {:batch_task_exit, sanitize_reason(reason)}}, length(batch.entries))
+        results =
+          List.duplicate(
+            {:error, {:batch_task_exit, sanitize_reason(reason)}},
+            length(batch.entries)
+          )
+
         complete_batch(state.run_id, state.fingerprint, batch.entries, results)
         state = %{state | in_flight: in_flight}
         if state.order != [], do: send(self(), :flush)
@@ -161,7 +181,11 @@ defmodule Plexus.Measure.Coalescer do
           logical_waiters: Enum.sum(Enum.map(entries, &length(&1.waiters)))
         })
 
-        batch = %{entries: entries, cancellation: cancellation, started_at: System.monotonic_time()}
+        batch = %{
+          entries: entries,
+          cancellation: cancellation,
+          started_at: System.monotonic_time()
+        }
 
         state
         |> Map.put(:pending, pending)
@@ -214,7 +238,9 @@ defmodule Plexus.Measure.Coalescer do
       })
     end)
 
-    Telemetry.emit(run_id, [:measure, :batch, :stop], %{items: length(entries)}, %{fingerprint: fingerprint})
+    Telemetry.emit(run_id, [:measure, :batch, :stop], %{items: length(entries)}, %{
+      fingerprint: fingerprint
+    })
   end
 
   defp pad_results(results, size) when is_list(results) do
@@ -233,7 +259,8 @@ defmodule Plexus.Measure.Coalescer do
   end
 
   defp cancel_actor_state(state, actor_id) do
-    {pending, cancelled_pending, pending_refunds} = remove_actor_from_pending(state.pending, actor_id)
+    {pending, cancelled_pending, pending_refunds} =
+      remove_actor_from_pending(state.pending, actor_id)
 
     {in_flight, cancelled_inflight} =
       Enum.map_reduce(state.in_flight, 0, fn {ref, batch}, count ->

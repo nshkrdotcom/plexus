@@ -30,7 +30,12 @@ defmodule Plexus.Examples.EvidenceWorker do
 
   @impl true
   def handle_cast(:analyze, state) do
-    :ok = Actor.dispatch(state.context, {:measure, :evidence, %{text: state.text}, state.prepared, []})
+    :ok =
+      Actor.dispatch(
+        state.context,
+        {:measure, :evidence, %{text: state.text}, state.prepared, []}
+      )
+
     {:noreply, state}
   end
 

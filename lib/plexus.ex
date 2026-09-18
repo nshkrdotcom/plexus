@@ -46,7 +46,8 @@ defmodule Plexus do
   @spec contract(keyword()) :: TypeSafeSDK.Prepared.t()
   defdelegate contract(questions), to: Contract, as: :new!
 
-  @spec register_contract(run_ref(), term(), TypeSafeSDK.Prepared.t() | keyword(), keyword()) :: :ok
+  @spec register_contract(run_ref(), term(), TypeSafeSDK.Prepared.t() | keyword(), keyword()) ::
+          :ok
   def register_contract(run, name, prepared_or_questions, opts \\ []) do
     ContractRegistry.put(Run.run_id(run), name, prepared_or_questions, opts)
   end
@@ -69,6 +70,6 @@ defmodule Plexus do
   def load_replay(run, entries), do: Record.load_replay(Run.run_id(run), entries)
 
   @spec publish(run_ref(), term(), term()) :: non_neg_integer()
-  def publish(run, event, payload \\ nil), do: Plexus.Event.publish(Run.run_id(run), event, payload)
-
+  def publish(run, event, payload \\ nil),
+    do: Plexus.Event.publish(Run.run_id(run), event, payload)
 end

@@ -69,7 +69,10 @@ defmodule Plexus.Expand.Queue do
         deliver(state.run_id, context.actor_id, tag, {:error, :expand_adapter_not_configured})
         {:noreply, state}
 
-      not capabilities_supported?(state.capabilities, Keyword.get(opts, :required_capabilities, [])) ->
+      not capabilities_supported?(
+        state.capabilities,
+        Keyword.get(opts, :required_capabilities, [])
+      ) ->
         refund(state.run_id)
         decrement_expansions(state.run_id, 1)
         deliver(state.run_id, context.actor_id, tag, {:error, :unsupported_expansion_capability})
@@ -77,6 +80,7 @@ defmodule Plexus.Expand.Queue do
 
       true ->
         sequence = state.sequence + 1
+
         item = %{
           sequence: sequence,
           priority: Keyword.get(opts, :priority, 0),
@@ -103,7 +107,9 @@ defmodule Plexus.Expand.Queue do
   @impl true
   def handle_info({ref, result}, state) when is_reference(ref) do
     case Map.pop(state.active, ref) do
-      {nil, _} -> {:noreply, state}
+      {nil, _} ->
+        {:noreply, state}
+
       {entry, active} ->
         Process.demonitor(ref, [:flush])
         finish(state.run_id, entry.item, result)
@@ -113,7 +119,9 @@ defmodule Plexus.Expand.Queue do
 
   def handle_info({:DOWN, ref, :process, _pid, _reason}, state) do
     case Map.pop(state.active, ref) do
-      {nil, _} -> {:noreply, state}
+      {nil, _} ->
+        {:noreply, state}
+
       {entry, active} ->
         finish(state.run_id, entry.item, {:error, :expand_task_exit})
         {:noreply, dispatch(%{state | active: active})}
@@ -161,7 +169,11 @@ defmodule Plexus.Expand.Queue do
         adapter.expand(client, item.spec, item.opts)
       end)
 
-    Record.append(state.run_id, :expansion_start, %{actor_id: item.actor_id, priority: item.priority})
+    Record.append(state.run_id, :expansion_start, %{
+      actor_id: item.actor_id,
+      priority: item.priority
+    })
+
     Telemetry.emit(state.run_id, [:expand, :start], %{}, %{actor_id: item.actor_id})
 
     entry = %{item: item, task: task, started_at: System.monotonic_time()}
@@ -187,7 +199,8 @@ defmodule Plexus.Expand.Queue do
   defp normalize_result({:error, _} = result), do: result
   defp normalize_result(_other), do: {:error, :invalid_expand_adapter_result}
 
-  defp deliver(run_id, actor_id, tag, result), do: Run.cast(run_id, actor_id, {:plexus, :expansion, tag, result})
+  defp deliver(run_id, actor_id, tag, result),
+    do: Run.cast(run_id, actor_id, {:plexus, :expansion, tag, result})
 
   defp decrement_expansions(run_id, count) do
     config = Config.fetch!(run_id)

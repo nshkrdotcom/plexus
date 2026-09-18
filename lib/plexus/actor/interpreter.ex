@@ -33,8 +33,11 @@ defmodule Plexus.Actor.Interpreter do
       |> Keyword.put(:init_arg, init_arg)
 
     case Run.start_actor(run_id, opts) do
-      {:ok, _pid} -> :ok
-      {:error, reason} -> deliver(run_id, context.actor_id, {:plexus, :command_error, {:spawn, actor_id}, reason})
+      {:ok, _pid} ->
+        :ok
+
+      {:error, reason} ->
+        deliver(run_id, context.actor_id, {:plexus, :command_error, {:spawn, actor_id}, reason})
     end
   end
 
@@ -46,14 +49,18 @@ defmodule Plexus.Actor.Interpreter do
     Graph.add_edge(run_id, type, from, to, weight, provenance)
   end
 
-  defp execute(run_id, _context, {:send, actor_id, message}), do: Run.cast(run_id, actor_id, message)
+  defp execute(run_id, _context, {:send, actor_id, message}),
+    do: Run.cast(run_id, actor_id, message)
 
   defp execute(run_id, context, {:measure, tag, state, contract, opts}) do
     config = Config.fetch!(run_id)
 
     case Budget.reserve(config.budget, :measure, 1) do
-      :ok -> Plexus.Measure.submit(run_id, context, tag, state, contract, opts)
-      {:error, :budget_exhausted} -> deliver_measure(run_id, context.actor_id, tag, {:error, {:budget_exhausted, :measure}})
+      :ok ->
+        Plexus.Measure.submit(run_id, context, tag, state, contract, opts)
+
+      {:error, :budget_exhausted} ->
+        deliver_measure(run_id, context.actor_id, tag, {:error, {:budget_exhausted, :measure}})
     end
   end
 
@@ -80,12 +87,18 @@ defmodule Plexus.Actor.Interpreter do
 
     Graph.outgoing(run_id, context.actor_id, :all)
     |> Enum.filter(&(&1.type in [:neighbor, :supports, :contradicts, :implies]))
-    |> Enum.each(fn edge -> deliver(run_id, edge.node, {:plexus, :belief, context.actor_id, belief}) end)
+    |> Enum.each(fn edge ->
+      deliver(run_id, edge.node, {:plexus, :belief, context.actor_id, belief})
+    end)
   end
 
-  defp execute(run_id, _context, {:budget, action, meter, amount}) when action in [:reserve, :refund] do
+  defp execute(run_id, _context, {:budget, action, meter, amount})
+       when action in [:reserve, :refund] do
     budget = Config.fetch!(run_id).budget
-    if action == :reserve, do: Budget.reserve(budget, meter, amount), else: Budget.refund(budget, meter, amount)
+
+    if action == :reserve,
+      do: Budget.reserve(budget, meter, amount),
+      else: Budget.refund(budget, meter, amount)
   end
 
   defp execute(run_id, _context, {:prune, actor_id}), do: Run.prune(run_id, actor_id)
@@ -99,6 +112,7 @@ defmodule Plexus.Actor.Interpreter do
 
   defp execute(run_id, context, {:wake_on, event}) do
     Event.subscribe(run_id, event, context.actor_id)
+
     Record.append(run_id, :wake_subscription, %{
       actor_id: context.actor_id,
       event_kind: if(is_atom(event), do: event, else: :opaque)
@@ -121,7 +135,11 @@ defmodule Plexus.Actor.Interpreter do
         config = Config.fetch!(run_id)
         current = Plexus.Schedule.Quiescence.get(config.quiescence, :actors)
         if current > 0, do: Plexus.Schedule.Quiescence.add(config.quiescence, :actors, -1)
-        Record.append(run_id, :actor_complete, %{actor_id: context.actor_id, has_result: not is_nil(result)})
+
+        Record.append(run_id, :actor_complete, %{
+          actor_id: context.actor_id,
+          has_result: not is_nil(result)
+        })
     end
   end
 
@@ -139,14 +157,18 @@ defmodule Plexus.Actor.Interpreter do
     }
   end
 
-  defp normalize_context(other), do: raise(ArgumentError, "invalid Plexus actor context: #{inspect(other)}")
+  defp normalize_context(other),
+    do: raise(ArgumentError, "invalid Plexus actor context: #{inspect(other)}")
 
   defp auto_actor_id(parent_id, class) do
     {parent_id, class, System.unique_integer([:positive, :monotonic])}
   end
 
-  defp deliver_measure(run_id, actor_id, tag, result), do: deliver(run_id, actor_id, {:plexus, :measurement, tag, result})
-  defp deliver_expand(run_id, actor_id, tag, result), do: deliver(run_id, actor_id, {:plexus, :expansion, tag, result})
+  defp deliver_measure(run_id, actor_id, tag, result),
+    do: deliver(run_id, actor_id, {:plexus, :measurement, tag, result})
+
+  defp deliver_expand(run_id, actor_id, tag, result),
+    do: deliver(run_id, actor_id, {:plexus, :expansion, tag, result})
 
   defp deliver(_run_id, nil, _message), do: :ok
   defp deliver(run_id, actor_id, message), do: Run.cast(run_id, actor_id, message)

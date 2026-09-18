@@ -26,7 +26,16 @@ defmodule Plexus.GraphTest do
 
     assert Enum.sort(Graph.children(run_id, :root)) == [:child_a, :child_b]
     assert Enum.sort(Graph.subtree(run_id, :root)) == [:child_a, :child_b, :root]
-    assert Enum.sort(Enum.map(Plexus.Population.by_class(run_id, :child), &elem(&1, 0))) == [:child_a, :child_b]
-    assert [%{node: :child_b, weight: 0.8}] = Enum.map(Graph.outgoing(run_id, :child_a, :supports), &Map.take(&1, [:node, :weight]))
+
+    assert Enum.sort(Enum.map(Plexus.Population.by_class(run_id, :child), &elem(&1, 0))) == [
+             :child_a,
+             :child_b
+           ]
+
+    assert [%{node: :child_b, weight: 0.8}] =
+             Enum.map(
+               Graph.outgoing(run_id, :child_a, :supports),
+               &Map.take(&1, [:node, :weight])
+             )
   end
 end

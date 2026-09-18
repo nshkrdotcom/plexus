@@ -24,7 +24,12 @@ defmodule Plexus.Telemetry do
   def attach_typesafe(run_id) do
     handler_id = handler_id(run_id)
 
-    case :telemetry.attach_many(handler_id, @typesafe_events, &__MODULE__.handle_typesafe/4, run_id) do
+    case :telemetry.attach_many(
+           handler_id,
+           @typesafe_events,
+           &__MODULE__.handle_typesafe/4,
+           run_id
+         ) do
       :ok -> :ok
       {:error, :already_exists} -> :ok
     end

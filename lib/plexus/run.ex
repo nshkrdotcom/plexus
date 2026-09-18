@@ -41,8 +41,11 @@ defmodule Plexus.Run do
   @spec run_id(t()) :: term()
   def run_id(run) when is_pid(run) do
     case Registry.run_id(run) do
-      {:ok, id} -> id
-      {:error, :not_found} -> raise ArgumentError, "pid is not a Plexus run owner: #{inspect(run)}"
+      {:ok, id} ->
+        id
+
+      {:error, :not_found} ->
+        raise ArgumentError, "pid is not a Plexus run owner: #{inspect(run)}"
     end
   end
 
@@ -106,6 +109,7 @@ defmodule Plexus.Run do
               %{status: :complete} -> false
               _ -> true
             end
+
           :ets.match_delete(config.tables.waiters, {:_, actor_id})
           Graph.delete_node(run_id, actor_id)
           Budget.refund(config.budget, :population, 1)
@@ -185,7 +189,8 @@ defmodule Plexus.Run do
       init_arg: init_arg
     ]
 
-    result = DynamicSupervisor.start_child(actor_partition(config, actor_id), {module, child_opts})
+    result =
+      DynamicSupervisor.start_child(actor_partition(config, actor_id), {module, child_opts})
 
     case result do
       {:ok, pid} ->
@@ -202,7 +207,13 @@ defmodule Plexus.Run do
 
         if parent_id != nil, do: Graph.attach_child(config.run_id, parent_id, actor_id)
         safe_counter_add(config.quiescence, :actors, 1)
-        Record.append(config.run_id, :actor_birth, %{actor_id: actor_id, parent_id: parent_id, class: class})
+
+        Record.append(config.run_id, :actor_birth, %{
+          actor_id: actor_id,
+          parent_id: parent_id,
+          class: class
+        })
+
         Telemetry.emit(config.run_id, [:actor, :start], %{}, %{actor_id: actor_id, class: class})
         {:ok, pid}
 
@@ -232,6 +243,7 @@ defmodule Plexus.Run do
   defp admit_depth(_max, _depth), do: {:error, :max_depth}
 
   defp admit_population(:infinity, _run_id), do: :ok
+
   defp admit_population(max, run_id) when is_integer(max) do
     if Graph.count(run_id) < max, do: :ok, else: {:error, :max_population}
   end
@@ -256,8 +268,8 @@ defmodule Plexus.Run do
     current = Quiescence.get(ref, counter)
     if delta >= 0 or current + delta >= 0, do: Quiescence.add(ref, counter, delta), else: :ok
   end
+
   defp bounded_reason(reason) when reason in [:normal, :shutdown], do: reason
   defp bounded_reason({:shutdown, _}), do: :shutdown
   defp bounded_reason(_reason), do: :other
-
 end

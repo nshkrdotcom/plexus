@@ -23,7 +23,12 @@ defmodule Plexus.Measure do
         case replay_or_cache(run_id, config, memo_key) do
           {:hit, result, source} ->
             Budget.refund(config.budget, :measure, 1)
-            Record.append(run_id, :measurement_reused, %{actor_id: context.actor_id, source: source})
+
+            Record.append(run_id, :measurement_reused, %{
+              actor_id: context.actor_id,
+              source: source
+            })
+
             deliver(run_id, context.actor_id, tag, result)
 
           :miss ->
@@ -43,7 +48,8 @@ defmodule Plexus.Measure do
   def cancel_actor(run_id, actor_id) do
     config = Config.fetch!(run_id)
 
-    for {_id, pid, _type, _modules} <- DynamicSupervisor.which_children(config.measure_supervisor), is_pid(pid) do
+    for {_id, pid, _type, _modules} <- DynamicSupervisor.which_children(config.measure_supervisor),
+        is_pid(pid) do
       :ok = GenServer.call(pid, {:cancel_actor, actor_id}, :infinity)
     end
 
@@ -89,10 +95,15 @@ defmodule Plexus.Measure do
     name = Names.coalescer(run_id, key)
 
     case GenServer.whereis(name) do
-      pid when is_pid(pid) -> pid
+      pid when is_pid(pid) ->
+        pid
+
       nil ->
         config = Config.fetch!(run_id)
-        spec = {Plexus.Measure.Coalescer, run_id: run_id, key: key, entry: entry, evaluation_options: eval_opts, batch: batch}
+
+        spec =
+          {Plexus.Measure.Coalescer,
+           run_id: run_id, key: key, entry: entry, evaluation_options: eval_opts, batch: batch}
 
         case DynamicSupervisor.start_child(config.measure_supervisor, spec) do
           {:ok, pid} -> pid
@@ -104,7 +115,9 @@ defmodule Plexus.Measure do
 
   defp coalescer_key(fingerprint, opts, batch) do
     stable_opts = Keyword.drop(opts, [:cancellation, :telemetry_metadata])
-    :crypto.hash(:sha256, :erlang.term_to_binary({fingerprint, stable_opts, batch})) |> Base.encode16(case: :lower)
+
+    :crypto.hash(:sha256, :erlang.term_to_binary({fingerprint, stable_opts, batch}))
+    |> Base.encode16(case: :lower)
   end
 
   defp deliver(run_id, actor_id, tag, result) do

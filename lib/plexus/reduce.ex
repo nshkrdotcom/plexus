@@ -12,5 +12,6 @@ defmodule Plexus.Reduce do
   end
 
   @spec collect(term(), (term(), map() -> term())) :: [term()]
-  def collect(run_id, mapper), do: Enum.map(Population.all(run_id), fn {id, attrs} -> mapper.(id, attrs) end)
+  def collect(run_id, mapper),
+    do: Enum.map(Population.all(run_id), fn {id, attrs} -> mapper.(id, attrs) end)
 end

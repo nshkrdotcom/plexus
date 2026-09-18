@@ -10,7 +10,11 @@ defmodule Plexus.MeasureCoalescerTest.Probe do
 
   @impl true
   def handle_cast(:measure, state) do
-    Actor.dispatch(state.context, {:measure, :probe, state.input, state.prepared, batch: [delay_ms: 25, max: 64]})
+    Actor.dispatch(
+      state.context,
+      {:measure, :probe, state.input, state.prepared, batch: [delay_ms: 25, max: 64]}
+    )
+
     {:noreply, state}
   end
 
@@ -57,10 +61,18 @@ defmodule Plexus.MeasureCoalescerTest do
     assert_receive {:measurement, :b, {:ok, _}}, 2_000
     assert length(Test.requests(client)) == 1
   end
+
   test "recorded measurements can be loaded into a fresh replay run without transport calls" do
     prepared = TypeSafeSDK.prepare!(flag: TypeSafeSDK.noul("Flag it?"))
     record_client = Test.client() |> Test.stub(flag: {:noul, 0.9})
-    {:ok, record_run} = Plexus.start_run(id: make_ref(), client: record_client, replay: :record, batch: [delay_ms: 1])
+
+    {:ok, record_run} =
+      Plexus.start_run(
+        id: make_ref(),
+        client: record_client,
+        replay: :record,
+        batch: [delay_ms: 1]
+      )
 
     on_exit(fn ->
       _ = Plexus.stop_run(record_run)
@@ -99,7 +111,5 @@ defmodule Plexus.MeasureCoalescerTest do
     Plexus.cast({replay_run, :replay_probe}, :measure)
     assert_receive {:measurement, :replay_probe, {:ok, _}}, 2_000
     assert Test.requests(replay_client) == []
-
   end
-
 end

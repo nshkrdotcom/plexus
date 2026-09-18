@@ -39,7 +39,9 @@ defmodule Plexus.Run.Owner do
             else: values
 
         values when is_map(values) ->
-          if max_population != :infinity, do: Map.put_new(values, :population, max_population), else: values
+          if max_population != :infinity,
+            do: Map.put_new(values, :population, max_population),
+            else: values
       end
 
     budget = Budget.new(budget_opts)

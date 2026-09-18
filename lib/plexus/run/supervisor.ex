@@ -12,7 +12,10 @@ defmodule Plexus.Run.Supervisor do
   @impl true
   def init(opts) do
     run_id = Keyword.fetch!(opts, :id)
-    task_limit = Keyword.get(opts, :task_limit, Application.get_env(:plexus, :default_task_limit, 64))
+
+    task_limit =
+      Keyword.get(opts, :task_limit, Application.get_env(:plexus, :default_task_limit, 64))
+
     actor_partitions = Keyword.get(opts, :actor_partitions, max(System.schedulers_online(), 1))
     expand_concurrency = Keyword.get(opts, :expand_concurrency, 4)
 

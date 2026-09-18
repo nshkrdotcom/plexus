@@ -43,6 +43,7 @@ defmodule Plexus.Actor do
     }
   end
 
-  @spec dispatch(Context.t() | map(), Plexus.Actor.Command.t() | [Plexus.Actor.Command.t()]) :: :ok
+  @spec dispatch(Context.t() | map(), Plexus.Actor.Command.t() | [Plexus.Actor.Command.t()]) ::
+          :ok
   def dispatch(context, commands), do: Interpreter.dispatch(context, commands)
 end

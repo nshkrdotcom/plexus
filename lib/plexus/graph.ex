@@ -106,7 +106,8 @@ defmodule Plexus.Graph do
   end
 
   @spec subtree(term(), term()) :: [term()]
-  def subtree(run_id, actor_id), do: do_subtree(run_id, actor_id, MapSet.new()) |> MapSet.to_list()
+  def subtree(run_id, actor_id),
+    do: do_subtree(run_id, actor_id, MapSet.new()) |> MapSet.to_list()
 
   @spec delete_node(term(), term()) :: :ok
   def delete_node(run_id, actor_id) do

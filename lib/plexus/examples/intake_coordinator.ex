@@ -23,7 +23,8 @@ defmodule Plexus.Examples.IntakeCoordinator do
             sales: "Pricing, plan, or procurement requests."
           ),
         urgent: TypeSafeSDK.noul("Does this need urgent human attention?"),
-        evidence: TypeSafeSDK.noul("Does the ticket contain multiple distinct evidence statements?")
+        evidence:
+          TypeSafeSDK.noul("Does the ticket contain multiple distinct evidence statements?")
       )
 
     {:ok,
@@ -38,7 +39,12 @@ defmodule Plexus.Examples.IntakeCoordinator do
 
   @impl true
   def handle_cast(:classify, state) do
-    :ok = Actor.dispatch(state.context, {:measure, :classify, %{ticket: state.text}, state.prepared, []})
+    :ok =
+      Actor.dispatch(
+        state.context,
+        {:measure, :classify, %{ticket: state.text}, state.prepared, []}
+      )
+
     {:noreply, state}
   end
 
@@ -96,7 +102,8 @@ defmodule Plexus.Examples.IntakeCoordinator do
       commands =
         commands ++
           [
-            {:spawn, :evidence, Plexus.Examples.EvidenceWorker, %{text: snippet}, actor_id: actor_id},
+            {:spawn, :evidence, Plexus.Examples.EvidenceWorker, %{text: snippet},
+             actor_id: actor_id},
             {:send, actor_id, :analyze}
           ]
 

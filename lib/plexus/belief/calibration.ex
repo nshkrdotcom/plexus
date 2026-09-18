@@ -18,7 +18,7 @@ defmodule Plexus.Belief.Calibration do
     |> Enum.group_by(fn {p, _} -> min(trunc(p * bins), bins - 1) end)
     |> Enum.map(fn {index, rows} ->
       predicted = average(Enum.map(rows, &elem(&1, 0)))
-      observed = average(Enum.map(rows, &(if truth?(elem(&1, 1)), do: 1.0, else: 0.0)))
+      observed = average(Enum.map(rows, &if(truth?(elem(&1, 1)), do: 1.0, else: 0.0)))
 
       %{
         bin: index,
@@ -98,8 +98,12 @@ defmodule Plexus.Belief.Calibration do
 
   defp validate_samples!(samples) do
     Enum.map(samples, fn
-      {p, observed} when is_number(p) and p >= 0.0 and p <= 1.0 and observed in [true, false, 0, 1] -> {p * 1.0, observed}
-      sample -> raise ArgumentError, "invalid calibration sample: #{inspect(sample)}"
+      {p, observed}
+      when is_number(p) and p >= 0.0 and p <= 1.0 and observed in [true, false, 0, 1] ->
+        {p * 1.0, observed}
+
+      sample ->
+        raise ArgumentError, "invalid calibration sample: #{inspect(sample)}"
     end)
   end
 

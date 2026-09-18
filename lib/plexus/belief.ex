@@ -33,7 +33,14 @@ defmodule Plexus.Belief do
 
   def from_answer(%NoulAnswer{noul: p} = answer, opts) do
     calibrated = calibr(p, Keyword.get(opts, :calibration))
-    %__MODULE__{kind: :bernoulli, raw: answer, value: p, calibrated: calibrated, upper: calibrated || p}
+
+    %__MODULE__{
+      kind: :bernoulli,
+      raw: answer,
+      value: p,
+      calibrated: calibrated,
+      upper: calibrated || p
+    }
   end
 
   def from_answer(%ChoiceAnswer{choice: choice, probabilities: probabilities} = answer, _opts) do
@@ -75,10 +82,14 @@ defmodule Plexus.Belief do
     %__MODULE__{kind: :bernoulli, raw: {left.raw, right.raw}, value: p, calibrated: p, upper: p}
   end
 
-  def combine(%__MODULE__{kind: kind, distribution: a} = left, %__MODULE__{kind: kind, distribution: b}, opts)
+  def combine(
+        %__MODULE__{kind: kind, distribution: a} = left,
+        %__MODULE__{kind: kind, distribution: b},
+        opts
+      )
       when kind in [:categorical, :ordinal] and is_map(a) and is_map(b) do
     damping = Keyword.get(opts, :damping, 0.5)
-    keys = Map.keys(a) ++ Map.keys(b) |> Enum.uniq()
+    keys = (Map.keys(a) ++ Map.keys(b)) |> Enum.uniq()
 
     distribution =
       Map.new(keys, fn key ->

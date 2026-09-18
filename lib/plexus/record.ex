@@ -47,9 +47,11 @@ defmodule Plexus.Record do
       [] -> :error
     end
   end
+
   @spec replay_entries(term()) :: [{String.t(), term()}]
   def replay_entries(run_id) do
     config = Config.fetch!(run_id)
+
     :ets.tab2list(config.tables.replay)
     |> Enum.sort_by(&elem(&1, 0))
   end
@@ -60,5 +62,4 @@ defmodule Plexus.Record do
     true = :ets.insert(config.tables.replay, Enum.to_list(entries))
     :ok
   end
-
 end

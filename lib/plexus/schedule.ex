@@ -11,14 +11,17 @@ defmodule Plexus.Schedule do
 
   alias Plexus.Run.{Config, Names}
 
-  @type regime :: :async | {:bsp, keyword()} | {:bounded_async, pos_integer()} | {:priority, function()}
+  @type regime ::
+          :async | {:bsp, keyword()} | {:bounded_async, pos_integer()} | {:priority, function()}
 
   @spec normalize(term()) :: regime()
   def normalize(:async), do: :async
   def normalize({:bsp, opts}) when is_list(opts), do: {:bsp, opts}
   def normalize({:bounded_async, k}) when is_integer(k) and k > 0, do: {:bounded_async, k}
   def normalize({:priority, fun}) when is_function(fun, 1), do: {:priority, fun}
-  def normalize(other), do: raise(ArgumentError, "invalid Plexus scheduling regime: #{inspect(other)}")
+
+  def normalize(other),
+    do: raise(ArgumentError, "invalid Plexus scheduling regime: #{inspect(other)}")
 
   @spec dispatch(term(), map()) :: :ok
   def dispatch(run_id, envelope) do
