@@ -199,25 +199,35 @@ defmodule Plexus.Run do
       init_arg: init_arg
     ]
 
+    attrs = %{
+      module: module,
+      class: class,
+      parent: parent_id,
+      depth: depth,
+      metadata: metadata,
+      status: :active,
+      epoch: 0,
+      stale: false,
+      started_at: System.monotonic_time()
+    }
+
+    if :ets.insert_new(config.tables.nodes, {actor_id, attrs}) do
+      :ets.insert(config.tables.node_classes, {{:class, class}, actor_id})
+      if parent_id != nil, do: Graph.attach_child(config.run_id, parent_id, actor_id)
+      Quiescence.add(config.quiescence, :actors, 1)
+      start_registered_actor(config, module, actor_id, parent_id, class, child_opts)
+    else
+      Budget.refund(config.budget, :population, 1)
+      {:error, :already_registered}
+    end
+  end
+
+  defp start_registered_actor(config, module, actor_id, parent_id, class, child_opts) do
     result =
       DynamicSupervisor.start_child(actor_partition(config, actor_id), {module, child_opts})
 
     case result do
       {:ok, pid} ->
-        :ok =
-          Graph.put(config.run_id, actor_id,
-            module: module,
-            class: class,
-            parent: parent_id,
-            depth: depth,
-            metadata: metadata,
-            status: :active,
-            started_at: System.monotonic_time()
-          )
-
-        if parent_id != nil, do: Graph.attach_child(config.run_id, parent_id, actor_id)
-        safe_counter_add(config.quiescence, :actors, 1)
-
         Record.append(config.run_id, :actor_birth, %{
           actor_id: actor_id,
           parent_id: parent_id,
@@ -228,12 +238,12 @@ defmodule Plexus.Run do
         {:ok, pid}
 
       other ->
-        Budget.refund(config.budget, :population, 1)
+        unregister_actor(config, config.run_id, actor_id)
         other
     end
   rescue
     error ->
-      Budget.refund(config.budget, :population, 1)
+      unregister_actor(config, config.run_id, actor_id)
       reraise error, __STACKTRACE__
   end
 

@@ -31,17 +31,13 @@ defmodule Plexus.Run.Owner do
     max_population = Keyword.get(opts, :max_population, :infinity)
     budget_opts = Keyword.get(opts, :budgets, [])
 
-    budget_opts =
-      case budget_opts do
-        values when is_list(values) ->
-          if max_population != :infinity and not Keyword.has_key?(values, :population),
-            do: Keyword.put(values, :population, max_population),
-            else: values
+    budget_opts = Map.new(budget_opts)
 
-        values when is_map(values) ->
-          if max_population != :infinity,
-            do: Map.put_new(values, :population, max_population),
-            else: values
+    budget_opts =
+      if max_population == :infinity do
+        budget_opts
+      else
+        Map.update(budget_opts, :population, max_population, &min(&1, max_population))
       end
 
     budget = Budget.new(budget_opts)
