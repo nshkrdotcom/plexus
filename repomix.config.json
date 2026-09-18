@@ -4,9 +4,33 @@
   },
   "include": [
     "lib/**",
-    "docs/**"
+    "test/**",
+    "config/**",
+    "guides/**",
+    "docs/**",
+    "experiments/**",
+    "artifacts/**",
+    "assets/**",
+    ".github/**",
+    "*.md",
+    "LICENSE*",
+    "mix.exs",
+    "mix.lock",
+    ".formatter.exs",
+    ".gitignore",
+    "repomix.config.json"
   ],
   "ignore": {
-    "useDefaultPatterns": true
+    "useDefaultPatterns": true,
+    "useGitignore": true,
+    "customPatterns": [
+      "repomix-output*",
+      "_build/**",
+      "deps/**",
+      "doc/**",
+      "tmp/**",
+      "plexus-*.tar",
+      "plexus-*/**"
+    ]
   }
 }
