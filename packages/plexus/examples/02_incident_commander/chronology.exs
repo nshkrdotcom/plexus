@@ -93,7 +93,7 @@ defmodule Plexus.Examples.IncidentCommander.Chronology do
   end
 
   defp normalize!(kind, path, source_index, ordinal, row) do
-    timestamp = timestamp(row) || raise "GAIA row is missing a timestamp in #{path}"
+    timestamp = event_timestamp!(kind, row, path)
     event_time_us = parse_time_us!(timestamp, path)
     service = service(row)
 
@@ -121,6 +121,49 @@ defmodule Plexus.Examples.IncidentCommander.Chronology do
       raw: row
     }
   end
+
+  defp event_timestamp!(:business, row, path) do
+    raw_timestamp = timestamp(row)
+
+    cond do
+      date_only?(raw_timestamp) ->
+        business_message_timestamp(row["message"]) ||
+          raise(
+            "GAIA business row has date-only datetime #{inspect(raw_timestamp)} " <>
+              "but its message contains no event timestamp in #{path}"
+          )
+
+      is_binary(raw_timestamp) and raw_timestamp != "" ->
+        raw_timestamp
+
+      true ->
+        business_message_timestamp(row["message"]) ||
+          raise("GAIA business row is missing an event timestamp in #{path}")
+    end
+  end
+
+  defp event_timestamp!(_kind, row, path) do
+    timestamp(row) || raise("GAIA row is missing a timestamp in #{path}")
+  end
+
+  defp date_only?(value) when is_binary(value) do
+    Regex.match?(~r/^\d{4}-\d{2}-\d{2}$/, value)
+  end
+
+  defp date_only?(_value), do: false
+
+  defp business_message_timestamp(message) when is_binary(message) do
+    case Regex.run(
+           ~r/(\d{4}-\d{2}-\d{2}\s+\d{2}:\d{2}:\d{2}(?:[,.]\d{1,6})?)/,
+           message,
+           capture: :all_but_first
+         ) do
+      [value] -> String.replace(value, ",", ".")
+      _ -> nil
+    end
+  end
+
+  defp business_message_timestamp(_message), do: nil
 
   defp timestamp(row) do
     Enum.find_value(@timestamp_fields, fn field ->

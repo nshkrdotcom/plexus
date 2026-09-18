@@ -1,0 +1,4 @@
+datetime,service,message
+2021-07-01,redisservice1,"2021-07-01 00:00:02,123 | INFO | redisservice1 | connection timeout"
+2021-07-01,frontend,"2021-07-01 00:00:04,456 | WARNING | frontend | retry failed"
+2021-07-02,ignored,"2021-07-02 00:00:02,000 | INFO | ignored | other day"

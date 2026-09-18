@@ -41,6 +41,28 @@ defmodule Plexus.IncidentCommanderExampleTest do
     assert :eof = Chronology.next(cursor)
   end
 
+  @tag :date_only_business_timestamp
+  test "business day column uses the log message timestamp for event chronology" do
+    cursor =
+      Chronology.open!(
+        [],
+        [Path.join(@fixture_dir, "business_date_only.csv")],
+        day: "2021-07-01"
+      )
+
+    assert {:ok, first, cursor} = Chronology.next(cursor)
+    assert first.service == "redisservice1"
+    assert first.timestamp == "2021-07-01 00:00:02.123"
+    assert first.event_time_us == 1_625_097_602_123_000
+
+    assert {:ok, second, cursor} = Chronology.next(cursor)
+    assert second.service == "frontend"
+    assert second.timestamp == "2021-07-01 00:00:04.456"
+    assert second.event_time_us == 1_625_097_604_456_000
+
+    assert :eof = Chronology.next(cursor)
+  end
+
   test "child hypothesis identity is owned by the parent branch" do
     left =
       IncidentCommander.child_hypothesis_id(
