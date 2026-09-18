@@ -85,6 +85,7 @@ defmodule Plexus.MixProject do
       name: "Plexus",
       source_ref: "v#{@version}",
       source_url: @source_url,
+      assets: %{"assets" => "assets"},
       logo: "assets/plexus.svg",
       extras: [
         "README.md",
