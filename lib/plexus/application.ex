@@ -1,5 +1,9 @@
 defmodule Plexus.Application do
-  @moduledoc false
+  @moduledoc """
+  Application supervisor for Plexus.
+
+  Starts the run supervisor, actor registry, and graph metadata store.
+  """
   use Application
 
   def start(_type, _args) do

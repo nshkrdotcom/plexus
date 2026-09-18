@@ -17,13 +17,18 @@ defmodule Plexus.MixProject do
       source_url: @source_url,
       homepage_url: @source_url,
       name: "Plexus",
-      preferred_cli_env: [
+      aliases: aliases(),
+      test_coverage: [tool: ExCoveralls]
+    ]
+  end
+
+  def cli do
+    [
+      preferred_envs: [
         docs: :docs,
         "hex.publish": :prod,
         quality: :test
-      ],
-      aliases: aliases(),
-      test_coverage: [tool: ExCoveralls]
+      ]
     ]
   end
 

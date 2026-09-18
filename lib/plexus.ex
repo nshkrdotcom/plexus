@@ -29,11 +29,12 @@ defmodule Plexus do
   def cast({run, actor_id}, message), do: Run.cast(run, actor_id, message)
 
   @spec call(actor_ref(), term(), timeout()) :: term()
-  def call(pid, message, timeout \\ 5_000) when is_pid(pid), do: GenServer.call(pid, message, timeout)
+  def call(actor_ref, message, timeout \\ 5_000)
+  def call(pid, message, timeout) when is_pid(pid), do: GenServer.call(pid, message, timeout)
   def call({run, actor_id}, message, timeout), do: Run.call(run, actor_id, message, timeout)
 
   @spec subtree(run_ref(), term()) :: [term()]
-  def subtree(run, actor_id), do: Graph.subtree(run, actor_id)
+  def subtree(run, actor_id), do: Graph.subtree(Run.run_id(run), actor_id)
 
   @spec contract(keyword()) :: TypeSafeSDK.Prepared.t()
   defdelegate contract(questions), to: Contract, as: :new!

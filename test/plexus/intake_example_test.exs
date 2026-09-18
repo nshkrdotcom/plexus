@@ -15,13 +15,13 @@ defmodule Plexus.IntakeExampleTest do
           Map.has_key?(state, "ticket") ->
             {:answers,
              [
-               department: {:choice, "technical", 0.93, %{"technical" => 0.93, "billing" => 0.04, "sales" => 0.03}},
-               urgent: {:noul, "yes", 0.88},
-               evidence: {:noul, "checkout is broken; user cannot log in", 0.91}
+               department: {:choice, "technical", 0.93},
+               urgent: {:noul, 0.88},
+               evidence: {:noul, 0.91}
              ]}
 
           Map.has_key?(state, "text") ->
-            {:answers, [relevance: {:score, 5, 0.95}, summary: {:noul, "Key evidence", 0.90}]}
+            {:answers, [relevance: {:score, 2, 0.95}, actionable: {:noul, 0.90}]}
         end
       end)
 
@@ -41,7 +41,7 @@ defmodule Plexus.IntakeExampleTest do
     assert classification != nil
 
     children = GenServer.call(actor, :children)
-    assert length(children) >= 1
+    assert children != []
     assert length(Plexus.subtree(run, {:ticket, 1})) >= 2
   end
 end

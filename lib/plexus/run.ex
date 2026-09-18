@@ -57,6 +57,10 @@ defmodule Plexus.Run do
   @spec actor_pid(pid() | atom(), term()) :: {:ok, pid()} | {:error, :not_found}
   def actor_pid(run, actor_id), do: GenServer.call(run, {:actor_pid, actor_id})
 
+  @spec run_id(pid() | term()) :: term()
+  def run_id(run) when is_pid(run), do: GenServer.call(run, :run_id)
+  def run_id(run_id), do: run_id
+
   @spec cast(pid() | atom(), term(), term()) :: :ok
   def cast(run, actor_id, message) do
     with {:ok, pid} <- actor_pid(run, actor_id) do
@@ -74,6 +78,10 @@ defmodule Plexus.Run do
   end
 
   @impl true
+  def handle_call(:run_id, _from, state) do
+    {:reply, state.id, state}
+  end
+
   def handle_call({:actor_pid, actor_id}, _from, state) do
     {:reply, Registry.lookup(state.id, actor_id), state}
   end

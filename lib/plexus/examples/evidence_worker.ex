@@ -13,8 +13,8 @@ defmodule Plexus.Examples.EvidenceWorker do
   def init(%{text: text} = args) do
     prepared =
       TypeSafeSDK.prepare!(
-        relevance: TypeSafeSDK.score("How relevant is this evidence to the root issue?", [0, 1, 2, 3, 4, 5]),
-        summary: TypeSafeSDK.noul("Summarize the evidence in one short sentence.")
+        relevance: TypeSafeSDK.score("How relevant is this evidence to the root issue?", ["low", "medium", "high"]),
+        actionable: TypeSafeSDK.noul("Is this evidence actionable?")
       )
 
     {:ok,
@@ -41,7 +41,7 @@ defmodule Plexus.Examples.EvidenceWorker do
     result = %{
       response: response,
       relevance: Response.fetch(response, :relevance),
-      summary: Response.fetch(response, :summary)
+      actionable: Response.fetch(response, :actionable)
     }
 
     {:noreply, %{state | result: result}}

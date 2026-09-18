@@ -79,9 +79,9 @@ defmodule Plexus.Examples.IntakeCoordinator do
   def handle_evaluation({:ok, response}, :classify, state) do
     snippets =
       case Response.fetch(response, :evidence) do
-        {:ok, answer} ->
-          answer.noul
-          |> String.split(";", trim: true)
+        {:ok, %{noul: p}} when p >= 0.5 ->
+          state.text
+          |> String.split([";", "\n", " and "], trim: true)
           |> Enum.map(&String.trim/1)
           |> Enum.reject(&(&1 == ""))
           |> Enum.take(3)

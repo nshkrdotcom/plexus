@@ -8,7 +8,12 @@ defmodule Plexus.Strategy.Fanout do
 
   alias Plexus.Contract
 
-  @spec stream(TypeSafeSDK.Client.t(), Enumerable.t(), TypeSafeSDK.Prepared.t() | keyword(), keyword()) :: Enumerable.t()
+  @spec stream(
+          TypeSafeSDK.Client.t(),
+          Enumerable.t(),
+          TypeSafeSDK.Prepared.t() | keyword(),
+          keyword()
+        ) :: Enumerable.t()
   def stream(client, states, prepared, opts \\ []) do
     defaults = [
       max_concurrency: Keyword.get(opts, :max_concurrency, Application.get_env(:plexus, :default_batch_concurrency, 8)),

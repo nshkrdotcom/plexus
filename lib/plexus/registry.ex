@@ -10,7 +10,7 @@ defmodule Plexus.Registry do
   def register(run_id, actor_id, pid) do
     case Registry.register(__MODULE__, {run_id, actor_id}, pid) do
       {:ok, _} -> {:ok, pid}
-      {:error, {:already_registered, pid}} = error -> error
+      {:error, {:already_registered, _pid}} = error -> error
     end
   end
 
