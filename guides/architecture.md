@@ -23,6 +23,7 @@ Each `Run.Supervisor` owns:
 - a dynamic supervisor for per-contract measurement coalescers
 - a scheduling policy server
 - an expansion priority queue
+- a hierarchical credit-account ledger
 
 `Run.Config.fetch!/1` reads the resource map directly from ETS. Actor birth then routes straight to a supervisor partition selected by `actor_id`; graph metadata writes are ETS operations.
 
@@ -34,8 +35,10 @@ This is what makes depth/population limits, replay, scheduler barriers and futur
 
 ## Measure and expand are different tiers
 
-Measurement uses TypeSafe prepared contracts, large concurrency, cache/dedupe and batching. Expansion is rarer and expensive, uses a separate bounded queue, and is represented by a provider-neutral adapter seam. A slow expansion can therefore never consume the measurement task slots.
+Measurement uses TypeSafe prepared contracts, large concurrency, cache/dedupe and batching. Expansion is rarer and expensive, uses a separate bounded queue, and uses the published inference adapter through a provider-neutral behaviour. A slow expansion can therefore never consume the measurement task slots.
 
 ## Failure domains
 
 Run-owned ETS tables die with `Run.Owner`. The run supervisor uses `:rest_for_one`, so losing the owner reconstructs downstream run resources rather than leaving workers attached to stale table ids. A run crash is isolated from other runs.
+
+Actors are temporary supervisor children. A partition failure loses its actors; owner monitoring removes their metadata and releases admission. The partition restarts empty. Owner failure replaces the entire resource island and loses its in-memory state; durable response replay is an explicit export/import operation.

@@ -3,7 +3,7 @@
 Plexus stores population structure in two per-run ETS tables:
 
 - node attributes in a `:set`
-- typed edges in a `:bag`
+- typed edges in an `:ordered_set`
 
 Every edge is indexed both outgoing and incoming:
 

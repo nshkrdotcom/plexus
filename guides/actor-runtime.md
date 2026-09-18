@@ -54,3 +54,7 @@ An actor that directly starts children or directly evaluates TypeSafe has explic
 ## Shared bounded concurrency
 
 Measurement coalescers launch whole batches under the run's measurement task supervisor; TypeSafeSDK then bounds the evaluations within that batch. Expansion has a completely separate task supervisor and queue.
+
+## Completion and managed activity
+
+`{:complete, result}` publishes the result and retires active work while leaving the actor alive for queries. Repeated completion and later termination retire it only once. Use `Plexus.Run.cast/3` and `call/4` to include queued messages in quiescence accounting; callback wrappers release each activity ticket once. Command envelopes and timers also remain counted until execution or cancellation. Raw `send`, direct GenServer calls and direct TypeSafe OTP evaluation are escape hatches outside managed message accounting.

@@ -1,47 +1,29 @@
-# Plexus handoff
+# Plexus kernel completion — 2026-09-17
 
-This checkout contains the pre-release `0.1.0` kernel implementation pass based on the published Plexus primitive plan and `typesafe_sdk` 0.4.0 source. It was authored in an environment without Elixir/OTP, so source work is complete enough for handoff but **runtime validation is not complete**.
+The original static-only handoff has been implemented and exercised on BEAM. Release coordinates remain 0.1.0 with changes under Unreleased. The cleanup in `868b64c` passed its baseline gates; later behavioral tests identified and corrected runtime issues without undoing the kernel architecture.
 
-The separately delivered `PLEXUS_KERNEL_HANDOFF_2026-09-17.md` is the detailed agent handoff. Use that document for the exact verification/fix sequence.
+## Delivered
 
-## Implemented in this pass
+- Run-owned ETS, partitioned actor admission and lifecycle cleanup, atomic graph updates and indexed typed topology.
+- Command-mediated measurement/expansion/population effects; managed message/timer accounting and exactly-once actor retirement.
+- TypeSafe coalescing, option-aware cache/replay keys, saturation retry, shared physical cancellation and fail-closed replay.
+- Hex inference 0.4.1 integration, neutral streams, TypeSafe monitor example/test, independent expansion capacity and usage/cost/duration accounting.
+- Bounded command progress, queued priority ordering, BSP barriers, hierarchical credit APIs, seeded selection, leaf split/merge/migration, prioritized epoch-checked repair and extended stop predicates.
+- Versioned durable replay with manifests, checksums, safe terms and incompatibility errors.
+- Reproducible node-birth/measurement sweeps, live labeled calibration artifacts and controlled async/BSP replay.
 
-- per-run ETS resource ownership and lock-free config reads
-- partitioned Registry + partitioned actor DynamicSupervisors
-- typed `:bag` topology instead of children-list read/modify/write
-- command interpreter as the cross-cutting policy seam
-- named/versioned prepared contract registry
-- cache + replay + per-contract measurement coalescing
-- `TypeSafeSDK.evaluate_many/4` as the default framework measurement backend
-- Pristine cancellation tokens owned per physical TypeSafe batch
-- atomic measure/expand/token/population budgets
-- TypeSafe telemetry forwarding into per-run event records and observed token accounting
-- BSP buffering/barriers and run-level schedule swapping
-- belief projection, reliability diagnostics and isotonic calibration
-- population/provenance/stop/reduce helpers
-- separate expansion priority queue + adapter/schema/materializer seams
-- examples converted from direct `Run.start_actor/2` recursion to interpreter-mediated commands
+## Validation
 
-## Deliberately not claimed complete
+The current suite has 57 passing tests on both Elixir 1.18.4 / OTP 27 and Elixir 1.20.3 / OTP 29. Formatter, warnings-as-errors compilation, strict Credo, Dialyzer, ExDoc, Hex build and publication dry-run all passed, including the publication dry-run; reproduction commands are in [Testing and release](guides/testing-and-release.md).
 
-- no Elixir compile/test/docs/Hex gate has run here
-- the concrete external `inference` adapter was not implemented because its source/API was not supplied
-- expansion streaming, physical provider cancellation, and trace cost accounting require that real inference integration
-- replay export/import exists in memory; durable serialization/versioning still needs a BEAM-validated format
-- bounded-async/priority scheduling needs runtime semantics/characterization; BSP and async are the primary implemented comparison paths
-- million-actor performance is not claimed without benchmarks
+See [Experiments](guides/experiments.md) and the checked-in `artifacts/` for measured results, methodology and limits. No real Hex publication or version bump is part of this change.
 
-## First commands on a real Elixir host
+## Operational limits
 
-```bash
-mix deps.get
-mix format
-mix format --check-formatted
-mix compile --warnings-as-errors
-mix test --warnings-as-errors
-mix docs --warnings-as-errors
-mix hex.build
-mix hex.publish --dry-run --yes
-```
-
-Do not weaken tests or delete kernel seams merely to make the first compile green. Fix exact API/syntax mismatches and then run the focused tests listed in `guides/testing-and-release.md`.
+- Physical inference stopping depends on a backend that explicitly supports and honors cancellation. The library has no universal physical cancellation operation.
+- Quiescence covers managed framework activity; raw process messages/direct SDK escape hatches are outside that accounting.
+- Bounded async bounds command-envelope progress, not arbitrary semantic staleness. Priority orders currently queued arrivals. Neither has a research performance claim.
+- Hierarchical accounts are explicit application credit APIs; ordinary framework work uses the root meter. Population migration requires an application snapshot and supports leaves, not live mailbox transfer.
+- Repair work is application-driven. Secondary indexes retain historical values until teardown. Cache eviction remains arbitrary, not LRU.
+- Durable replay stores semantic responses, not actor/process checkpoints. Owner failure discards the run's in-memory state; partition failure loses affected actors and releases their resources.
+- The primality calibration sample is small and claim-specific. The replay strategy is an independent-node control, not evidence of iterative convergence superiority. Measurements reach 100,000 actors; no million-actor or provider throughput claim is made.

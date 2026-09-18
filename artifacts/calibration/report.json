@@ -1,0 +1,1930 @@
+{
+  "source": "live TypeSafeSDK",
+  "elapsed_ms": 3643,
+  "questions": {
+    "composite": "Is this integer greater than one and not composite?",
+    "prime": "Is the integer in the state a prime number?",
+    "divisors": "Does this integer have exactly two positive divisors, one and itself?"
+  },
+  "observations": [
+    {
+      "id": 103,
+      "label": true,
+      "split": "calibration",
+      "probabilities": {
+        "composite": 0.92,
+        "prime": 0.69,
+        "divisors": 0.65
+      }
+    },
+    {
+      "id": 123,
+      "label": false,
+      "split": "calibration",
+      "probabilities": {
+        "composite": 0.06,
+        "prime": 0.06,
+        "divisors": 0.02
+      }
+    },
+    {
+      "id": 127,
+      "label": true,
+      "split": "calibration",
+      "probabilities": {
+        "composite": 0.94,
+        "prime": 0.49,
+        "divisors": 0.24
+      }
+    },
+    {
+      "id": 131,
+      "label": true,
+      "split": "held_out",
+      "probabilities": {
+        "composite": 0.95,
+        "prime": 0.76,
+        "divisors": 0.76
+      }
+    },
+    {
+      "id": 149,
+      "label": true,
+      "split": "calibration",
+      "probabilities": {
+        "composite": 0.86,
+        "prime": 0.63,
+        "divisors": 0.54
+      }
+    },
+    {
+      "id": 152,
+      "label": false,
+      "split": "held_out",
+      "probabilities": {
+        "composite": 0.02,
+        "prime": 0.05,
+        "divisors": 0.01
+      }
+    },
+    {
+      "id": 176,
+      "label": false,
+      "split": "held_out",
+      "probabilities": {
+        "composite": 0.01,
+        "prime": 0.02,
+        "divisors": 0.01
+      }
+    },
+    {
+      "id": 179,
+      "label": true,
+      "split": "held_out",
+      "probabilities": {
+        "composite": 0.91,
+        "prime": 0.6,
+        "divisors": 0.6
+      }
+    },
+    {
+      "id": 242,
+      "label": false,
+      "split": "held_out",
+      "probabilities": {
+        "composite": 0.01,
+        "prime": 0.02,
+        "divisors": 0.01
+      }
+    },
+    {
+      "id": 257,
+      "label": true,
+      "split": "calibration",
+      "probabilities": {
+        "composite": 0.9,
+        "prime": 0.62,
+        "divisors": 0.69
+      }
+    },
+    {
+      "id": 266,
+      "label": false,
+      "split": "held_out",
+      "probabilities": {
+        "composite": 0.01,
+        "prime": 0.03,
+        "divisors": 0.01
+      }
+    },
+    {
+      "id": 268,
+      "label": false,
+      "split": "held_out",
+      "probabilities": {
+        "composite": 0.01,
+        "prime": 0.03,
+        "divisors": 0.02
+      }
+    },
+    {
+      "id": 271,
+      "label": true,
+      "split": "calibration",
+      "probabilities": {
+        "composite": 0.9,
+        "prime": 0.64,
+        "divisors": 0.68
+      }
+    },
+    {
+      "id": 285,
+      "label": false,
+      "split": "held_out",
+      "probabilities": {
+        "composite": 0.02,
+        "prime": 0.05,
+        "divisors": 0.02
+      }
+    },
+    {
+      "id": 311,
+      "label": true,
+      "split": "held_out",
+      "probabilities": {
+        "composite": 0.9,
+        "prime": 0.76,
+        "divisors": 0.72
+      }
+    },
+    {
+      "id": 326,
+      "label": false,
+      "split": "held_out",
+      "probabilities": {
+        "composite": 0.02,
+        "prime": 0.09,
+        "divisors": 0.01
+      }
+    },
+    {
+      "id": 347,
+      "label": true,
+      "split": "held_out",
+      "probabilities": {
+        "composite": 0.73,
+        "prime": 0.73,
+        "divisors": 0.47
+      }
+    },
+    {
+      "id": 367,
+      "label": true,
+      "split": "held_out",
+      "probabilities": {
+        "composite": 0.88,
+        "prime": 0.74,
+        "divisors": 0.67
+      }
+    },
+    {
+      "id": 373,
+      "label": true,
+      "split": "calibration",
+      "probabilities": {
+        "composite": 0.91,
+        "prime": 0.81,
+        "divisors": 0.77
+      }
+    },
+    {
+      "id": 379,
+      "label": true,
+      "split": "calibration",
+      "probabilities": {
+        "composite": 0.77,
+        "prime": 0.66,
+        "divisors": 0.54
+      }
+    },
+    {
+      "id": 384,
+      "label": false,
+      "split": "held_out",
+      "probabilities": {
+        "composite": 0.01,
+        "prime": 0.01,
+        "divisors": 0.01
+      }
+    },
+    {
+      "id": 389,
+      "label": true,
+      "split": "calibration",
+      "probabilities": {
+        "composite": 0.55,
+        "prime": 0.58,
+        "divisors": 0.42
+      }
+    },
+    {
+      "id": 397,
+      "label": true,
+      "split": "held_out",
+      "probabilities": {
+        "composite": 0.95,
+        "prime": 0.81,
+        "divisors": 0.77
+      }
+    },
+    {
+      "id": 457,
+      "label": true,
+      "split": "held_out",
+      "probabilities": {
+        "composite": 0.47,
+        "prime": 0.6,
+        "divisors": 0.36
+      }
+    },
+    {
+      "id": 463,
+      "label": true,
+      "split": "calibration",
+      "probabilities": {
+        "composite": 0.9,
+        "prime": 0.8,
+        "divisors": 0.78
+      }
+    },
+    {
+      "id": 492,
+      "label": false,
+      "split": "calibration",
+      "probabilities": {
+        "composite": 0.01,
+        "prime": 0.02,
+        "divisors": 0.01
+      }
+    },
+    {
+      "id": 504,
+      "label": false,
+      "split": "held_out",
+      "probabilities": {
+        "composite": 0.01,
+        "prime": 0.01,
+        "divisors": 0.01
+      }
+    },
+    {
+      "id": 528,
+      "label": false,
+      "split": "held_out",
+      "probabilities": {
+        "composite": 0.01,
+        "prime": 0.01,
+        "divisors": 0.01
+      }
+    },
+    {
+      "id": 542,
+      "label": false,
+      "split": "calibration",
+      "probabilities": {
+        "composite": 0.02,
+        "prime": 0.05,
+        "divisors": 0.02
+      }
+    },
+    {
+      "id": 550,
+      "label": false,
+      "split": "held_out",
+      "probabilities": {
+        "composite": 0.01,
+        "prime": 0.01,
+        "divisors": 0.01
+      }
+    },
+    {
+      "id": 560,
+      "label": false,
+      "split": "calibration",
+      "probabilities": {
+        "composite": 0.01,
+        "prime": 0.01,
+        "divisors": 0.01
+      }
+    },
+    {
+      "id": 577,
+      "label": true,
+      "split": "calibration",
+      "probabilities": {
+        "composite": 0.86,
+        "prime": 0.67,
+        "divisors": 0.7
+      }
+    },
+    {
+      "id": 587,
+      "label": true,
+      "split": "calibration",
+      "probabilities": {
+        "composite": 0.78,
+        "prime": 0.74,
+        "divisors": 0.62
+      }
+    },
+    {
+      "id": 599,
+      "label": true,
+      "split": "held_out",
+      "probabilities": {
+        "composite": 0.43,
+        "prime": 0.48,
+        "divisors": 0.35
+      }
+    },
+    {
+      "id": 601,
+      "label": true,
+      "split": "held_out",
+      "probabilities": {
+        "composite": 0.67,
+        "prime": 0.62,
+        "divisors": 0.67
+      }
+    },
+    {
+      "id": 606,
+      "label": false,
+      "split": "calibration",
+      "probabilities": {
+        "composite": 0.01,
+        "prime": 0.03,
+        "divisors": 0.01
+      }
+    },
+    {
+      "id": 613,
+      "label": true,
+      "split": "calibration",
+      "probabilities": {
+        "composite": 0.9,
+        "prime": 0.72,
+        "divisors": 0.71
+      }
+    },
+    {
+      "id": 631,
+      "label": true,
+      "split": "held_out",
+      "probabilities": {
+        "composite": 0.67,
+        "prime": 0.54,
+        "divisors": 0.53
+      }
+    },
+    {
+      "id": 641,
+      "label": true,
+      "split": "held_out",
+      "probabilities": {
+        "composite": 0.82,
+        "prime": 0.61,
+        "divisors": 0.65
+      }
+    },
+    {
+      "id": 643,
+      "label": true,
+      "split": "held_out",
+      "probabilities": {
+        "composite": 0.54,
+        "prime": 0.54,
+        "divisors": 0.47
+      }
+    },
+    {
+      "id": 660,
+      "label": false,
+      "split": "held_out",
+      "probabilities": {
+        "composite": 0.01,
+        "prime": 0.01,
+        "divisors": 0.01
+      }
+    },
+    {
+      "id": 686,
+      "label": false,
+      "split": "calibration",
+      "probabilities": {
+        "composite": 0.01,
+        "prime": 0.03,
+        "divisors": 0.01
+      }
+    },
+    {
+      "id": 692,
+      "label": false,
+      "split": "calibration",
+      "probabilities": {
+        "composite": 0.01,
+        "prime": 0.05,
+        "divisors": 0.02
+      }
+    },
+    {
+      "id": 701,
+      "label": true,
+      "split": "held_out",
+      "probabilities": {
+        "composite": 0.87,
+        "prime": 0.63,
+        "divisors": 0.69
+      }
+    },
+    {
+      "id": 707,
+      "label": false,
+      "split": "calibration",
+      "probabilities": {
+        "composite": 0.42,
+        "prime": 0.27,
+        "divisors": 0.11
+      }
+    },
+    {
+      "id": 727,
+      "label": true,
+      "split": "calibration",
+      "probabilities": {
+        "composite": 0.93,
+        "prime": 0.83,
+        "divisors": 0.82
+      }
+    },
+    {
+      "id": 743,
+      "label": true,
+      "split": "held_out",
+      "probabilities": {
+        "composite": 0.62,
+        "prime": 0.55,
+        "divisors": 0.49
+      }
+    },
+    {
+      "id": 747,
+      "label": false,
+      "split": "calibration",
+      "probabilities": {
+        "composite": 0.06,
+        "prime": 0.1,
+        "divisors": 0.03
+      }
+    },
+    {
+      "id": 757,
+      "label": true,
+      "split": "held_out",
+      "probabilities": {
+        "composite": 0.95,
+        "prime": 0.82,
+        "divisors": 0.83
+      }
+    },
+    {
+      "id": 823,
+      "label": true,
+      "split": "calibration",
+      "probabilities": {
+        "composite": 0.68,
+        "prime": 0.56,
+        "divisors": 0.49
+      }
+    },
+    {
+      "id": 856,
+      "label": false,
+      "split": "calibration",
+      "probabilities": {
+        "composite": 0.01,
+        "prime": 0.02,
+        "divisors": 0.01
+      }
+    },
+    {
+      "id": 891,
+      "label": false,
+      "split": "held_out",
+      "probabilities": {
+        "composite": 0.02,
+        "prime": 0.08,
+        "divisors": 0.02
+      }
+    },
+    {
+      "id": 906,
+      "label": false,
+      "split": "calibration",
+      "probabilities": {
+        "composite": 0.01,
+        "prime": 0.03,
+        "divisors": 0.01
+      }
+    },
+    {
+      "id": 907,
+      "label": true,
+      "split": "calibration",
+      "probabilities": {
+        "composite": 0.9,
+        "prime": 0.76,
+        "divisors": 0.77
+      }
+    },
+    {
+      "id": 960,
+      "label": false,
+      "split": "calibration",
+      "probabilities": {
+        "composite": 0.01,
+        "prime": 0.01,
+        "divisors": 0.01
+      }
+    },
+    {
+      "id": 963,
+      "label": false,
+      "split": "held_out",
+      "probabilities": {
+        "composite": 0.02,
+        "prime": 0.09,
+        "divisors": 0.03
+      }
+    },
+    {
+      "id": 969,
+      "label": false,
+      "split": "calibration",
+      "probabilities": {
+        "composite": 0.02,
+        "prime": 0.09,
+        "divisors": 0.03
+      }
+    },
+    {
+      "id": 978,
+      "label": false,
+      "split": "calibration",
+      "probabilities": {
+        "composite": 0.02,
+        "prime": 0.04,
+        "divisors": 0.02
+      }
+    },
+    {
+      "id": 994,
+      "label": false,
+      "split": "calibration",
+      "probabilities": {
+        "composite": 0.02,
+        "prime": 0.05,
+        "divisors": 0.01
+      }
+    },
+    {
+      "id": 996,
+      "label": false,
+      "split": "held_out",
+      "probabilities": {
+        "composite": 0.01,
+        "prime": 0.04,
+        "divisors": 0.01
+      }
+    }
+  ],
+  "reports": {
+    "composite": {
+      "raw": {
+        "reliability": [
+          {
+            "count": 15,
+            "bin": 0,
+            "upper": 0.2,
+            "lower": 0.0,
+            "mean_predicted": 0.013333333333333334,
+            "observed_rate": 0.0,
+            "absolute_gap": 0.013333333333333334
+          },
+          {
+            "count": 3,
+            "bin": 2,
+            "upper": 0.6,
+            "lower": 0.4,
+            "mean_predicted": 0.48,
+            "observed_rate": 1.0,
+            "absolute_gap": 0.52
+          },
+          {
+            "count": 4,
+            "bin": 3,
+            "upper": 0.8,
+            "lower": 0.6,
+            "mean_predicted": 0.6725,
+            "observed_rate": 1.0,
+            "absolute_gap": 0.3275
+          },
+          {
+            "count": 8,
+            "bin": 4,
+            "upper": 1.0,
+            "lower": 0.8,
+            "mean_predicted": 0.90375,
+            "observed_rate": 1.0,
+            "absolute_gap": 0.09624999999999995
+          }
+        ],
+        "n": 30,
+        "log_loss": 0.16098316079849637,
+        "ece": 0.12799999999999997,
+        "brier": 0.04482666666666666
+      },
+      "model": {
+        "blocks": [
+          {
+            "max": 0.01,
+            "min": 0.01,
+            "value": 0.0,
+            "sum": 0.0,
+            "weight": 8
+          },
+          {
+            "max": 0.02,
+            "min": 0.02,
+            "value": 0.0,
+            "sum": 0.0,
+            "weight": 4
+          },
+          {
+            "max": 0.06,
+            "min": 0.06,
+            "value": 0.0,
+            "sum": 0.0,
+            "weight": 2
+          },
+          {
+            "max": 0.42,
+            "min": 0.42,
+            "value": 0.0,
+            "sum": 0.0,
+            "weight": 1
+          },
+          {
+            "max": 0.55,
+            "min": 0.55,
+            "value": 1.0,
+            "sum": 1.0,
+            "weight": 1
+          },
+          {
+            "max": 0.68,
+            "min": 0.68,
+            "value": 1.0,
+            "sum": 1.0,
+            "weight": 1
+          },
+          {
+            "max": 0.77,
+            "min": 0.77,
+            "value": 1.0,
+            "sum": 1.0,
+            "weight": 1
+          },
+          {
+            "max": 0.78,
+            "min": 0.78,
+            "value": 1.0,
+            "sum": 1.0,
+            "weight": 1
+          },
+          {
+            "max": 0.86,
+            "min": 0.86,
+            "value": 1.0,
+            "sum": 2.0,
+            "weight": 2
+          },
+          {
+            "max": 0.9,
+            "min": 0.9,
+            "value": 1.0,
+            "sum": 5.0,
+            "weight": 5
+          },
+          {
+            "max": 0.91,
+            "min": 0.91,
+            "value": 1.0,
+            "sum": 1.0,
+            "weight": 1
+          },
+          {
+            "max": 0.92,
+            "min": 0.92,
+            "value": 1.0,
+            "sum": 1.0,
+            "weight": 1
+          },
+          {
+            "max": 0.93,
+            "min": 0.93,
+            "value": 1.0,
+            "sum": 1.0,
+            "weight": 1
+          },
+          {
+            "max": 0.94,
+            "min": 0.94,
+            "value": 1.0,
+            "sum": 1.0,
+            "weight": 1
+          }
+        ],
+        "method": "isotonic"
+      },
+      "calibrated": {
+        "reliability": [
+          {
+            "count": 15,
+            "bin": 0,
+            "upper": 0.2,
+            "lower": 0.0,
+            "mean_predicted": 0.0,
+            "observed_rate": 0.0,
+            "absolute_gap": 0.0
+          },
+          {
+            "count": 15,
+            "bin": 4,
+            "upper": 1.0,
+            "lower": 0.8,
+            "mean_predicted": 1.0,
+            "observed_rate": 1.0,
+            "absolute_gap": 0.0
+          }
+        ],
+        "n": 30,
+        "log_loss": 9.999778782803791e-13,
+        "ece": 0.0,
+        "brier": 0.0
+      },
+      "fit_n": 30
+    },
+    "prime": {
+      "raw": {
+        "reliability": [
+          {
+            "count": 15,
+            "bin": 0,
+            "upper": 0.2,
+            "lower": 0.0,
+            "mean_predicted": 0.036666666666666674,
+            "observed_rate": 0.0,
+            "absolute_gap": 0.036666666666666674
+          },
+          {
+            "count": 4,
+            "bin": 2,
+            "upper": 0.6,
+            "lower": 0.4,
+            "mean_predicted": 0.5275000000000001,
+            "observed_rate": 1.0,
+            "absolute_gap": 0.4724999999999999
+          },
+          {
+            "count": 9,
+            "bin": 3,
+            "upper": 0.8,
+            "lower": 0.6,
+            "mean_predicted": 0.6722222222222222,
+            "observed_rate": 1.0,
+            "absolute_gap": 0.32777777777777783
+          },
+          {
+            "count": 2,
+            "bin": 4,
+            "upper": 1.0,
+            "lower": 0.8,
+            "mean_predicted": 0.815,
+            "observed_rate": 1.0,
+            "absolute_gap": 0.18500000000000005
+          }
+        ],
+        "n": 30,
+        "log_loss": 0.23870152812284207,
+        "ece": 0.192,
+        "brier": 0.06686666666666666
+      },
+      "model": {
+        "blocks": [
+          {
+            "max": 0.01,
+            "min": 0.01,
+            "value": 0.0,
+            "sum": 0.0,
+            "weight": 2
+          },
+          {
+            "max": 0.02,
+            "min": 0.02,
+            "value": 0.0,
+            "sum": 0.0,
+            "weight": 2
+          },
+          {
+            "max": 0.03,
+            "min": 0.03,
+            "value": 0.0,
+            "sum": 0.0,
+            "weight": 3
+          },
+          {
+            "max": 0.04,
+            "min": 0.04,
+            "value": 0.0,
+            "sum": 0.0,
+            "weight": 1
+          },
+          {
+            "max": 0.05,
+            "min": 0.05,
+            "value": 0.0,
+            "sum": 0.0,
+            "weight": 3
+          },
+          {
+            "max": 0.06,
+            "min": 0.06,
+            "value": 0.0,
+            "sum": 0.0,
+            "weight": 1
+          },
+          {
+            "max": 0.09,
+            "min": 0.09,
+            "value": 0.0,
+            "sum": 0.0,
+            "weight": 1
+          },
+          {
+            "max": 0.1,
+            "min": 0.1,
+            "value": 0.0,
+            "sum": 0.0,
+            "weight": 1
+          },
+          {
+            "max": 0.27,
+            "min": 0.27,
+            "value": 0.0,
+            "sum": 0.0,
+            "weight": 1
+          },
+          {
+            "max": 0.49,
+            "min": 0.49,
+            "value": 1.0,
+            "sum": 1.0,
+            "weight": 1
+          },
+          {
+            "max": 0.56,
+            "min": 0.56,
+            "value": 1.0,
+            "sum": 1.0,
+            "weight": 1
+          },
+          {
+            "max": 0.58,
+            "min": 0.58,
+            "value": 1.0,
+            "sum": 1.0,
+            "weight": 1
+          },
+          {
+            "max": 0.62,
+            "min": 0.62,
+            "value": 1.0,
+            "sum": 1.0,
+            "weight": 1
+          },
+          {
+            "max": 0.63,
+            "min": 0.63,
+            "value": 1.0,
+            "sum": 1.0,
+            "weight": 1
+          },
+          {
+            "max": 0.64,
+            "min": 0.64,
+            "value": 1.0,
+            "sum": 1.0,
+            "weight": 1
+          },
+          {
+            "max": 0.66,
+            "min": 0.66,
+            "value": 1.0,
+            "sum": 1.0,
+            "weight": 1
+          },
+          {
+            "max": 0.67,
+            "min": 0.67,
+            "value": 1.0,
+            "sum": 1.0,
+            "weight": 1
+          },
+          {
+            "max": 0.69,
+            "min": 0.69,
+            "value": 1.0,
+            "sum": 1.0,
+            "weight": 1
+          },
+          {
+            "max": 0.72,
+            "min": 0.72,
+            "value": 1.0,
+            "sum": 1.0,
+            "weight": 1
+          },
+          {
+            "max": 0.74,
+            "min": 0.74,
+            "value": 1.0,
+            "sum": 1.0,
+            "weight": 1
+          },
+          {
+            "max": 0.76,
+            "min": 0.76,
+            "value": 1.0,
+            "sum": 1.0,
+            "weight": 1
+          },
+          {
+            "max": 0.8,
+            "min": 0.8,
+            "value": 1.0,
+            "sum": 1.0,
+            "weight": 1
+          },
+          {
+            "max": 0.81,
+            "min": 0.81,
+            "value": 1.0,
+            "sum": 1.0,
+            "weight": 1
+          },
+          {
+            "max": 0.83,
+            "min": 0.83,
+            "value": 1.0,
+            "sum": 1.0,
+            "weight": 1
+          }
+        ],
+        "method": "isotonic"
+      },
+      "calibrated": {
+        "reliability": [
+          {
+            "count": 15,
+            "bin": 0,
+            "upper": 0.2,
+            "lower": 0.0,
+            "mean_predicted": 0.0,
+            "observed_rate": 0.0,
+            "absolute_gap": 0.0
+          },
+          {
+            "count": 15,
+            "bin": 4,
+            "upper": 1.0,
+            "lower": 0.8,
+            "mean_predicted": 1.0,
+            "observed_rate": 1.0,
+            "absolute_gap": 0.0
+          }
+        ],
+        "n": 30,
+        "log_loss": 9.999778782803791e-13,
+        "ece": 0.0,
+        "brier": 0.0
+      },
+      "fit_n": 30
+    },
+    "divisors": {
+      "raw": {
+        "reliability": [
+          {
+            "count": 15,
+            "bin": 0,
+            "upper": 0.2,
+            "lower": 0.0,
+            "mean_predicted": 0.013333333333333332,
+            "observed_rate": 0.0,
+            "absolute_gap": 0.013333333333333332
+          },
+          {
+            "count": 2,
+            "bin": 1,
+            "upper": 0.4,
+            "lower": 0.2,
+            "mean_predicted": 0.355,
+            "observed_rate": 1.0,
+            "absolute_gap": 0.645
+          },
+          {
+            "count": 4,
+            "bin": 2,
+            "upper": 0.6,
+            "lower": 0.4,
+            "mean_predicted": 0.49,
+            "observed_rate": 1.0,
+            "absolute_gap": 0.51
+          },
+          {
+            "count": 8,
+            "bin": 3,
+            "upper": 0.8,
+            "lower": 0.6,
+            "mean_predicted": 0.6912500000000001,
+            "observed_rate": 1.0,
+            "absolute_gap": 0.30874999999999986
+          },
+          {
+            "count": 1,
+            "bin": 4,
+            "upper": 1.0,
+            "lower": 0.8,
+            "mean_predicted": 0.83,
+            "observed_rate": 1.0,
+            "absolute_gap": 0.17000000000000004
+          }
+        ],
+        "n": 30,
+        "log_loss": 0.2765210111389722,
+        "ece": 0.20566666666666664,
+        "brier": 0.08974333333333334
+      },
+      "model": {
+        "blocks": [
+          {
+            "max": 0.01,
+            "min": 0.01,
+            "value": 0.0,
+            "sum": 0.0,
+            "weight": 8
+          },
+          {
+            "max": 0.02,
+            "min": 0.02,
+            "value": 0.0,
+            "sum": 0.0,
+            "weight": 4
+          },
+          {
+            "max": 0.03,
+            "min": 0.03,
+            "value": 0.0,
+            "sum": 0.0,
+            "weight": 2
+          },
+          {
+            "max": 0.11,
+            "min": 0.11,
+            "value": 0.0,
+            "sum": 0.0,
+            "weight": 1
+          },
+          {
+            "max": 0.24,
+            "min": 0.24,
+            "value": 1.0,
+            "sum": 1.0,
+            "weight": 1
+          },
+          {
+            "max": 0.42,
+            "min": 0.42,
+            "value": 1.0,
+            "sum": 1.0,
+            "weight": 1
+          },
+          {
+            "max": 0.49,
+            "min": 0.49,
+            "value": 1.0,
+            "sum": 1.0,
+            "weight": 1
+          },
+          {
+            "max": 0.54,
+            "min": 0.54,
+            "value": 1.0,
+            "sum": 2.0,
+            "weight": 2
+          },
+          {
+            "max": 0.62,
+            "min": 0.62,
+            "value": 1.0,
+            "sum": 1.0,
+            "weight": 1
+          },
+          {
+            "max": 0.65,
+            "min": 0.65,
+            "value": 1.0,
+            "sum": 1.0,
+            "weight": 1
+          },
+          {
+            "max": 0.68,
+            "min": 0.68,
+            "value": 1.0,
+            "sum": 1.0,
+            "weight": 1
+          },
+          {
+            "max": 0.69,
+            "min": 0.69,
+            "value": 1.0,
+            "sum": 1.0,
+            "weight": 1
+          },
+          {
+            "max": 0.7,
+            "min": 0.7,
+            "value": 1.0,
+            "sum": 1.0,
+            "weight": 1
+          },
+          {
+            "max": 0.71,
+            "min": 0.71,
+            "value": 1.0,
+            "sum": 1.0,
+            "weight": 1
+          },
+          {
+            "max": 0.77,
+            "min": 0.77,
+            "value": 1.0,
+            "sum": 2.0,
+            "weight": 2
+          },
+          {
+            "max": 0.78,
+            "min": 0.78,
+            "value": 1.0,
+            "sum": 1.0,
+            "weight": 1
+          },
+          {
+            "max": 0.82,
+            "min": 0.82,
+            "value": 1.0,
+            "sum": 1.0,
+            "weight": 1
+          }
+        ],
+        "method": "isotonic"
+      },
+      "calibrated": {
+        "reliability": [
+          {
+            "count": 15,
+            "bin": 0,
+            "upper": 0.2,
+            "lower": 0.0,
+            "mean_predicted": 0.0,
+            "observed_rate": 0.0,
+            "absolute_gap": 0.0
+          },
+          {
+            "count": 15,
+            "bin": 4,
+            "upper": 1.0,
+            "lower": 0.8,
+            "mean_predicted": 1.0,
+            "observed_rate": 1.0,
+            "absolute_gap": 0.0
+          }
+        ],
+        "n": 30,
+        "log_loss": 9.999778782803791e-13,
+        "ece": 0.0,
+        "brier": 0.0
+      },
+      "fit_n": 30
+    },
+    "pooled": {
+      "raw": {
+        "reliability": [
+          {
+            "count": 45,
+            "bin": 0,
+            "upper": 0.2,
+            "lower": 0.0,
+            "mean_predicted": 0.02111111111111112,
+            "observed_rate": 0.0,
+            "absolute_gap": 0.02111111111111112
+          },
+          {
+            "count": 2,
+            "bin": 1,
+            "upper": 0.4,
+            "lower": 0.2,
+            "mean_predicted": 0.355,
+            "observed_rate": 1.0,
+            "absolute_gap": 0.645
+          },
+          {
+            "count": 11,
+            "bin": 2,
+            "upper": 0.6,
+            "lower": 0.4,
+            "mean_predicted": 0.5009090909090909,
+            "observed_rate": 1.0,
+            "absolute_gap": 0.49909090909090914
+          },
+          {
+            "count": 21,
+            "bin": 3,
+            "upper": 0.8,
+            "lower": 0.6,
+            "mean_predicted": 0.6795238095238094,
+            "observed_rate": 1.0,
+            "absolute_gap": 0.3204761904761906
+          },
+          {
+            "count": 11,
+            "bin": 4,
+            "upper": 1.0,
+            "lower": 0.8,
+            "mean_predicted": 0.8809090909090909,
+            "observed_rate": 1.0,
+            "absolute_gap": 0.11909090909090914
+          }
+        ],
+        "n": 90,
+        "log_loss": 0.22540190002010357,
+        "ece": 0.17522222222222228,
+        "brier": 0.06714555555555553
+      },
+      "model": {
+        "blocks": [
+          {
+            "max": 0.01,
+            "min": 0.01,
+            "value": 0.0,
+            "sum": 0.0,
+            "weight": 18
+          },
+          {
+            "max": 0.02,
+            "min": 0.02,
+            "value": 0.0,
+            "sum": 0.0,
+            "weight": 10
+          },
+          {
+            "max": 0.03,
+            "min": 0.03,
+            "value": 0.0,
+            "sum": 0.0,
+            "weight": 5
+          },
+          {
+            "max": 0.04,
+            "min": 0.04,
+            "value": 0.0,
+            "sum": 0.0,
+            "weight": 1
+          },
+          {
+            "max": 0.05,
+            "min": 0.05,
+            "value": 0.0,
+            "sum": 0.0,
+            "weight": 3
+          },
+          {
+            "max": 0.06,
+            "min": 0.06,
+            "value": 0.0,
+            "sum": 0.0,
+            "weight": 3
+          },
+          {
+            "max": 0.09,
+            "min": 0.09,
+            "value": 0.0,
+            "sum": 0.0,
+            "weight": 1
+          },
+          {
+            "max": 0.1,
+            "min": 0.1,
+            "value": 0.0,
+            "sum": 0.0,
+            "weight": 1
+          },
+          {
+            "max": 0.11,
+            "min": 0.11,
+            "value": 0.0,
+            "sum": 0.0,
+            "weight": 1
+          },
+          {
+            "max": 0.27,
+            "min": 0.24,
+            "value": 0.5,
+            "sum": 1.0,
+            "weight": 2
+          },
+          {
+            "max": 0.42,
+            "min": 0.42,
+            "value": 0.5,
+            "sum": 1.0,
+            "weight": 2
+          },
+          {
+            "max": 0.49,
+            "min": 0.49,
+            "value": 1.0,
+            "sum": 2.0,
+            "weight": 2
+          },
+          {
+            "max": 0.54,
+            "min": 0.54,
+            "value": 1.0,
+            "sum": 2.0,
+            "weight": 2
+          },
+          {
+            "max": 0.55,
+            "min": 0.55,
+            "value": 1.0,
+            "sum": 1.0,
+            "weight": 1
+          },
+          {
+            "max": 0.56,
+            "min": 0.56,
+            "value": 1.0,
+            "sum": 1.0,
+            "weight": 1
+          },
+          {
+            "max": 0.58,
+            "min": 0.58,
+            "value": 1.0,
+            "sum": 1.0,
+            "weight": 1
+          },
+          {
+            "max": 0.62,
+            "min": 0.62,
+            "value": 1.0,
+            "sum": 2.0,
+            "weight": 2
+          },
+          {
+            "max": 0.63,
+            "min": 0.63,
+            "value": 1.0,
+            "sum": 1.0,
+            "weight": 1
+          },
+          {
+            "max": 0.64,
+            "min": 0.64,
+            "value": 1.0,
+            "sum": 1.0,
+            "weight": 1
+          },
+          {
+            "max": 0.65,
+            "min": 0.65,
+            "value": 1.0,
+            "sum": 1.0,
+            "weight": 1
+          },
+          {
+            "max": 0.66,
+            "min": 0.66,
+            "value": 1.0,
+            "sum": 1.0,
+            "weight": 1
+          },
+          {
+            "max": 0.67,
+            "min": 0.67,
+            "value": 1.0,
+            "sum": 1.0,
+            "weight": 1
+          },
+          {
+            "max": 0.68,
+            "min": 0.68,
+            "value": 1.0,
+            "sum": 2.0,
+            "weight": 2
+          },
+          {
+            "max": 0.69,
+            "min": 0.69,
+            "value": 1.0,
+            "sum": 2.0,
+            "weight": 2
+          },
+          {
+            "max": 0.7,
+            "min": 0.7,
+            "value": 1.0,
+            "sum": 1.0,
+            "weight": 1
+          },
+          {
+            "max": 0.71,
+            "min": 0.71,
+            "value": 1.0,
+            "sum": 1.0,
+            "weight": 1
+          },
+          {
+            "max": 0.72,
+            "min": 0.72,
+            "value": 1.0,
+            "sum": 1.0,
+            "weight": 1
+          },
+          {
+            "max": 0.74,
+            "min": 0.74,
+            "value": 1.0,
+            "sum": 1.0,
+            "weight": 1
+          },
+          {
+            "max": 0.76,
+            "min": 0.76,
+            "value": 1.0,
+            "sum": 1.0,
+            "weight": 1
+          },
+          {
+            "max": 0.77,
+            "min": 0.77,
+            "value": 1.0,
+            "sum": 3.0,
+            "weight": 3
+          },
+          {
+            "max": 0.78,
+            "min": 0.78,
+            "value": 1.0,
+            "sum": 2.0,
+            "weight": 2
+          },
+          {
+            "max": 0.8,
+            "min": 0.8,
+            "value": 1.0,
+            "sum": 1.0,
+            "weight": 1
+          },
+          {
+            "max": 0.81,
+            "min": 0.81,
+            "value": 1.0,
+            "sum": 1.0,
+            "weight": 1
+          },
+          {
+            "max": 0.82,
+            "min": 0.82,
+            "value": 1.0,
+            "sum": 1.0,
+            "weight": 1
+          },
+          {
+            "max": 0.83,
+            "min": 0.83,
+            "value": 1.0,
+            "sum": 1.0,
+            "weight": 1
+          },
+          {
+            "max": 0.86,
+            "min": 0.86,
+            "value": 1.0,
+            "sum": 2.0,
+            "weight": 2
+          },
+          {
+            "max": 0.9,
+            "min": 0.9,
+            "value": 1.0,
+            "sum": 5.0,
+            "weight": 5
+          },
+          {
+            "max": 0.91,
+            "min": 0.91,
+            "value": 1.0,
+            "sum": 1.0,
+            "weight": 1
+          },
+          {
+            "max": 0.92,
+            "min": 0.92,
+            "value": 1.0,
+            "sum": 1.0,
+            "weight": 1
+          },
+          {
+            "max": 0.93,
+            "min": 0.93,
+            "value": 1.0,
+            "sum": 1.0,
+            "weight": 1
+          },
+          {
+            "max": 0.94,
+            "min": 0.94,
+            "value": 1.0,
+            "sum": 1.0,
+            "weight": 1
+          }
+        ],
+        "method": "isotonic"
+      },
+      "calibrated": {
+        "reliability": [
+          {
+            "count": 45,
+            "bin": 0,
+            "upper": 0.2,
+            "lower": 0.0,
+            "mean_predicted": 0.0,
+            "observed_rate": 0.0,
+            "absolute_gap": 0.0
+          },
+          {
+            "count": 2,
+            "bin": 2,
+            "upper": 0.6,
+            "lower": 0.4,
+            "mean_predicted": 0.5,
+            "observed_rate": 1.0,
+            "absolute_gap": 0.5
+          },
+          {
+            "count": 43,
+            "bin": 4,
+            "upper": 1.0,
+            "lower": 0.8,
+            "mean_predicted": 1.0,
+            "observed_rate": 1.0,
+            "absolute_gap": 0.0
+          }
+        ],
+        "n": 90,
+        "log_loss": 0.015403270680087693,
+        "ece": 0.011111111111111112,
+        "brier": 0.005555555555555556
+      },
+      "fit_n": 90
+    }
+  },
+  "experiment": "primality-v1",
+  "fingerprint": "typesafe-prepared-v1:14a937c730bfab18959f4353b4b005d70fe163e0c83c218f98db9ee279764946",
+  "dataset": [
+    {
+      "id": 103,
+      "label": true,
+      "split": "calibration"
+    },
+    {
+      "id": 123,
+      "label": false,
+      "split": "calibration"
+    },
+    {
+      "id": 127,
+      "label": true,
+      "split": "calibration"
+    },
+    {
+      "id": 131,
+      "label": true,
+      "split": "held_out"
+    },
+    {
+      "id": 149,
+      "label": true,
+      "split": "calibration"
+    },
+    {
+      "id": 152,
+      "label": false,
+      "split": "held_out"
+    },
+    {
+      "id": 176,
+      "label": false,
+      "split": "held_out"
+    },
+    {
+      "id": 179,
+      "label": true,
+      "split": "held_out"
+    },
+    {
+      "id": 242,
+      "label": false,
+      "split": "held_out"
+    },
+    {
+      "id": 257,
+      "label": true,
+      "split": "calibration"
+    },
+    {
+      "id": 266,
+      "label": false,
+      "split": "held_out"
+    },
+    {
+      "id": 268,
+      "label": false,
+      "split": "held_out"
+    },
+    {
+      "id": 271,
+      "label": true,
+      "split": "calibration"
+    },
+    {
+      "id": 285,
+      "label": false,
+      "split": "held_out"
+    },
+    {
+      "id": 311,
+      "label": true,
+      "split": "held_out"
+    },
+    {
+      "id": 326,
+      "label": false,
+      "split": "held_out"
+    },
+    {
+      "id": 347,
+      "label": true,
+      "split": "held_out"
+    },
+    {
+      "id": 367,
+      "label": true,
+      "split": "held_out"
+    },
+    {
+      "id": 373,
+      "label": true,
+      "split": "calibration"
+    },
+    {
+      "id": 379,
+      "label": true,
+      "split": "calibration"
+    },
+    {
+      "id": 384,
+      "label": false,
+      "split": "held_out"
+    },
+    {
+      "id": 389,
+      "label": true,
+      "split": "calibration"
+    },
+    {
+      "id": 397,
+      "label": true,
+      "split": "held_out"
+    },
+    {
+      "id": 457,
+      "label": true,
+      "split": "held_out"
+    },
+    {
+      "id": 463,
+      "label": true,
+      "split": "calibration"
+    },
+    {
+      "id": 492,
+      "label": false,
+      "split": "calibration"
+    },
+    {
+      "id": 504,
+      "label": false,
+      "split": "held_out"
+    },
+    {
+      "id": 528,
+      "label": false,
+      "split": "held_out"
+    },
+    {
+      "id": 542,
+      "label": false,
+      "split": "calibration"
+    },
+    {
+      "id": 550,
+      "label": false,
+      "split": "held_out"
+    },
+    {
+      "id": 560,
+      "label": false,
+      "split": "calibration"
+    },
+    {
+      "id": 577,
+      "label": true,
+      "split": "calibration"
+    },
+    {
+      "id": 587,
+      "label": true,
+      "split": "calibration"
+    },
+    {
+      "id": 599,
+      "label": true,
+      "split": "held_out"
+    },
+    {
+      "id": 601,
+      "label": true,
+      "split": "held_out"
+    },
+    {
+      "id": 606,
+      "label": false,
+      "split": "calibration"
+    },
+    {
+      "id": 613,
+      "label": true,
+      "split": "calibration"
+    },
+    {
+      "id": 631,
+      "label": true,
+      "split": "held_out"
+    },
+    {
+      "id": 641,
+      "label": true,
+      "split": "held_out"
+    },
+    {
+      "id": 643,
+      "label": true,
+      "split": "held_out"
+    },
+    {
+      "id": 660,
+      "label": false,
+      "split": "held_out"
+    },
+    {
+      "id": 686,
+      "label": false,
+      "split": "calibration"
+    },
+    {
+      "id": 692,
+      "label": false,
+      "split": "calibration"
+    },
+    {
+      "id": 701,
+      "label": true,
+      "split": "held_out"
+    },
+    {
+      "id": 707,
+      "label": false,
+      "split": "calibration"
+    },
+    {
+      "id": 727,
+      "label": true,
+      "split": "calibration"
+    },
+    {
+      "id": 743,
+      "label": true,
+      "split": "held_out"
+    },
+    {
+      "id": 747,
+      "label": false,
+      "split": "calibration"
+    },
+    {
+      "id": 757,
+      "label": true,
+      "split": "held_out"
+    },
+    {
+      "id": 823,
+      "label": true,
+      "split": "calibration"
+    },
+    {
+      "id": 856,
+      "label": false,
+      "split": "calibration"
+    },
+    {
+      "id": 891,
+      "label": false,
+      "split": "held_out"
+    },
+    {
+      "id": 906,
+      "label": false,
+      "split": "calibration"
+    },
+    {
+      "id": 907,
+      "label": true,
+      "split": "calibration"
+    },
+    {
+      "id": 960,
+      "label": false,
+      "split": "calibration"
+    },
+    {
+      "id": 963,
+      "label": false,
+      "split": "held_out"
+    },
+    {
+      "id": 969,
+      "label": false,
+      "split": "calibration"
+    },
+    {
+      "id": 978,
+      "label": false,
+      "split": "calibration"
+    },
+    {
+      "id": 994,
+      "label": false,
+      "split": "calibration"
+    },
+    {
+      "id": 996,
+      "label": false,
+      "split": "held_out"
+    }
+  ],
+  "decision": "Use rank/monotone aggregation; this small arithmetic experiment does not justify Bayesian graph multiplication or calibration transfer to other claims.",
+  "limitations": "Balanced case-control sample; 30 fit and 30 held-out integers. Pooled phrasing observations are correlated, not independent samples. No claims of population-wide calibration."
+}

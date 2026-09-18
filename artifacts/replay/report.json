@@ -1,0 +1,6562 @@
+{
+  "record": {
+    "cpu_ms": 1832,
+    "curves": [
+      {
+        "completed": 0,
+        "elapsed_us": 4926,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 6805,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 8771,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 10697,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 12703,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 14846,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 16997,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 19035,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 20914,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 22706,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 26306,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 27789,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 29796,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 31980,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 34209,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 35755,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 38127,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 39826,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 41823,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 43999,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 46002,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 48875,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 50729,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 53036,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 55405,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 57349,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 58868,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 60837,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 62664,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 64822,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 67147,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 70125,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 71782,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 75530,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 78240,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 79949,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 82040,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 83810,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 85816,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 87804,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 90005,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 91905,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 93705,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 95669,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 97988,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 99779,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 101693,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 104413,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 105975,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 108619,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 111353,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 129866,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 131763,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 133891,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 135737,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 137940,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 139718,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 141725,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 143702,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 145759,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 147761,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 149708,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 151726,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 153691,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 155693,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 157773,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 159706,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 161728,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 163720,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 165762,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 167777,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 169693,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 171689,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 173698,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 175795,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 177729,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 179707,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 181709,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 183760,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 185701,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 187697,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 189746,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 191757,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 193787,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 195817,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 197774,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 199719,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 201739,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 203747,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 205726,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 207700,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 209665,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 211668,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 213710,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 215725,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 217737,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 219666,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 221671,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 223682,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 225702,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 227708,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 229680,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 231708,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 234162,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 235679,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 238293,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 239866,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 245469,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 247984,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 249865,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 251940,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 253685,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 255678,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 258011,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 259835,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 261786,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 263826,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 265706,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 267737,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 269709,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 271737,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 273688,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 275697,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 277680,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 279683,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 281742,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 283674,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 285724,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 287664,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 289671,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 291721,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 293752,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 295737,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 297730,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 299720,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 301733,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 303681,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 305682,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 307758,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 309694,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 311934,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 313714,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 315688,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 317726,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 319695,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 321726,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 323674,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 325778,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 327783,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 330004,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 331758,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 333713,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 335698,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 337688,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 339690,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 341777,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 343727,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 345711,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 347702,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 349702,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 351735,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 353696,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 355701,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 357695,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 359705,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 361766,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 363699,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 365728,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 367708,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 369690,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 371720,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 373686,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 375683,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 377689,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 379680,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 381738,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 383689,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 385714,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 387710,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 389696,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 391785,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 393690,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 396626,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 398811,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 400913,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 403901,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 405850,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 407823,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 409776,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 411778,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 413802,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 415786,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 417763,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 419817,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 421789,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 423784,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 425760,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 427719,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 429854,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 431747,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 433721,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 435697,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 437698,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 439691,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 441686,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 443726,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 445682,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 447716,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 449711,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 451696,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 453712,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 455682,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 457691,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 459686,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 461697,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 463761,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 465737,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 467697,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 469686,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 471699,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 473708,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 475663,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 477688,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 479667,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 481720,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 483722,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 485675,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 487694,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 489682,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 491712,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 493726,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 495708,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 497836,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 499708,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 501769,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 503763,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 505811,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 507709,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 509746,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 511727,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 513781,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 515747,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 517713,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 519679,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 521691,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 523725,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 525755,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 527684,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 529819,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 531712,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 533723,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 535696,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 537742,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 539667,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 541693,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 543791,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 545711,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 547834,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 549775,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 551704,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 553726,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 555686,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 557698,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 559672,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 561692,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 563965,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 565725,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 567710,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 569689,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 571674,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 573701,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 575702,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 577689,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 579690,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 581694,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 583698,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 585685,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 587699,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 589683,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 591741,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 593743,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 595715,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 597939,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 599968,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 601729,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 603768,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 605699,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 607699,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 609737,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 611709,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 613774,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 615699,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 617687,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 619700,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 621720,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 623716,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 625697,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 627719,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 629707,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 631787,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 633726,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 635734,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 637701,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 639716,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 641734,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 643755,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 645683,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 647731,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 649707,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 651697,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 653761,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 655689,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 658367,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 659803,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 662013,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 663743,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 665866,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 667830,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 670074,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 671735,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 673886,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 675788,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 677781,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 679709,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 681735,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 683750,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 685696,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 687743,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 689720,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 691734,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 693724,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 695677,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 697784,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 699720,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 701783,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 703913,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 705964,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 707738,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 709767,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 711781,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 713753,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 715753,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 717747,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 719707,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 721689,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 723754,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 725855,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 727692,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 729681,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 731690,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 733742,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 735734,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 737716,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 739695,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 741749,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 743749,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 745707,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 747789,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 749715,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 751702,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 753793,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 755700,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 757713,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 759698,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 761690,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 763740,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 765715,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 767685,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 769711,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 771676,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 773693,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 775686,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 777764,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 779702,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 781763,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 783774,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 785771,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 787719,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 789699,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 791757,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 793725,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 795694,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 797701,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 799692,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 801801,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 803753,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 805689,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 807702,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 809682,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 811717,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 813802,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 815768,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 817679,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 819758,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 821717,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 823720,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 825760,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 827710,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 829681,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 831781,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 833769,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 835687,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 837782,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 839680,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 841693,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 843756,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 845685,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 847785,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 849727,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 851747,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 853740,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 855686,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 857794,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 859680,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 861672,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 863756,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 865712,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 867746,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 869680,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 871699,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 873717,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 875697,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 877677,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 879686,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 881703,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 883765,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 885749,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 887756,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 889704,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 891714,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 893759,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 895680,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 897694,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 899686,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 901676,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 903707,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 905674,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 907692,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 909680,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 911780,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 913744,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 915700,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 917691,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 919673,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 921678,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 923754,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 925749,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 927789,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 929681,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 931703,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 933722,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 935665,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 937674,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 939696,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 941687,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 943764,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 945718,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 947708,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 949689,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 951754,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 953715,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 955761,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 957702,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 959673,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 961707,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 963720,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 965697,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 967729,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 969702,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 971686,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 973799,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 975694,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 977706,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 979656,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 981712,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 983708,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 985697,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 987710,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 989747,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 991704,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 993734,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 995694,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 997749,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 999660,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 1001761,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 1003757,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 1005684,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 1007678,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 1009676,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 1011730,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 1013721,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 1015682,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 1017697,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 1019676,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 1021675,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 1023714,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 1025675,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 1027671,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 1029700,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 1031709,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 1033715,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 1035675,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 1037716,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 1039678,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 1041907,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 1043796,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 1045699,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 1047768,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 1049798,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 1051764,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 1053722,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 1055688,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 1057683,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 1059662,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 1061673,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 1063762,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 1065793,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 1067688,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 1069753,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 1071714,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 1073712,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 1075672,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 1077673,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 1079682,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 1081729,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 1083751,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 1085719,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 1087725,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 1090019,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 1091843,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 1093882,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 1095747,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 1097732,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 1099720,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 1101707,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 1103702,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 1105671,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 1107694,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 1109722,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 1111733,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 1113740,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 1115695,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 1117683,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 1119693,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 1121705,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 1123736,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 1125687,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 1127692,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 1129678,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 1131791,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 1133736,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 1135722,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 1137693,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 1139718,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 1141744,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 1143767,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 1145680,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 1147721,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 1149739,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 1151739,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 1153747,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 1155703,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 1157702,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 1159688,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 1161690,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 1163823,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 1165680,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 1167684,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 1169676,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 1171682,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 1173711,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 1175700,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 1177768,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 1179872,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 1181718,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 1183715,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 1185710,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 1187689,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 1189687,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 1191731,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 1193758,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 1195728,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 1197715,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 1199721,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 1201695,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 1203751,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 1205689,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 1207774,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 1209750,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 1211727,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 1213733,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 1215708,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 1217722,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 1219689,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 1221754,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 1223710,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 1225678,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 1227676,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 1229845,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 1231731,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 1233723,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 1235689,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 1237697,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 1239759,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 1241707,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 1243720,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 1245680,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 1247802,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 1249683,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 1251683,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 1253707,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 1255704,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 1257717,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 1259743,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 1261711,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 1263733,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 1265706,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 1267703,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 1269670,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 1271716,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 1273719,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 1275679,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 1277741,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 1279677,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 1281712,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 1283710,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 1285684,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 1287690,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 1289677,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 1291741,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 1293743,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 1295737,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 1297788,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 1299690,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 1301718,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 1303757,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 1305715,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 1307798,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 1309688,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 1311702,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 1313765,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 1315768,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 1317871,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 1319825,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 1321775,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 1323809,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 1325764,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 1327912,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 1329902,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 1331964,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 1333927,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 1335772,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 1337748,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 1339731,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 1341866,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 1343814,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 1345735,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 1347755,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 1349727,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 1351725,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 1353758,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 1355761,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 1357778,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 1359729,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 1361689,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 1363726,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 1365807,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 1367716,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 1369680,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 1371776,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 1373708,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 1375730,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 1377733,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 1379845,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 1381698,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 1383710,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 1385665,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 1387693,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 1389680,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 1391696,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 1393730,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 1395751,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 1397735,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 1399793,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 1401728,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 1403794,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 1405665,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 1407699,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 1409668,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 1411763,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 1413721,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 1415685,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 1417682,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 1419727,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 1421691,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 1423714,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 1425674,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 1427687,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 1429675,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 1431788,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 1433712,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 1435679,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 1437708,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 1439716,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 1441706,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 1443738,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 1445679,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 1447727,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 1449698,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 1451713,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 1453833,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 1455773,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 1457710,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 1459672,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 1461715,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 1463873,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 1465667,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 1467667,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 1469704,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 1471716,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 1473729,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 1475703,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 1477679,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 1479664,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 1481757,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 1483747,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 1485679,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 1487711,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 1489669,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 1491778,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 1493730,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 1495698,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 1497730,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 1499753,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 1501765,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 1503742,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 1505694,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 1507710,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 1509686,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 1511682,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 1513772,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 1515682,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 1517704,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 1519720,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 1521733,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 1523763,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 1525676,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 1527713,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 1529682,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 1531762,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 1533883,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 1535690,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 1537687,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 1539672,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 1541774,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 1543743,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 1545679,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 1547699,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 1549684,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 1551676,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 1553713,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 1555720,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 1557705,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 1559699,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 1561709,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 1563809,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 1565733,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 1567688,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 1569698,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 1571699,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 1573809,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 1575678,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 1577741,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 1579679,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 1581718,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 1583737,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 1585774,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 1587762,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 1589688,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 1591685,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 1593706,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 1595666,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 1597742,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 1599701,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 1601752,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 1603750,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 1605665,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 1607783,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 1609707,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 1611689,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 1613732,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 1615761,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 1617685,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 1619735,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 1621723,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 1623709,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 1625682,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 1627681,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 1629667,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 1631704,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 1633752,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 1635766,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 1637729,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 1639677,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 1641847,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 1643711,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 1645681,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 1647797,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 1649733,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 1651717,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 1653797,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 1655700,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 1657712,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 1659689,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 1661715,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 1664007,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 1665697,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 1667704,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 1669687,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 1671807,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 1673895,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 1675820,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 1677728,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 1679863,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 1681763,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 1683739,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 1685688,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 1687701,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 1689689,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 1691716,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 1693722,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 1695688,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 1697743,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 1699738,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 1701929,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 1704231,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 1705984,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 1707824,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 1709723,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 1711722,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 1713853,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 0,
+        "elapsed_us": 1715708,
+        "mean_score": null,
+        "observed": 0,
+        "round": null
+      },
+      {
+        "completed": 8,
+        "elapsed_us": 1718678,
+        "mean_score": 0.34374999999999994,
+        "observed": 8,
+        "round": null
+      }
+    ],
+    "elapsed_us": 1718722,
+    "event_order": [
+      {
+        "actor_id": 101,
+        "sequence": 1,
+        "type": ":actor_birth"
+      },
+      {
+        "actor_id": 102,
+        "sequence": 2,
+        "type": ":actor_birth"
+      },
+      {
+        "actor_id": 107,
+        "sequence": 3,
+        "type": ":actor_birth"
+      },
+      {
+        "actor_id": 111,
+        "sequence": 4,
+        "type": ":actor_birth"
+      },
+      {
+        "actor_id": 127,
+        "sequence": 5,
+        "type": ":actor_birth"
+      },
+      {
+        "actor_id": 143,
+        "sequence": 6,
+        "type": ":actor_birth"
+      },
+      {
+        "actor_id": 149,
+        "sequence": 7,
+        "type": ":actor_birth"
+      },
+      {
+        "actor_id": 169,
+        "sequence": 8,
+        "type": ":actor_birth"
+      },
+      {
+        "actor_id": null,
+        "sequence": 9,
+        "type": ":measurement_batch_start"
+      },
+      {
+        "actor_id": null,
+        "sequence": 10,
+        "type": "{:typesafe, {:typesafe_sdk, :evaluate, :start}}"
+      },
+      {
+        "actor_id": null,
+        "sequence": 11,
+        "type": "{:typesafe, {:typesafe_sdk, :evaluate, :start}}"
+      },
+      {
+        "actor_id": null,
+        "sequence": 12,
+        "type": "{:typesafe, {:typesafe_sdk, :evaluate, :start}}"
+      },
+      {
+        "actor_id": null,
+        "sequence": 13,
+        "type": "{:typesafe, {:typesafe_sdk, :evaluate, :start}}"
+      },
+      {
+        "actor_id": null,
+        "sequence": 14,
+        "type": "{:typesafe, {:typesafe_sdk, :evaluate, :start}}"
+      },
+      {
+        "actor_id": null,
+        "sequence": 15,
+        "type": "{:typesafe, {:typesafe_sdk, :evaluate, :start}}"
+      },
+      {
+        "actor_id": null,
+        "sequence": 16,
+        "type": "{:typesafe, {:typesafe_sdk, :evaluate, :start}}"
+      },
+      {
+        "actor_id": null,
+        "sequence": 17,
+        "type": "{:typesafe, {:typesafe_sdk, :evaluate, :start}}"
+      },
+      {
+        "actor_id": null,
+        "sequence": 18,
+        "type": "{:typesafe, {:typesafe_sdk, :answer}}"
+      },
+      {
+        "actor_id": null,
+        "sequence": 19,
+        "type": "{:typesafe, {:typesafe_sdk, :answer}}"
+      },
+      {
+        "actor_id": null,
+        "sequence": 20,
+        "type": "{:typesafe, {:typesafe_sdk, :answer}}"
+      },
+      {
+        "actor_id": null,
+        "sequence": 21,
+        "type": "{:typesafe, {:typesafe_sdk, :evaluate, :stop}}"
+      },
+      {
+        "actor_id": null,
+        "sequence": 22,
+        "type": "{:typesafe, {:typesafe_sdk, :evaluate, :stop}}"
+      },
+      {
+        "actor_id": null,
+        "sequence": 23,
+        "type": "{:typesafe, {:typesafe_sdk, :evaluate, :stop}}"
+      },
+      {
+        "actor_id": null,
+        "sequence": 24,
+        "type": "{:typesafe, {:typesafe_sdk, :answer}}"
+      },
+      {
+        "actor_id": null,
+        "sequence": 25,
+        "type": "{:typesafe, {:typesafe_sdk, :evaluate, :stop}}"
+      },
+      {
+        "actor_id": null,
+        "sequence": 26,
+        "type": "{:typesafe, {:typesafe_sdk, :answer}}"
+      },
+      {
+        "actor_id": null,
+        "sequence": 27,
+        "type": "{:typesafe, {:typesafe_sdk, :evaluate, :stop}}"
+      },
+      {
+        "actor_id": null,
+        "sequence": 28,
+        "type": "{:typesafe, {:typesafe_sdk, :answer}}"
+      },
+      {
+        "actor_id": null,
+        "sequence": 29,
+        "type": "{:typesafe, {:typesafe_sdk, :evaluate, :stop}}"
+      },
+      {
+        "actor_id": null,
+        "sequence": 30,
+        "type": "{:typesafe, {:typesafe_sdk, :answer}}"
+      },
+      {
+        "actor_id": null,
+        "sequence": 31,
+        "type": "{:typesafe, {:typesafe_sdk, :evaluate, :stop}}"
+      },
+      {
+        "actor_id": null,
+        "sequence": 32,
+        "type": "{:typesafe, {:typesafe_sdk, :answer}}"
+      },
+      {
+        "actor_id": null,
+        "sequence": 33,
+        "type": "{:typesafe, {:typesafe_sdk, :evaluate, :stop}}"
+      },
+      {
+        "actor_id": null,
+        "sequence": 34,
+        "type": ":measurement_response"
+      },
+      {
+        "actor_id": null,
+        "sequence": 35,
+        "type": ":measurement_response"
+      },
+      {
+        "actor_id": null,
+        "sequence": 36,
+        "type": ":measurement_response"
+      },
+      {
+        "actor_id": null,
+        "sequence": 37,
+        "type": ":measurement_response"
+      },
+      {
+        "actor_id": null,
+        "sequence": 38,
+        "type": ":measurement_response"
+      },
+      {
+        "actor_id": null,
+        "sequence": 39,
+        "type": ":measurement_response"
+      },
+      {
+        "actor_id": null,
+        "sequence": 40,
+        "type": ":measurement_response"
+      },
+      {
+        "actor_id": null,
+        "sequence": 41,
+        "type": ":measurement_response"
+      },
+      {
+        "actor_id": 143,
+        "sequence": 42,
+        "type": ":actor_complete"
+      },
+      {
+        "actor_id": 169,
+        "sequence": 43,
+        "type": ":actor_complete"
+      },
+      {
+        "actor_id": 111,
+        "sequence": 44,
+        "type": ":actor_complete"
+      },
+      {
+        "actor_id": 149,
+        "sequence": 45,
+        "type": ":actor_complete"
+      },
+      {
+        "actor_id": 107,
+        "sequence": 46,
+        "type": ":actor_complete"
+      },
+      {
+        "actor_id": 127,
+        "sequence": 47,
+        "type": ":actor_complete"
+      },
+      {
+        "actor_id": 102,
+        "sequence": 48,
+        "type": ":actor_complete"
+      },
+      {
+        "actor_id": 101,
+        "sequence": 49,
+        "type": ":actor_complete"
+      }
+    ],
+    "physical_batches": 1,
+    "quiescent": true,
+    "regime": ":async",
+    "results": [
+      {
+        "id": 101,
+        "value": 0.62
+      },
+      {
+        "id": 102,
+        "value": 0.03
+      },
+      {
+        "id": 107,
+        "value": 0.7
+      },
+      {
+        "id": 111,
+        "value": 0.13
+      },
+      {
+        "id": 127,
+        "value": 0.48
+      },
+      {
+        "id": 143,
+        "value": 0.1
+      },
+      {
+        "id": 149,
+        "value": 0.67
+      },
+      {
+        "id": 169,
+        "value": 0.02
+      }
+    ],
+    "reused": 0
+  },
+  "replays": [
+    {
+      "curves": [
+        {
+          "round": null,
+          "completed": 8,
+          "elapsed_us": 4346,
+          "observed": 8,
+          "mean_score": 0.34374999999999994
+        }
+      ],
+      "regime": ":async",
+      "elapsed_us": 4354,
+      "cpu_ms": 41,
+      "results": [
+        {
+          "id": 101,
+          "value": 0.62
+        },
+        {
+          "id": 102,
+          "value": 0.03
+        },
+        {
+          "id": 107,
+          "value": 0.7
+        },
+        {
+          "id": 111,
+          "value": 0.13
+        },
+        {
+          "id": 127,
+          "value": 0.48
+        },
+        {
+          "id": 143,
+          "value": 0.1
+        },
+        {
+          "id": 149,
+          "value": 0.67
+        },
+        {
+          "id": 169,
+          "value": 0.02
+        }
+      ],
+      "event_order": [
+        {
+          "type": ":actor_birth",
+          "actor_id": 101,
+          "sequence": 1
+        },
+        {
+          "type": ":actor_birth",
+          "actor_id": 102,
+          "sequence": 2
+        },
+        {
+          "type": ":actor_birth",
+          "actor_id": 107,
+          "sequence": 3
+        },
+        {
+          "type": ":actor_birth",
+          "actor_id": 111,
+          "sequence": 4
+        },
+        {
+          "type": ":actor_birth",
+          "actor_id": 127,
+          "sequence": 5
+        },
+        {
+          "type": ":actor_birth",
+          "actor_id": 143,
+          "sequence": 6
+        },
+        {
+          "type": ":actor_birth",
+          "actor_id": 149,
+          "sequence": 7
+        },
+        {
+          "type": ":actor_birth",
+          "actor_id": 169,
+          "sequence": 8
+        },
+        {
+          "type": ":measurement_reused",
+          "actor_id": 101,
+          "sequence": 9
+        },
+        {
+          "type": ":measurement_reused",
+          "actor_id": 102,
+          "sequence": 10
+        },
+        {
+          "type": ":measurement_reused",
+          "actor_id": 107,
+          "sequence": 11
+        },
+        {
+          "type": ":measurement_reused",
+          "actor_id": 111,
+          "sequence": 12
+        },
+        {
+          "type": ":measurement_reused",
+          "actor_id": 127,
+          "sequence": 13
+        },
+        {
+          "type": ":measurement_reused",
+          "actor_id": 143,
+          "sequence": 14
+        },
+        {
+          "type": ":measurement_reused",
+          "actor_id": 149,
+          "sequence": 15
+        },
+        {
+          "type": ":measurement_reused",
+          "actor_id": 169,
+          "sequence": 16
+        },
+        {
+          "type": ":actor_complete",
+          "actor_id": 127,
+          "sequence": 17
+        },
+        {
+          "type": ":actor_complete",
+          "actor_id": 111,
+          "sequence": 18
+        },
+        {
+          "type": ":actor_complete",
+          "actor_id": 107,
+          "sequence": 19
+        },
+        {
+          "type": ":actor_complete",
+          "actor_id": 102,
+          "sequence": 20
+        },
+        {
+          "type": ":actor_complete",
+          "actor_id": 101,
+          "sequence": 21
+        },
+        {
+          "type": ":actor_complete",
+          "actor_id": 169,
+          "sequence": 22
+        },
+        {
+          "type": ":actor_complete",
+          "actor_id": 143,
+          "sequence": 23
+        },
+        {
+          "type": ":actor_complete",
+          "actor_id": 149,
+          "sequence": 24
+        }
+      ],
+      "reused": 8,
+      "physical_batches": 0,
+      "quiescent": true,
+      "transport_requests": 0
+    },
+    {
+      "curves": [
+        {
+          "round": 1,
+          "completed": 0,
+          "elapsed_us": 1576,
+          "observed": 0,
+          "mean_score": null
+        },
+        {
+          "round": 2,
+          "completed": 8,
+          "elapsed_us": 4121,
+          "observed": 8,
+          "mean_score": 0.34374999999999994
+        }
+      ],
+      "regime": "{:bsp, []}",
+      "elapsed_us": 4131,
+      "cpu_ms": 6,
+      "results": [
+        {
+          "id": 101,
+          "value": 0.62
+        },
+        {
+          "id": 102,
+          "value": 0.03
+        },
+        {
+          "id": 107,
+          "value": 0.7
+        },
+        {
+          "id": 111,
+          "value": 0.13
+        },
+        {
+          "id": 127,
+          "value": 0.48
+        },
+        {
+          "id": 143,
+          "value": 0.1
+        },
+        {
+          "id": 149,
+          "value": 0.67
+        },
+        {
+          "id": 169,
+          "value": 0.02
+        }
+      ],
+      "event_order": [
+        {
+          "type": ":actor_birth",
+          "actor_id": 101,
+          "sequence": 1
+        },
+        {
+          "type": ":actor_birth",
+          "actor_id": 102,
+          "sequence": 2
+        },
+        {
+          "type": ":actor_birth",
+          "actor_id": 107,
+          "sequence": 3
+        },
+        {
+          "type": ":actor_birth",
+          "actor_id": 111,
+          "sequence": 4
+        },
+        {
+          "type": ":actor_birth",
+          "actor_id": 127,
+          "sequence": 5
+        },
+        {
+          "type": ":actor_birth",
+          "actor_id": 143,
+          "sequence": 6
+        },
+        {
+          "type": ":actor_birth",
+          "actor_id": 149,
+          "sequence": 7
+        },
+        {
+          "type": ":actor_birth",
+          "actor_id": 169,
+          "sequence": 8
+        },
+        {
+          "type": ":measurement_reused",
+          "actor_id": 169,
+          "sequence": 9
+        },
+        {
+          "type": ":measurement_reused",
+          "actor_id": 101,
+          "sequence": 10
+        },
+        {
+          "type": ":measurement_reused",
+          "actor_id": 102,
+          "sequence": 11
+        },
+        {
+          "type": ":measurement_reused",
+          "actor_id": 107,
+          "sequence": 12
+        },
+        {
+          "type": ":measurement_reused",
+          "actor_id": 143,
+          "sequence": 13
+        },
+        {
+          "type": ":measurement_reused",
+          "actor_id": 149,
+          "sequence": 14
+        },
+        {
+          "type": ":measurement_reused",
+          "actor_id": 111,
+          "sequence": 15
+        },
+        {
+          "type": ":measurement_reused",
+          "actor_id": 127,
+          "sequence": 16
+        },
+        {
+          "type": ":barrier",
+          "actor_id": null,
+          "sequence": 17
+        },
+        {
+          "type": ":actor_complete",
+          "actor_id": 101,
+          "sequence": 18
+        },
+        {
+          "type": ":actor_complete",
+          "actor_id": 169,
+          "sequence": 19
+        },
+        {
+          "type": ":actor_complete",
+          "actor_id": 102,
+          "sequence": 20
+        },
+        {
+          "type": ":actor_complete",
+          "actor_id": 143,
+          "sequence": 21
+        },
+        {
+          "type": ":actor_complete",
+          "actor_id": 107,
+          "sequence": 22
+        },
+        {
+          "type": ":actor_complete",
+          "actor_id": 149,
+          "sequence": 23
+        },
+        {
+          "type": ":actor_complete",
+          "actor_id": 111,
+          "sequence": 24
+        },
+        {
+          "type": ":actor_complete",
+          "actor_id": 127,
+          "sequence": 25
+        },
+        {
+          "type": ":barrier",
+          "actor_id": null,
+          "sequence": 26
+        }
+      ],
+      "reused": 8,
+      "physical_batches": 0,
+      "quiescent": true,
+      "transport_requests": 0
+    }
+  ],
+  "interpretation": "Identical fixed semantic responses and final values. This independent-node strategy establishes a controlled replay baseline, not an iterative convergence advantage."
+}

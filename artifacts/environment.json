@@ -1,0 +1,24 @@
+{
+  "date_utc": "2026-09-18T08:53:40.888822+00:00",
+  "kernel_commit": "61dd88f2ad40aae114b93c374b1634fc48b69237",
+  "elixir": "1.20.3",
+  "otp": "29.0.5",
+  "schedulers_online": 24,
+  "system": "Linux-6.18.33.2-microsoft-standard-WSL2-x86_64-with-glibc2.43",
+  "benchmark_configs": {
+    "birth": 27,
+    "measurement": 384
+  },
+  "notes": [
+    "Benchmarks refreshed at kernel commit shown; live calibration and original live response recording preceded this final accounting fix.",
+    "Single trial per configuration; sequential birth driver; no provider load/limit sweep.",
+    "Historical before-index/before-edge files contain only configurations completed before the diagnostic runs were interrupted."
+  ],
+  "scripts_sha256": {
+    "experiments/plot_calibration.py": "d60b77728398becd586bc9541a3cdb99f877e9ee102c98939934498d41e4e172",
+    "experiments/calibration.exs": "b14d15e4cf72b699f75bd3bb662123e4e75f3b97667dde15813124970501a2a7",
+    "experiments/node_birth.exs": "0d6b598750dbfd64a24003d788f6a9277ccb7421e2156c6c2115e61fe202bdf0",
+    "experiments/replay.exs": "d6e71e61f9a8f5379eb07b0839da0915879c52569303f56a01d27ce8e898681c",
+    "experiments/measurement.exs": "79bffff1f74661b14ad3c676af2c1300a956fc7a6072e5c77887f8257461e116"
+  }
+}

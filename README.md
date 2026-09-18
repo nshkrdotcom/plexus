@@ -39,19 +39,19 @@ Independent actors no longer need to issue independent HTTP requests. Requests s
 
 ## Kernel primitives
 
-The current source implements the P0/P1 foundation and deliberate seams for the later regime/expansion work:
+The kernel implements the following primitives, with precise semantics and limits in the guides:
 
-- **Population** — per-run node metadata, class tags, queries, top-k and Pareto selection.
-- **Typed topology** — per-run ETS `:bag` edges such as `:child`, `:supports`, `:contradicts`, `:depends_on`, `:neighbor`, or application-defined edge types.
+- **Population** — per-run metadata, secondary indexes, top-k/Pareto, seeded sampling and population operators.
+- **Typed topology** — per-run ETS ordered-set edges such as `:child`, `:supports`, `:contradicts`, `:depends_on`, `:neighbor`, or application-defined edge types.
 - **Local measurement** — named prepared contracts, memoization, replay, dedupe, coalescing, and `evaluate_many/4` as the normal framework path.
-- **Scheduling regime** — `:async`, BSP buffering/barriers, plus conservative bounded-async/priority policy seams.
+- **Scheduling regime** — `:async`, BSP buffering/barriers, bounded command progress and queued priority ordering.
 - **Belief state** — explicit Bernoulli/categorical/ordinal projections with raw values retained.
 - **Quiescence counters** — run-scoped lock-free counters exposed to stop logic.
-- **Budget/admission** — atomic measure/expand/token/population meters.
+- **Budget/admission** — atomic meters plus explicit hierarchical credit accounts.
 - **Selection/pruning** — process cancellation/termination before topology deletion.
-- **Expansion seam** — a provider-neutral priority queue, capability fail-closed checks, proposal JSON Schema, and materializer. A concrete `inference` adapter is intentionally not fabricated because that dependency/API was not supplied with this implementation pass.
+- **Expansion** — Hex `inference` 0.4.1, a separate priority queue, fail-closed capabilities, neutral streams/monitoring, accounting and proposal materialization. Physical cancellation depends on provider support.
 - **Provenance/invalidation** — `:depends_on` edges plus epoch/stale repair helpers.
-- **Run record/replay** — append-only in-memory events and fixed response storage.
+- **Run record/replay** — append-only events and versioned, checksummed fixed-response files.
 - **Stop/reduce** — composable predicates and population reducers.
 
 ## Hot-path architecture
@@ -181,7 +181,7 @@ Plexus.schedule(run, {:bsp, []})
 {:ok, round, released_commands} = Plexus.barrier(run)
 ```
 
-Replay mode is intended to hold semantic responses fixed while execution order changes. Record once, export the run's `{memo_key, result}` entries with `Plexus.replay_entries/1`, load them into a fresh `replay: :replay` run with `Plexus.load_replay/2`, and then change only the scheduling regime. Durable on-disk serialization/versioning remains a handoff item.
+Replay mode is intended to hold semantic responses fixed while execution order changes. Record once, export the run's `{memo_key, result}` entries with `Plexus.replay_entries/1`, load them into a fresh `replay: :replay` run with `Plexus.load_replay/2`, and then change only the scheduling regime. Use `Plexus.Record.File.write/2` and `load/2` for versioned files with matching contract/config manifests.
 
 ## Calibration is part of the kernel, not an afterthought
 
@@ -204,7 +204,7 @@ Expensive generative work never shares the measurement queue. `Plexus.Expand.Que
 Plexus.Expand.Schema.proposals()
 ```
 
-To connect an inference library, implement `Plexus.Expand.Adapter`. The adapter integration must be finished against the actual inference dependency on a machine where that source/API is available.
+Supply an `inference_client` to use `Plexus.Expand.InferenceAdapter`, backed by the published Hex dependency. See the expansion guide for stream monitoring, capability checks and provider-specific cancellation limits.
 
 ## Observability
 
@@ -226,10 +226,11 @@ Plexus.events(run)
 - [Calibration and replay](guides/calibration-and-replay.md)
 - [Expansion tier](guides/expansion.md)
 - [Testing and release](guides/testing-and-release.md)
+- [Experiments and measured results](guides/experiments.md)
 
 ## Non-goals
 
-Plexus is intentionally single-node. It does not provide multi-node distribution, durable persistence, provider abstraction, a general workflow DSL, prompt management, or tool-calling agent loops. Provider concerns belong in the inference layer; transport/retries remain TypeSafe/Pristine concerns.
+Plexus is intentionally single-node. It does not provide multi-node distribution, durable process/mailbox persistence, provider abstraction, a general workflow DSL, prompt management, or tool-calling agent loops. Provider concerns belong in the inference layer; transport/retries remain TypeSafe/Pristine concerns.
 
 ## License
 

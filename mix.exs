@@ -74,6 +74,8 @@ defmodule Plexus.MixProject do
         "README.md",
         "assets",
         "config",
+        "experiments",
+        "artifacts",
         "guides",
         "lib",
         "mix.exs",
@@ -102,6 +104,7 @@ defmodule Plexus.MixProject do
         "guides/calibration-and-replay.md",
         "guides/expansion.md",
         "guides/testing-and-release.md",
+        "guides/experiments.md",
         "HANDOFF.md",
         "CHANGELOG.md",
         "LICENSE"

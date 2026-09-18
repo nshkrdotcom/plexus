@@ -7,12 +7,12 @@
 ## Work sequence
 
 - [x] Audit 868b64c and run dependency, format, compile, ExUnit, Credo, Dialyzer, docs and Hex dry-run gates. All passed on Elixir 1.20.3 / OTP 29; baseline has 11 tests.
-- [ ] Runtime lifecycle: add concurrent population admission, startup completion, partition/isolation, termination and owner restart tests; fix demonstrated failures in run/owner/actor/graph code. Instrument managed message and command lifetimes.
-- [ ] Measurement: cover batching, option separation, caching, replay misses, ordered failures, shared cancellation, saturation and teardown using TypeSafe fixtures; fix queue lifecycle failures.
-- [ ] Expansion: use latest Hex inference 0.4.1, implement public-API adapter, capability translation, stream/cancellation/accounting and materialization tests. No local path dependencies.
-- [ ] Complete scheduling bounds, budget grants, selection operators, repair queue, stop predicates and atomic graph updates with focused tests and explicit semantics.
-- [ ] Durable replay: versioned safe format, manifest, integrity checks, compatibility failures and round-trip tests.
-- [ ] Experiments: reproducible labeled claim dataset, phrasing-specific held-out calibration metrics/plots; fixed-store async/BSP experiment; node birth and measurement parameter sweeps with measured artifacts.
-- [ ] Final documentation and all quality/package gates; commit and push stable verified stages.
+- [x] Runtime lifecycle: add concurrent population admission, startup completion, partition/isolation, termination and owner restart tests; fix demonstrated failures in run/owner/actor/graph code. Instrument managed message and command lifetimes.
+- [x] Measurement: cover batching, option separation, caching, replay misses, ordered failures, shared cancellation, saturation and teardown using TypeSafe fixtures; fix queue lifecycle failures.
+- [x] Expansion: use latest Hex inference 0.4.1, implement public-API adapter, capability translation, stream/cancellation/accounting and materialization tests. No local path dependencies.
+- [x] Complete scheduling bounds, budget grants, selection operators, repair queue, stop predicates and atomic graph updates with focused tests and explicit semantics.
+- [x] Durable replay: versioned safe format, manifest, integrity checks, compatibility failures and round-trip tests.
+- [x] Experiments: reproducible labeled claim dataset, phrasing-specific held-out calibration metrics/plots; fixed-store async/BSP experiment; node birth and measurement parameter sweeps with measured artifacts.
+- [x] Final documentation and all quality/package gates; commit and push stable verified stages.
 
 Each implementation stage uses a failing behavioral test before the fix and focused tests afterward. Final claims distinguish deterministic fixture evidence, measured BEAM evidence, and live-provider evidence. No subagents. No release bump.

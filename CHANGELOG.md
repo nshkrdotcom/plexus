@@ -8,12 +8,23 @@ The format is based on Keep a Changelog and this project adheres to Semantic Ver
 
 ### Changed
 
+- Fixed concurrent population admission, completion during init, partition/owner cleanup, task saturation and cancellation teardown
+- Made graph metadata updates atomic and replaced high-degree bag indexes with ordered indexes
+- Tracked managed actor messages/commands/timers and retired active actors exactly once across completion/termination races
+- Included evaluation options in memo keys and allowed cache/replay hits with exhausted measurement credit
+
 - Replaced the global graph/run hot-path GenServer calls with per-run ETS resources and partitioned actor supervisors
 - Made `Plexus.Actor.Command` executable through a central interpreter for spawn, topology, measurement, expansion, budget and pruning effects
 - Routed framework-managed measurements through per-contract cache/replay/dedupe coalescers backed by `TypeSafeSDK.evaluate_many/4`
 - Added physical TypeSafe batch cancellation tokens for subtree pruning and separated expensive expansion work onto its own bounded queue
 
 ### Added
+
+- Published Hex inference 0.4.1 integration with streams, TypeSafe monitoring, capability preflight and independent expansion accounting
+- Versioned safe durable replay files with contract/config manifests and checksums
+- Bounded command scheduling, queued priorities, hierarchical credit accounts, secondary indexes, seeded resampling/tournaments and leaf population operators
+- Prioritized epoch-checked repair, confidence/deadline/stability/oscillation stop predicates
+- Runtime acceptance suites on Elixir 1.18/OTP 27 and Elixir 1.20/OTP 29, plus measured benchmark/calibration/replay artifacts
 
 - Typed weighted graph edges, population selection helpers and provenance invalidation
 - Atomic run budgets, quiescence counters, append-only event recording and fixed-response replay storage
