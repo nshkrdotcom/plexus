@@ -43,6 +43,7 @@ defmodule Plexus.Examples.IncidentCommander.Chronology do
       path
       |> Data.csv_maps!()
       |> Stream.filter(&selected_day?(&1, day))
+      |> Stream.filter(&usable_row?(kind, &1))
 
     case Enumerable.reduce(stream, {:cont, nil}, &suspend_row/2) do
       {:suspended, row, continuation} ->
@@ -84,6 +85,15 @@ defmodule Plexus.Examples.IncidentCommander.Chronology do
   end
 
   defp suspend_row(row, _acc), do: {:suspend, row}
+
+  defp usable_row?(:business, row) do
+    case row["message"] do
+      message when is_binary(message) -> String.trim(message) != ""
+      _ -> false
+    end
+  end
+
+  defp usable_row?(_kind, _row), do: true
 
   defp selected_day?(row, day) do
     case timestamp(row) do

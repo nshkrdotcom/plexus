@@ -32,7 +32,8 @@ defmodule Plexus.Examples.IncidentCommander.Service do
       signal_count: 0,
       recent: [],
       pending_signals: %{},
-      last_event_time_us: nil
+      last_event_time_us: nil,
+      semantic_signature: nil
     }
 
     Graph.update(context.run_id, context.actor_id, fn attrs ->
@@ -67,7 +68,7 @@ defmodule Plexus.Examples.IncidentCommander.Service do
       })
     end
 
-    if signal? do
+    if signal? and IncidentCommander.measurement_credit_available?(state.context.run_id) do
       Event.publish(
         state.context.run_id,
         IncidentCommander.service_event(state.service),
@@ -107,10 +108,19 @@ defmodule Plexus.Examples.IncidentCommander.Service do
     relevance = Plexus.Belief.from(response, :anomaly_relevance)
     mode = Plexus.Belief.from(response, :failure_mode)
     strength = Plexus.Belief.from(response, :diagnostic_strength)
+    failure_mode = to_string(mode.value)
+
+    state =
+      maybe_invalidate_semantic_state(
+        state,
+        event,
+        relevance,
+        failure_mode,
+        strength.value
+      )
 
     if not is_nil(event) and Plexus.Belief.probability(relevance) >= state.trigger_probability do
       incident = IncidentCommander.incident_key(event.event_time_us, state.incident_window_us)
-      failure_mode = to_string(mode.value)
       hypothesis_id = IncidentCommander.hypothesis_id(incident, state.service, failure_mode)
 
       opts = [
@@ -156,6 +166,13 @@ defmodule Plexus.Examples.IncidentCommander.Service do
     end
 
     {:noreply, state}
+  end
+
+  def handle_cast(
+        {:plexus, :measurement, {:signal, event_id}, {:error, {:budget_exhausted, :measure}}},
+        state
+      ) do
+    {:noreply, %{state | pending_signals: Map.delete(state.pending_signals, event_id)}}
   end
 
   def handle_cast({:plexus, :measurement, {:signal, event_id}, {:error, error}}, state) do
@@ -252,6 +269,43 @@ defmodule Plexus.Examples.IncidentCommander.Service do
       "trace_id" => raw["trace_id"],
       "span_id" => raw["span_id"]
     }
+  end
+
+  defp maybe_invalidate_semantic_state(state, nil, _relevance, _failure_mode, _strength),
+    do: state
+
+  defp maybe_invalidate_semantic_state(state, event, relevance, failure_mode, strength) do
+    if Plexus.Belief.probability(relevance) >= state.trigger_probability do
+      signature = {failure_mode, strength}
+
+      case state.semantic_signature do
+        nil ->
+          %{state | semantic_signature: signature}
+
+        ^signature ->
+          state
+
+        previous ->
+          invalidated =
+            Provenance.invalidate(
+              state.context.run_id,
+              {:service, state.service},
+              notify: true
+            )
+
+          Record.append(state.context.run_id, :gaia_service_semantic_state_changed, %{
+            service: state.service,
+            event_id: event.event_id,
+            previous: inspect(previous),
+            current: inspect(signature),
+            dependent_nodes: max(length(invalidated) - 1, 0)
+          })
+
+          %{state | semantic_signature: signature}
+      end
+    else
+      state
+    end
   end
 
   defp trace_failure?(nil), do: false
@@ -460,6 +514,14 @@ defmodule Plexus.Examples.IncidentCommander.Hypothesis do
   end
 
   def handle_cast(
+        {:plexus, :measurement, {:hypothesis_update, _revision, _evidence_epoch},
+         {:error, {:budget_exhausted, :measure}}},
+        state
+      ) do
+    {:noreply, %{state | pending_update: false, pending_update_epoch: nil, phase: :observing}}
+  end
+
+  def handle_cast(
         {:plexus, :measurement, {:hypothesis_update, revision, evidence_epoch}, {:error, error}},
         state
       ) do
@@ -525,6 +587,14 @@ defmodule Plexus.Examples.IncidentCommander.Hypothesis do
   end
 
   def handle_cast(
+        {:plexus, :measurement, {:challenge, _challenge_id, _challenger_id},
+         {:error, {:budget_exhausted, :measure}}},
+        state
+      ) do
+    {:noreply, %{state | phase: :observing}}
+  end
+
+  def handle_cast(
         {:plexus, :measurement, {:challenge, challenge_id, challenger_id}, {:error, error}},
         state
       ) do
@@ -581,12 +651,16 @@ defmodule Plexus.Examples.IncidentCommander.Hypothesis do
   defp request_snapshot(%{pending_update: true} = state), do: state
 
   defp request_snapshot(state) do
-    Actor.dispatch(
-      state.context,
-      {:send, {:service, state.service}, {:request_snapshot, state.context.actor_id}}
-    )
+    if IncidentCommander.measurement_credit_available?(state.context.run_id) do
+      Actor.dispatch(
+        state.context,
+        {:send, {:service, state.service}, {:request_snapshot, state.context.actor_id}}
+      )
 
-    %{state | phase: :investigating}
+      %{state | phase: :investigating}
+    else
+      %{state | phase: :observing}
+    end
   end
 
   defp repair_if_needed(state, evidence_epoch) do
@@ -888,6 +962,7 @@ defmodule Plexus.Examples.IncidentCommander.Replay do
 
     state = %{
       context: context,
+      owner: args[:owner],
       cursor: cursor,
       progress: args[:progress],
       service_opts: args.service_opts,
@@ -995,6 +1070,10 @@ defmodule Plexus.Examples.IncidentCommander.Replay do
       events: state.emitted
     })
 
+    if is_pid(state.owner) do
+      send(state.owner, {:gaia_replay_finished, self(), reason, state.emitted})
+    end
+
     Actor.dispatch(state.context, {:complete, %{reason: reason, events: state.emitted}})
     state
   end
@@ -1011,7 +1090,7 @@ defmodule Plexus.Examples.IncidentCommander do
   alias Plexus.Budget.Accounts
   alias Plexus.Examples.IncidentCommander.{Hypothesis, Progress, Replay, Service, Topology}
   alias Plexus.Examples.Support.{Data, Runtime}
-  alias Plexus.{Graph, Population, Record, Run}
+  alias Plexus.{Budget, Graph, Population, Record, Run}
 
   @signal_modes [
     dependency_failure: "Upstream or downstream dependency failure",
@@ -1096,12 +1175,13 @@ defmodule Plexus.Examples.IncidentCommander do
         recent_limit: opts[:recent_limit] || 24
       ]
 
-      {:ok, _replay_pid} =
+      {:ok, replay_pid} =
         Run.start_actor(run,
           module: Replay,
           actor_id: :gaia_replay,
           class: :replay,
           init_arg: %{
+            owner: self(),
             trace_files: trace_files,
             business_files: business_files,
             day: day,
@@ -1113,9 +1193,16 @@ defmodule Plexus.Examples.IncidentCommander do
           }
         )
 
-      Runtime.await_quiescent!(run, opts[:timeout_ms] || 1_800_000)
+      timeout_ms = opts[:timeout_ms] || 1_800_000
+      replay_result = await_replay_terminal!(replay_pid, timeout_ms)
+
+      if (opts[:max_events] || 0) == 0 and replay_result.reason != :eof do
+        raise "GAIA replay terminated with #{inspect(replay_result.reason)} before EOF"
+      end
+
+      Runtime.await_quiescent!(run, timeout_ms)
       truth = truth_services(run_files, day)
-      summary = summarize(run, topology, truth, day)
+      summary = summarize(run, topology, truth, day, replay_result)
       report(summary)
 
       if path = opts[:record_path] do
@@ -1129,6 +1216,35 @@ defmodule Plexus.Examples.IncidentCommander do
       Topology.close(topology)
       Runtime.stop(run)
     end
+  end
+
+  @doc false
+  def await_replay_terminal!(replay_pid, timeout_ms)
+      when is_pid(replay_pid) and is_integer(timeout_ms) and timeout_ms > 0 do
+    monitor = Process.monitor(replay_pid)
+
+    receive do
+      {:gaia_replay_finished, ^replay_pid, reason, events} ->
+        Process.demonitor(monitor, [:flush])
+        %{reason: reason, events: events}
+
+      {:DOWN, ^monitor, :process, ^replay_pid, reason} ->
+        raise "GAIA replay actor terminated before completion: #{inspect(reason)}"
+    after
+      timeout_ms ->
+        Process.demonitor(monitor, [:flush])
+        raise "timed out waiting for GAIA replay terminal result"
+    end
+  end
+
+  @doc false
+  def measurement_credit_available?(run_id) do
+    case Budget.remaining(Run.config(run_id).budget, :measure) do
+      0 -> false
+      _ -> true
+    end
+  rescue
+    ArgumentError -> false
   end
 
   def register_contracts!(run) do
@@ -1352,15 +1468,13 @@ defmodule Plexus.Examples.IncidentCommander do
     |> Enum.uniq()
   end
 
-  defp summarize(run, topology, truth, day) do
+  defp summarize(run, topology, truth, day, replay_result) do
     run_id = Run.run_id(run)
     hypotheses = Graph.by_class(run_id, :hypothesis)
     services = Graph.by_class(run_id, :service)
     events = Record.events(run_id)
     transport = transport_from_events(events)
     acceptance = acceptance_from_events(events)
-    replay = Graph.get(run_id, :gaia_replay) || %{}
-    replay_result = replay[:result] || %{}
 
     top =
       hypotheses

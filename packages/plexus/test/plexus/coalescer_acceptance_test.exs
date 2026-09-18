@@ -176,19 +176,21 @@ defmodule Plexus.CoalescerAcceptanceTest do
            )
   end
 
-  test "per-item failures scatter to the corresponding waiter" do
+  @tag :failed_measure_credit
+  test "launched failed measurements still consume measurement credit" do
     callback = fn request ->
       if String.contains?(IO.iodata_to_binary(request.body), "bad-state"),
         do: {:transport_error, :closed},
         else: {:answers, [flag: {:noul, 0.8}]}
     end
 
-    {_run, id, _client, contract} = setup_run([], callback)
+    {run, id, _client, contract} = setup_run([], callback)
     submit(id, :a, :bad, "bad-state", contract)
     submit(id, :b, :good, "good-state", contract)
     assert_receive {:bad, {:error, _}}, 2_000
     assert_receive {:good, {:ok, response}}, 2_000
     assert TypeSafeSDK.Response.values(response).flag == 0.8
+    assert Budget.used(Run.config(run).budget, :measure) == 2
   end
 
   test "run teardown cancels in-flight physical tokens and transport workers" do

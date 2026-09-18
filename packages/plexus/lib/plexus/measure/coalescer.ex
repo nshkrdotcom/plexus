@@ -232,8 +232,6 @@ defmodule Plexus.Measure.Coalescer do
     |> Enum.each(fn {entry, result} ->
       if match?({:ok, _}, result) do
         Cache.put(run_id, entry.memo_key, result)
-      else
-        refund_measurements(run_id, 1)
       end
 
       if Config.fetch!(run_id).replay == :record do
