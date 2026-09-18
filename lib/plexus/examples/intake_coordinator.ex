@@ -27,7 +27,10 @@ defmodule Plexus.Examples.IntakeCoordinator do
             sales: "Pricing, plan, or procurement requests."
           ),
         urgent: TypeSafeSDK.noul("Does this need urgent human attention?"),
-        evidence: TypeSafeSDK.noul("Return up to three compact evidence statements separated by semicolons.")
+        evidence:
+          TypeSafeSDK.noul(
+            "Return up to three compact evidence statements separated by semicolons."
+          )
       )
 
     {:ok,
@@ -100,7 +103,8 @@ defmodule Plexus.Examples.IntakeCoordinator do
     if snippets == [] do
       {:noreply, %{state | classification: classification}}
     else
-      {:noreply, %{state | classification: classification}, {:continue, {:spawn_evidence_workers, snippets}}}
+      {:noreply, %{state | classification: classification},
+       {:continue, {:spawn_evidence_workers, snippets}}}
     end
   end
 

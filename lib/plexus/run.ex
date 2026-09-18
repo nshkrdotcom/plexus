@@ -36,9 +36,7 @@ defmodule Plexus.Run do
     run_id = Keyword.get(opts, :id, make_ref())
 
     {:ok, task_supervisor} =
-      Task.Supervisor.start_link(
-        Keyword.get(opts, :actor_task_supervisor_opts, [max_children: 64])
-      )
+      Task.Supervisor.start_link(Keyword.get(opts, :actor_task_supervisor_opts, max_children: 64))
 
     {:ok, actor_supervisor} = DynamicSupervisor.start_link(strategy: :one_for_one)
 
@@ -91,7 +89,10 @@ defmodule Plexus.Run do
     actor_id = Keyword.fetch!(opts, :actor_id)
     parent_id = Keyword.get(opts, :parent_id)
     init_arg = Keyword.get(opts, :init_arg, %{})
-    max_in_flight = Keyword.get(opts, :max_in_flight, Application.get_env(:plexus, :default_max_in_flight, 16))
+
+    max_in_flight =
+      Keyword.get(opts, :max_in_flight, Application.get_env(:plexus, :default_max_in_flight, 16))
+
     evaluation_options = Keyword.get(opts, :evaluation_options, [])
 
     child_opts = [
@@ -101,12 +102,13 @@ defmodule Plexus.Run do
       task_supervisor: state.task_supervisor,
       max_in_flight: max_in_flight,
       evaluation_options: evaluation_options,
-      init_arg: Map.merge(init_arg, %{
-        run: self(),
-        run_id: state.id,
-        actor_id: actor_id,
-        parent_id: parent_id
-      })
+      init_arg:
+        Map.merge(init_arg, %{
+          run: self(),
+          run_id: state.id,
+          actor_id: actor_id,
+          parent_id: parent_id
+        })
     ]
 
     result = DynamicSupervisor.start_child(state.actor_supervisor, {module, child_opts})

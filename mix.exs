@@ -105,10 +105,21 @@ defmodule Plexus.MixProject do
         Project: ["HANDOFF.md", "CHANGELOG.md", "LICENSE"]
       ],
       groups_for_modules: [
-        Core: [Plexus, Plexus.Application, Plexus.Run, Plexus.Registry, Plexus.Graph, Plexus.Contract],
+        Core: [
+          Plexus,
+          Plexus.Application,
+          Plexus.Run,
+          Plexus.Registry,
+          Plexus.Graph,
+          Plexus.Contract
+        ],
         Actor: [Plexus.Actor, Plexus.Actor.Command, Plexus.Actor.Context],
         Strategy: [Plexus.Strategy.Fanout],
-        Examples: [Plexus.Examples.IntakeCoordinator, Plexus.Examples.EvidenceWorker, Plexus.Examples.Sample]
+        Examples: [
+          Plexus.Examples.IntakeCoordinator,
+          Plexus.Examples.EvidenceWorker,
+          Plexus.Examples.Sample
+        ]
       ]
     ]
   end

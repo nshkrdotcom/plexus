@@ -33,7 +33,8 @@ defmodule Plexus.Graph do
   end
 
   @spec attach_child(term(), term(), term()) :: :ok
-  def attach_child(run_id, parent_id, child_id), do: GenServer.call(__MODULE__, {:attach, run_id, parent_id, child_id})
+  def attach_child(run_id, parent_id, child_id),
+    do: GenServer.call(__MODULE__, {:attach, run_id, parent_id, child_id})
 
   @spec children(term(), term()) :: [term()]
   def children(run_id, actor_id) do
@@ -45,7 +46,8 @@ defmodule Plexus.Graph do
   end
 
   @spec subtree(term(), term()) :: [term()]
-  def subtree(run_id, actor_id), do: do_subtree(run_id, actor_id, MapSet.new()) |> MapSet.to_list()
+  def subtree(run_id, actor_id),
+    do: do_subtree(run_id, actor_id, MapSet.new()) |> MapSet.to_list()
 
   @spec prune(term(), term()) :: :ok
   def prune(run_id, actor_id), do: GenServer.call(__MODULE__, {:prune, run_id, actor_id})
@@ -74,7 +76,11 @@ defmodule Plexus.Graph do
     parent = Map.merge(%{children: []}, get(run_id, parent_id) || %{})
     child = Map.merge(%{children: []}, get(run_id, child_id) || %{})
 
-    :ets.insert(@table, {{run_id, parent_id}, %{parent | children: Enum.uniq(parent.children ++ [child_id])}})
+    :ets.insert(
+      @table,
+      {{run_id, parent_id}, %{parent | children: Enum.uniq(parent.children ++ [child_id])}}
+    )
+
     :ets.insert(@table, {{run_id, child_id}, Map.put(child, :parent, parent_id)})
     {:reply, :ok, state}
   end

@@ -13,7 +13,12 @@ defmodule Plexus.Examples.EvidenceWorker do
   def init(%{text: text} = args) do
     prepared =
       TypeSafeSDK.prepare!(
-        relevance: TypeSafeSDK.score("How relevant is this evidence to the root issue?", ["low", "medium", "high"]),
+        relevance:
+          TypeSafeSDK.score("How relevant is this evidence to the root issue?", [
+            "low",
+            "medium",
+            "high"
+          ]),
         actionable: TypeSafeSDK.noul("Is this evidence actionable?")
       )
 

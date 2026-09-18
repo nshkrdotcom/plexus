@@ -26,12 +26,14 @@ defmodule Plexus.Contract do
     TypeSafeSDK.evaluate(client, state, prepared_or_questions, opts)
   end
 
-  @spec batch_stream(TypeSafeSDK.Client.t(), Enumerable.t(), Prepared.t() | keyword(), keyword()) :: Enumerable.t()
+  @spec batch_stream(TypeSafeSDK.Client.t(), Enumerable.t(), Prepared.t() | keyword(), keyword()) ::
+          Enumerable.t()
   def batch_stream(client, states, prepared_or_questions, opts \\ []) do
     TypeSafeSDK.evaluate_stream(client, states, prepared_or_questions, opts)
   end
 
-  @spec batch_many(TypeSafeSDK.Client.t(), Enumerable.t(), Prepared.t() | keyword(), keyword()) :: list()
+  @spec batch_many(TypeSafeSDK.Client.t(), Enumerable.t(), Prepared.t() | keyword(), keyword()) ::
+          list()
   def batch_many(client, states, prepared_or_questions, opts \\ []) do
     TypeSafeSDK.evaluate_many(client, states, prepared_or_questions, opts)
   end
