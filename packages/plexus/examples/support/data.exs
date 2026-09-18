@@ -12,8 +12,8 @@ defmodule Plexus.Examples.Support.Data do
   def write_jsonl!(path, rows) do
     File.mkdir_p!(Path.dirname(path))
 
-    File.open!(path, [:write], fn io ->
-      Enum.each(rows, &IO.write(io, Jason.encode!(&1) <> "\n"))
+    File.open!(path, [:write, :binary], fn io ->
+      Enum.each(rows, &IO.binwrite(io, Jason.encode!(&1) <> "\n"))
     end)
 
     path

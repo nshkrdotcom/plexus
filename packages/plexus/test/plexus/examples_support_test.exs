@@ -1,6 +1,8 @@
 defmodule Plexus.ExamplesSupportTest do
   use ExUnit.Case, async: true
 
+  alias Plexus.Examples.Support.Data
+
   Code.require_file("../../examples/support/data.exs", __DIR__)
   Code.require_file("../../examples/support/http.exs", __DIR__)
 
@@ -20,5 +22,28 @@ defmodule Plexus.ExamplesSupportTest do
 
   test "path encoder protects package separators for deps.dev" do
     assert HTTP.encode_path("@scope/pkg") == "%40scope%2Fpkg"
+  end
+
+  test "JSONL writer preserves UTF-8 dataset text" do
+    path =
+      Path.join(
+        System.tmp_dir!(),
+        "plexus-jsonl-unicode-#{System.unique_integer([:positive])}.jsonl"
+      )
+
+    on_exit(fn -> File.rm(path) end)
+
+    row = %{
+      "text" => "café — naïve Δ",
+      "emoji" => "⚡",
+      "quoted" => "日本語"
+    }
+
+    Data.write_jsonl!(path, [row])
+
+    assert [^row] =
+             path
+             |> Data.jsonl!()
+             |> Enum.to_list()
   end
 end
