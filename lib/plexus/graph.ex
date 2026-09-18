@@ -1,92 +1,173 @@
 defmodule Plexus.Graph do
   @moduledoc """
-  Lightweight in-memory subtree metadata store.
+  Per-run lock-free node and typed-edge graph.
 
-  The graph is intentionally small and single-node. It tracks parent/child
-  relationships and module/metadata labels so a run can inspect or prune its
-  actor population.
+  Nodes live in an ETS `:set`. Edges live in an ETS `:bag` and are stored in
+  both outgoing and incoming directions, avoiding children-list read/modify/write
+  races and the global graph GenServer from the original scaffold.
   """
 
-  use GenServer
+  alias Plexus.Run.Config
 
-  @table :plexus_graph
+  @type edge_type :: atom()
 
-  def start_link(opts \\ []), do: GenServer.start_link(__MODULE__, opts, name: __MODULE__)
+  @spec put(term(), term(), keyword() | map()) :: :ok
+  def put(run_id, actor_id, attrs) do
+    config = Config.fetch!(run_id)
+    attrs = attrs |> Enum.into(%{}) |> Map.put_new(:epoch, 0) |> Map.put_new(:stale, false)
 
-  @impl true
-  def init(_opts) do
-    table = :ets.new(@table, [:named_table, :public, :set, read_concurrency: true])
-    {:ok, %{table: table}}
+    old_class =
+      case :ets.lookup(config.tables.nodes, actor_id) do
+        [{^actor_id, existing}] -> Map.get(existing, :class)
+        [] -> nil
+      end
+
+    new_class = Map.get(attrs, :class)
+
+    if old_class != nil and old_class != new_class do
+      :ets.delete_object(config.tables.node_classes, {{:class, old_class}, actor_id})
+    end
+
+    if new_class != nil do
+      :ets.insert(config.tables.node_classes, {{:class, new_class}, actor_id})
+    end
+
+    :ets.insert(config.tables.nodes, {actor_id, attrs})
+    :ok
   end
 
-  @spec put(term(), term(), keyword()) :: :ok
-  def put(run_id, actor_id, attrs) do
-    GenServer.call(__MODULE__, {:put, run_id, actor_id, Enum.into(attrs, %{})})
+  @spec update(term(), term(), (map() -> map())) :: :ok | {:error, :not_found}
+  def update(run_id, actor_id, fun) when is_function(fun, 1) do
+    case get(run_id, actor_id) do
+      nil -> {:error, :not_found}
+      attrs -> put(run_id, actor_id, fun.(attrs))
+    end
   end
 
   @spec get(term(), term()) :: map() | nil
   def get(run_id, actor_id) do
-    case :ets.lookup(@table, {run_id, actor_id}) do
-      [{{^run_id, ^actor_id}, attrs}] -> attrs
+    config = Config.fetch!(run_id)
+
+    case :ets.lookup(config.tables.nodes, actor_id) do
+      [{^actor_id, attrs}] -> attrs
       [] -> nil
     end
   end
 
+  @spec nodes(term()) :: [{term(), map()}]
+  def nodes(run_id) do
+    config = Config.fetch!(run_id)
+    :ets.tab2list(config.tables.nodes)
+  end
+
+  @spec by_class(term(), term()) :: [{term(), map()}]
+  def by_class(run_id, class) do
+    config = Config.fetch!(run_id)
+
+    :ets.lookup(config.tables.node_classes, {:class, class})
+    |> Enum.flat_map(fn {{:class, ^class}, actor_id} ->
+      case :ets.lookup(config.tables.nodes, actor_id) do
+        [{^actor_id, attrs}] -> [{actor_id, attrs}]
+        [] -> []
+      end
+    end)
+  end
+
+  @spec count(term()) :: non_neg_integer()
+  def count(run_id) do
+    config = Config.fetch!(run_id)
+    :ets.info(config.tables.nodes, :size)
+  end
+
+  @spec add_edge(term(), edge_type(), term(), term(), number(), term()) :: :ok
+  def add_edge(run_id, type, from, to, weight \\ 1.0, provenance \\ nil)
+      when is_atom(type) and is_number(weight) do
+    config = Config.fetch!(run_id)
+    edge = config.tables.edges
+    :ets.insert(edge, {{:out, from, type}, to, weight, provenance})
+    :ets.insert(edge, {{:in, to, type}, from, weight, provenance})
+    :ok
+  end
+
   @spec attach_child(term(), term(), term()) :: :ok
-  def attach_child(run_id, parent_id, child_id),
-    do: GenServer.call(__MODULE__, {:attach, run_id, parent_id, child_id})
+  def attach_child(run_id, parent_id, child_id), do: add_edge(run_id, :child, parent_id, child_id)
+
+  @spec outgoing(term(), term(), edge_type() | :all) :: [map()]
+  def outgoing(run_id, actor_id, type \\ :all), do: edges(run_id, :out, actor_id, type)
+
+  @spec incoming(term(), term(), edge_type() | :all) :: [map()]
+  def incoming(run_id, actor_id, type \\ :all), do: edges(run_id, :in, actor_id, type)
 
   @spec children(term(), term()) :: [term()]
   def children(run_id, actor_id) do
-    get(run_id, actor_id)
-    |> case do
-      nil -> []
-      attrs -> Map.get(attrs, :children, [])
-    end
+    run_id
+    |> outgoing(actor_id, :child)
+    |> Enum.map(& &1.node)
   end
 
   @spec subtree(term(), term()) :: [term()]
-  def subtree(run_id, actor_id),
-    do: do_subtree(run_id, actor_id, MapSet.new()) |> MapSet.to_list()
+  def subtree(run_id, actor_id), do: do_subtree(run_id, actor_id, MapSet.new()) |> MapSet.to_list()
 
+  @spec delete_node(term(), term()) :: :ok
+  def delete_node(run_id, actor_id) do
+    config = Config.fetch!(run_id)
+
+    case :ets.lookup(config.tables.nodes, actor_id) do
+      [{^actor_id, %{class: class}}] ->
+        :ets.delete_object(config.tables.node_classes, {{:class, class}, actor_id})
+
+      _ ->
+        :ok
+    end
+
+    :ets.delete(config.tables.nodes, actor_id)
+    delete_edges_for(config.tables.edges, actor_id)
+    :ok
+  end
+
+  @spec delete_subtree(term(), term()) :: :ok
+  def delete_subtree(run_id, actor_id) do
+    Enum.each(subtree(run_id, actor_id), &delete_node(run_id, &1))
+    :ok
+  end
+
+  @doc "Prune through the runtime so evaluations/processes are stopped before metadata is removed."
   @spec prune(term(), term()) :: :ok
-  def prune(run_id, actor_id), do: GenServer.call(__MODULE__, {:prune, run_id, actor_id})
+  def prune(run_id, actor_id), do: Plexus.Run.prune(run_id, actor_id)
+
+  defp edges(run_id, direction, actor_id, :all) do
+    config = Config.fetch!(run_id)
+
+    :ets.match_object(config.tables.edges, {{direction, actor_id, :_}, :_, :_, :_})
+    |> Enum.map(fn {{^direction, ^actor_id, type}, node, weight, provenance} ->
+      %{type: type, node: node, weight: weight, provenance: provenance}
+    end)
+  end
+
+  defp edges(run_id, direction, actor_id, type) when is_atom(type) do
+    config = Config.fetch!(run_id)
+
+    :ets.lookup(config.tables.edges, {direction, actor_id, type})
+    |> Enum.map(fn {{^direction, ^actor_id, ^type}, node, weight, provenance} ->
+      %{type: type, node: node, weight: weight, provenance: provenance}
+    end)
+  end
 
   defp do_subtree(run_id, actor_id, visited) do
     if MapSet.member?(visited, actor_id) do
       visited
     else
-      visited = MapSet.put(visited, actor_id)
-
-      Enum.reduce(children(run_id, actor_id), visited, fn child, acc ->
+      Enum.reduce(children(run_id, actor_id), MapSet.put(visited, actor_id), fn child, acc ->
         do_subtree(run_id, child, acc)
       end)
     end
   end
 
-  @impl true
-  def handle_call({:put, run_id, actor_id, attrs}, _from, state) do
-    existing = get(run_id, actor_id) || %{}
-    merged = Map.merge(%{children: []}, existing) |> Map.merge(attrs)
-    :ets.insert(@table, {{run_id, actor_id}, merged})
-    {:reply, :ok, state}
-  end
-
-  def handle_call({:attach, run_id, parent_id, child_id}, _from, state) do
-    parent = Map.merge(%{children: []}, get(run_id, parent_id) || %{})
-    child = Map.merge(%{children: []}, get(run_id, child_id) || %{})
-
-    :ets.insert(
-      @table,
-      {{run_id, parent_id}, %{parent | children: Enum.uniq(parent.children ++ [child_id])}}
-    )
-
-    :ets.insert(@table, {{run_id, child_id}, Map.put(child, :parent, parent_id)})
-    {:reply, :ok, state}
-  end
-
-  def handle_call({:prune, run_id, actor_id}, _from, state) do
-    for id <- subtree(run_id, actor_id), do: :ets.delete(@table, {run_id, id})
-    {:reply, :ok, state}
+  defp delete_edges_for(table, actor_id) do
+    :ets.match_delete(table, {{:out, actor_id, :_}, :_, :_, :_})
+    :ets.match_delete(table, {{:in, actor_id, :_}, :_, :_, :_})
+    :ets.match_delete(table, {{:out, :_, :_}, actor_id, :_, :_})
+    :ets.match_delete(table, {{:in, :_, :_}, actor_id, :_, :_})
+    :ok
   end
 end

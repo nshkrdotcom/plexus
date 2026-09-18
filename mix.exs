@@ -42,6 +42,8 @@ defmodule Plexus.MixProject do
   defp deps do
     [
       {:typesafe_sdk, "~> 0.4.0"},
+      {:pristine, "~> 0.4.0"},
+      {:telemetry, "~> 1.3"},
       {:jason, "~> 1.4"},
       {:ex_doc, "~> 0.38", only: :docs, runtime: false},
       {:credo, "~> 1.7", only: [:dev, :test], runtime: false},
@@ -92,9 +94,12 @@ defmodule Plexus.MixProject do
         "guides/index.md",
         "guides/getting-started.md",
         "guides/architecture.md",
+        "guides/kernel-primitives.md",
         "guides/actor-runtime.md",
         "guides/typesafe-integration.md",
         "guides/graph-and-subtrees.md",
+        "guides/calibration-and-replay.md",
+        "guides/expansion.md",
         "guides/testing-and-release.md",
         "HANDOFF.md",
         "CHANGELOG.md",
@@ -114,7 +119,34 @@ defmodule Plexus.MixProject do
           Plexus.Graph,
           Plexus.Contract
         ],
-        Actor: [Plexus.Actor, Plexus.Actor.Command, Plexus.Actor.Context],
+        Actor: [
+          Plexus.Actor,
+          Plexus.Actor.Command,
+          Plexus.Actor.Context,
+          Plexus.Actor.Interpreter
+        ],
+        Kernel: [
+          Plexus.Budget,
+          Plexus.Cache,
+          Plexus.Event,
+          Plexus.Population,
+          Plexus.Provenance,
+          Plexus.Record,
+          Plexus.Schedule,
+          Plexus.Stop,
+          Plexus.Reduce,
+          Plexus.Belief,
+          Plexus.Belief.Calibration,
+          Plexus.Measure,
+          Plexus.Measure.Coalescer,
+          Plexus.Contract.Registry
+        ],
+        Expansion: [
+          Plexus.Expand.Adapter,
+          Plexus.Expand.Queue,
+          Plexus.Expand.Schema,
+          Plexus.Expand.Materializer
+        ],
         Strategy: [Plexus.Strategy.Fanout],
         Examples: [
           Plexus.Examples.IntakeCoordinator,

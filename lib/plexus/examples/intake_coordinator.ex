@@ -1,18 +1,14 @@
 defmodule Plexus.Examples.IntakeCoordinator do
   @moduledoc """
-  Example root actor demonstrating recursive TypeSafe use.
+  Example root actor demonstrating interpreter-mediated recursive work.
 
-  Flow:
-
-  1. classify the incoming ticket
-  2. derive candidate evidence sentences
-  3. spawn leaf workers for each sentence
-  4. each worker performs its own TypeSafe evaluation
+  The coordinator measures a ticket, then declares child births/messages. It
+  never calls `Plexus.Run.start_actor/2` from inside its callback.
   """
 
   use Plexus.Actor
 
-  alias Plexus.Run
+  alias Plexus.Actor
   alias TypeSafeSDK.Response
 
   @impl true
@@ -27,16 +23,13 @@ defmodule Plexus.Examples.IntakeCoordinator do
             sales: "Pricing, plan, or procurement requests."
           ),
         urgent: TypeSafeSDK.noul("Does this need urgent human attention?"),
-        evidence:
-          TypeSafeSDK.noul(
-            "Return up to three compact evidence statements separated by semicolons."
-          )
+        evidence: TypeSafeSDK.noul("Does the ticket contain multiple distinct evidence statements?")
       )
 
     {:ok,
      %{
        text: text,
-       context: Map.take(args, [:run, :run_id, :actor_id, :parent_id]),
+       context: Actor.context(args),
        prepared: prepared,
        classification: nil,
        children: []
@@ -45,53 +38,12 @@ defmodule Plexus.Examples.IntakeCoordinator do
 
   @impl true
   def handle_cast(:classify, state) do
-    {:evaluate, {:classify, %{ticket: state.text}, state.prepared}, state}
+    :ok = Actor.dispatch(state.context, {:measure, :classify, %{ticket: state.text}, state.prepared, []})
+    {:noreply, state}
   end
 
-  def handle_cast({:spawn_evidence_workers, snippets}, state) do
-    children =
-      Enum.map(Enum.with_index(snippets, 1), fn {snippet, index} ->
-        actor_id = {state.context.actor_id, :evidence, index}
-
-        {:ok, _pid} =
-          Run.start_actor(state.context.run,
-            module: Plexus.Examples.EvidenceWorker,
-            actor_id: actor_id,
-            parent_id: state.context.actor_id,
-            init_arg: %{text: snippet}
-          )
-
-        Run.cast(state.context.run, actor_id, :analyze)
-        actor_id
-      end)
-
-    {:noreply, %{state | children: children}}
-  end
-
-  @impl true
-  def handle_call(:classification, _from, state) do
-    {:reply, state.classification, state}
-  end
-
-  @impl true
-  def handle_call(:children, _from, state) do
-    {:reply, state.children, state}
-  end
-
-  @impl true
-  def handle_evaluation({:ok, response}, :classify, state) do
-    snippets =
-      case Response.fetch(response, :evidence) do
-        {:ok, %{noul: p}} when p >= 0.5 ->
-          state.text
-          |> String.split([";", "\n", " and "], trim: true)
-          |> Enum.map(&String.trim/1)
-          |> Enum.reject(&(&1 == ""))
-          |> Enum.take(3)
-
-        _ ->
-          []
-      end
+  def handle_cast({:plexus, :measurement, :classify, {:ok, response}}, state) do
+    snippets = evidence_snippets(response, state.text)
 
     classification = %{
       response: response,
@@ -100,20 +52,55 @@ defmodule Plexus.Examples.IntakeCoordinator do
       evidence_snippets: snippets
     }
 
-    if snippets == [] do
-      {:noreply, %{state | classification: classification}}
-    else
-      {:noreply, %{state | classification: classification},
-       {:continue, {:spawn_evidence_workers, snippets}}}
-    end
+    {commands, children} = child_commands(state.context.actor_id, snippets)
+    if commands != [], do: Actor.dispatch(state.context, commands)
+
+    {:noreply, %{state | classification: classification, children: children}}
   end
 
-  def handle_evaluation({:error, error}, :classify, state) do
+  def handle_cast({:plexus, :measurement, :classify, {:error, error}}, state) do
     {:noreply, %{state | classification: {:error, error}}}
   end
 
   @impl true
-  def handle_continue({:spawn_evidence_workers, snippets}, state) do
-    handle_cast({:spawn_evidence_workers, snippets}, state)
+  def handle_call(:classification, _from, state), do: {:reply, state.classification, state}
+
+  @impl true
+  def handle_call(:children, _from, state), do: {:reply, state.children, state}
+
+  @impl true
+  def handle_evaluation(result, tag, state) do
+    {:noreply, Map.put(state, :last_direct_evaluation, {tag, result})}
+  end
+
+  defp evidence_snippets(response, text) do
+    case Response.fetch(response, :evidence) do
+      {:ok, %{noul: p}} when p >= 0.5 ->
+        text
+        |> String.split([";", "\n", " and "], trim: true)
+        |> Enum.map(&String.trim/1)
+        |> Enum.reject(&(&1 == ""))
+        |> Enum.take(3)
+
+      _ ->
+        []
+    end
+  end
+
+  defp child_commands(parent_id, snippets) do
+    snippets
+    |> Enum.with_index(1)
+    |> Enum.reduce({[], []}, fn {snippet, index}, {commands, ids} ->
+      actor_id = {parent_id, :evidence, index}
+
+      commands =
+        commands ++
+          [
+            {:spawn, :evidence, Plexus.Examples.EvidenceWorker, %{text: snippet}, actor_id: actor_id},
+            {:send, actor_id, :analyze}
+          ]
+
+      {commands, ids ++ [actor_id]}
+    end)
   end
 end

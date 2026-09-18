@@ -1,22 +1,31 @@
 defmodule Plexus.Registry do
   @moduledoc """
-  Small wrapper around the process registry used for run-scoped actor lookup.
+  Run-scoped process addressing on a partitioned `Registry`.
   """
 
-  @spec via(term(), term()) :: {:via, Registry, {module(), term()}}
-  def via(run_id, actor_id), do: {:via, Registry, {__MODULE__, {run_id, actor_id}}}
+  alias Plexus.Run.Names
 
-  @spec register(term(), term(), pid()) :: {:ok, pid()} | {:error, {:already_registered, pid()}}
-  def register(run_id, actor_id, pid) do
-    case Registry.register(__MODULE__, {run_id, actor_id}, pid) do
-      {:ok, _} -> {:ok, pid}
-      {:error, {:already_registered, _pid}} = error -> error
-    end
-  end
+  @spec via(term(), term()) :: {:via, Registry, {module(), term()}}
+  def via(run_id, actor_id), do: Names.actor(run_id, actor_id)
 
   @spec lookup(term(), term()) :: {:ok, pid()} | {:error, :not_found}
-  def lookup(run_id, actor_id) do
-    case Registry.lookup(__MODULE__, {run_id, actor_id}) do
+  def lookup(run_id, actor_id), do: lookup_key({:actor, run_id, actor_id})
+
+  @spec lookup_run(term()) :: {:ok, pid()} | {:error, :not_found}
+  def lookup_run(run_id), do: lookup_key({:run_owner, run_id})
+
+  @spec run_id(pid()) :: {:ok, term()} | {:error, :not_found}
+  def run_id(pid) when is_pid(pid) do
+    Plexus.Registry
+    |> Registry.keys(pid)
+    |> Enum.find_value({:error, :not_found}, fn
+      {:run_owner, run_id} -> {:ok, run_id}
+      _ -> false
+    end)
+  end
+
+  defp lookup_key(key) do
+    case Registry.lookup(__MODULE__, key) do
       [{pid, _value}] -> {:ok, pid}
       [] -> {:error, :not_found}
     end

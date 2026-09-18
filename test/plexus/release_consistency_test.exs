@@ -19,9 +19,12 @@ defmodule Plexus.ReleaseConsistencyTest do
           "guides/index.md",
           "guides/getting-started.md",
           "guides/architecture.md",
+          "guides/kernel-primitives.md",
           "guides/actor-runtime.md",
           "guides/typesafe-integration.md",
           "guides/graph-and-subtrees.md",
+          "guides/calibration-and-replay.md",
+          "guides/expansion.md",
           "guides/testing-and-release.md"
         ] do
       assert File.exists?(path), "missing expected file: #{path}"

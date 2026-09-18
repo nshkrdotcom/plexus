@@ -1,165 +1,236 @@
 <p align="center">
-  <img src="assets/plexus.svg" alt="Plexus" width="200" height="200"/>
-</p>
-
-<p align="center">
-  <a href="https://hex.pm/packages/plexus"><img src="https://img.shields.io/hexpm/v/plexus.svg" alt="Hex.pm"/></a>
-  <a href="https://hexdocs.pm/plexus"><img src="https://img.shields.io/badge/hex-docs-blue.svg" alt="HexDocs"/></a>
-  <a href="https://github.com/nshkrdotcom/plexus"><img src="https://img.shields.io/badge/GitHub-repo-black?logo=github" alt="GitHub"/></a>
-  <a href="https://hex.pm/packages/plexus"><img src="https://img.shields.io/hexpm/l/plexus.svg" alt="License"/></a>
+  <img src="assets/plexus.svg" width="200" alt="Plexus logo" />
 </p>
 
 # Plexus
 
-**Plexus** is a BEAM-native semantic actor substrate designed to coordinate stateful AI workflows, dynamic agent hierarchies, and concurrent question evaluation natively on OTP.
+**A single-node BEAM kernel for massively asynchronous semantic computation.**
 
-Built directly on top of [`TypeSafeSDK`](https://hex.pm/packages/typesafe_sdk) (0.4.0+), Plexus couples TypeSafe's prepared contract evaluations with OTP process primitives. Instead of adding heavy orchestration layers or separate runtimes, Plexus lets you model AI agents as lightweight, supervised BEAM processes that can recursively reason, branch, and fan out semantic work.
+Plexus turns `typesafe_sdk` 0.4.x into a coordination substrate for large semantic populations. TypeSafe remains the measurement engine; Plexus owns the things a population needs around it: cheap births, typed topology, declarative actor effects, coalesced measurement, budgets, scheduling regimes, replay, calibration, pruning, and a separate expansion queue.
 
----
+The design rule is simple: **ship primitives, not a catalog of hard-coded patterns.** Particle filters, asynchronous belief graphs, MCTS, branch-and-bound, semantic cellular automata, hypothesis populations, and recursive map/reduce should be strategies assembled from the same small kernel.
 
-## Why Plexus?
+> Status: this repository is still `0.1.0` and the current kernel pass was authored without an Elixir runtime in the authoring environment. The source is intentionally explicit about what is implemented versus what requires BEAM-side validation. See [HANDOFF.md](HANDOFF.md).
 
-Modern AI applications often require more than static, one-shot prompt chains. They involve complex decision trees, iterative evaluations, and dynamic hierarchies where parent agents delegate specialized tasks to child workers.
+## Why Plexus exists
 
-The BEAM actor model is uniquely suited for this pattern:
+`typesafe_sdk` already provides prepared semantic contracts, typed noul/choice/score answers, batching, cancellation, telemetry, deterministic test fixtures, and an OTP facade. Plexus does **not** rebuild those capabilities.
 
-- **Fault-Isolated Processes**: Every semantic agent runs in its own process. If an evaluation fails or times out, the failure is contained and handled through standard OTP supervision.
-- **Asynchronous & Non-Blocking**: Agents yield evaluation requests without blocking their message queues, receiving results via clean OTP callbacks (`handle_evaluation/3`).
-- **Bounded Concurrency**: Fan-outs and wide batch sweeps are throttled by a shared `Task.Supervisor`, preventing resource exhaustion and honoring rate limits.
-- **Graph-Coordinated State**: Parent-child lifecycles, subtrees, and lineage metadata are tracked in a lightweight, in-memory graph service.
-
----
-
-## Features
-
-- **Native Semantic Actors**: Thin `use Plexus.Actor` wrapper built on `TypeSafeSDK.OTP.Server`.
-- **Prepared Contracts & Fingerprinting**: Pre-compile question schemas using `TypeSafeSDK.prepare!/1` with stable cryptographic fingerprints for deterministic caching.
-- **Batched Semantic Sweeps**: Built-in batching and streaming helpers using `TypeSafeSDK.evaluate_stream/4` and `TypeSafeSDK.evaluate_many/4`.
-- **Run Coordinator**: Scoped supervisor (`Plexus.Run`) managing actor registries, graph relationships, and bounded task workers per workflow.
-- **Dynamic Hierarchy & Subtree Pruning**: Spawn child actors dynamically from parent evaluation callbacks and track/prune entire actor subtrees.
-- **First-Class Telemetry**: Telemetry hooks for run lifecycles, actor transitions, batch throughput, and contract evaluation timings.
-
----
-
-## Architecture
-
-Each run in Plexus isolates an actor population and its execution resources under a unified supervision tree:
+Plexus adds a population runtime around them:
 
 ```text
-Plexus.Run (Coordinator)
-├── shared TypeSafeSDK.Client     (HTTP connection pool)
-├── shared Task.Supervisor        (bounded concurrent evaluation)
-├── DynamicSupervisor             (semantic actor population)
-├── Registry                      (local actor addressing)
-└── Graph                         (parent/child/subtree relationships)
-
-Actors (use Plexus.Actor)
-└── TypeSafeSDK.OTP.Server
-    ├── return {:evaluate, ...} without blocking the mailbox
-    ├── handle_evaluation/3 receives structured responses
-    └── recursively spawn child actors or trigger batched sweeps
+Actor local state
+    │
+    ├─ commands ────────────────┐
+    │                           ▼
+    │                 Actor.Interpreter
+    │                  │   │   │   │
+    │                  │   │   │   └── expansion queue
+    │                  │   │   └────── budgets / admission
+    │                  │   └────────── typed graph / pruning
+    │                  └────────────── scheduler / replay / record
+    │
+    └─ measure ──> cache/replay ──> per-contract coalescer
+                                      │
+                                      └─ TypeSafeSDK.evaluate_many/4
 ```
 
----
+Independent actors no longer need to issue independent HTTP requests. Requests sharing a prepared-contract fingerprint and evaluation options are deduplicated and closed into bounded batches by size or delay.
+
+## Kernel primitives
+
+The current source implements the P0/P1 foundation and deliberate seams for the later regime/expansion work:
+
+- **Population** — per-run node metadata, class tags, queries, top-k and Pareto selection.
+- **Typed topology** — per-run ETS `:bag` edges such as `:child`, `:supports`, `:contradicts`, `:depends_on`, `:neighbor`, or application-defined edge types.
+- **Local measurement** — named prepared contracts, memoization, replay, dedupe, coalescing, and `evaluate_many/4` as the normal framework path.
+- **Scheduling regime** — `:async`, BSP buffering/barriers, plus conservative bounded-async/priority policy seams.
+- **Belief state** — explicit Bernoulli/categorical/ordinal projections with raw values retained.
+- **Quiescence counters** — run-scoped lock-free counters exposed to stop logic.
+- **Budget/admission** — atomic measure/expand/token/population meters.
+- **Selection/pruning** — process cancellation/termination before topology deletion.
+- **Expansion seam** — a provider-neutral priority queue, capability fail-closed checks, proposal JSON Schema, and materializer. A concrete `inference` adapter is intentionally not fabricated because that dependency/API was not supplied with this implementation pass.
+- **Provenance/invalidation** — `:depends_on` edges plus epoch/stale repair helpers.
+- **Run record/replay** — append-only in-memory events and fixed response storage.
+- **Stop/reduce** — composable predicates and population reducers.
+
+## Hot-path architecture
+
+The original scaffold serialized node birth through a run GenServer and a global graph GenServer. The current architecture removes those hot mailboxes:
+
+```text
+Plexus.Supervisor
+├── partitioned Registry
+├── Run.Directory                 # run_id -> per-run config-table pointer
+└── RunSupervisor
+    └── Plexus.Run.Supervisor (per run)
+        ├── Run.Owner             # owns all per-run ETS tables/counters
+        ├── Task.Supervisor       # measurement batch wrappers
+        ├── Expand Task.Supervisor
+        ├── PartitionSupervisor
+        │   └── N × DynamicSupervisor  # actor population, hashed by actor_id
+        ├── Measure DynamicSupervisor   # per-contract coalescers
+        ├── Schedule.Server
+        └── Expand.Queue
+```
+
+Node birth is now one partitioned supervisor start plus lock-free ETS inserts for node/topology metadata. Each run owns its tables, so teardown destroys the run's data without walking a global store.
 
 ## Installation
-
-Add `plexus` to your list of dependencies in `mix.exs`:
 
 ```elixir
 def deps do
   [
-    {:plexus, "~> 0.1.0"},
-    {:typesafe_sdk, "~> 0.4.0"}
+    {:plexus, "~> 0.1.0"}
   ]
 end
 ```
 
----
+Plexus depends on `typesafe_sdk ~> 0.4.0`, `pristine ~> 0.4.0` for physical batch cancellation tokens, and `telemetry ~> 1.3` for run/SDK event integration.
 
-## Quick Start
-
-### 1. Define a Semantic Actor
-
-Use `Plexus.Actor` to define an actor that evaluates incoming data against a prepared contract:
+## Start a run
 
 ```elixir
-defmodule MyApp.TicketCoordinator do
+client = TypeSafeSDK.new_client(api_key: System.fetch_env!("TYPESAFE_API_KEY"))
+
+{:ok, run} =
+  Plexus.start_run(
+    id: :experiment_42,
+    client: client,
+    max_population: 100_000,
+    max_depth: 64,
+    budgets: [measure: 1_000_000, expand: 500, tokens: 5_000_000],
+    batch: [max: 64, delay_ms: 10, max_concurrency: 16],
+    cache: [ttl_ms: 60_000, max_entries: 100_000],
+    schedule: :async,
+    replay: :record
+  )
+```
+
+## Register a contract once
+
+```elixir
+Plexus.register_contract(run, :bounds,
+  TypeSafeSDK.prepare!(
+    contains_useful: TypeSafeSDK.noul("Could this region contain a strong candidate?"),
+    density: TypeSafeSDK.score("How dense are good candidates here?", ~w(none low med high))
+  ),
+  version: 1,
+  batch: [max: 64, delay_ms: 10]
+)
+```
+
+The prepared fingerprint becomes the cache key component, coalescer partition key, and comparability handle for experiments that hold semantics fixed while changing topology or scheduling.
+
+## Actors declare effects
+
+`Plexus.Actor` still uses `TypeSafeSDK.OTP.Server`, so direct `{:evaluate, ...}` remains available as a low-level escape hatch. The framework path is `Plexus.Actor.dispatch/2`:
+
+```elixir
+defmodule MyApp.Region do
   use Plexus.Actor
 
-  @impl true
-  def init(%{ticket: text} = args) do
-    prepared =
-      TypeSafeSDK.prepare!(
-        department:
-          TypeSafeSDK.choice(
-            "Route this support ticket to the appropriate department.",
-            billing: "Invoices, refunds, subscription issues",
-            technical: "Bugs, error messages, system downtime",
-            account: "Password resets, authentication, access"
-          ),
-        urgent: TypeSafeSDK.noul("Does this issue require urgent escalation?")
-      )
+  alias Plexus.Actor
 
-    {:ok, %{ticket: text, context: args, prepared: prepared, result: nil}}
+  @impl true
+  def init(args) do
+    {:ok, %{context: Actor.context(args), region: args.region}}
   end
 
   @impl true
-  def handle_cast(:triage, state) do
-    # Initiate an asynchronous, non-blocking evaluation
-    {:evaluate, {:triage, %{text: state.ticket}, state.prepared}, state}
+  def handle_cast(:measure, state) do
+    Actor.dispatch(state.context,
+      {:measure, :bounds, %{region: state.region}, :bounds, []}
+    )
+
+    {:noreply, state}
   end
 
-  @impl true
-  def handle_evaluation({:triage, _state_input}, response, state) do
-    department = TypeSafeSDK.Response.fetch!(response, :department)
-    urgent? = TypeSafeSDK.Response.fetch!(response, :urgent)
+  def handle_cast({:plexus, :measurement, :bounds, {:ok, response}}, state) do
+    belief = Plexus.Belief.from(response, :contains_useful)
 
-    # Make decisions or spawn child worker actors based on semantic result
-    {:noreply, %{state | result: %{department: department, urgent: urgent?}}}
+    commands =
+      if Plexus.Belief.probability(belief) < 0.1 do
+        [{:prune, state.context.actor_id}]
+      else
+        [{:belief, belief}]
+      end
+
+    Actor.dispatch(state.context, commands)
+    {:noreply, state}
+  end
+
+  # Required by TypeSafeSDK.OTP.Server; used only by direct {:evaluate, ...} calls.
+  @impl true
+  def handle_evaluation(result, tag, state) do
+    {:noreply, Map.put(state, :last_direct_evaluation, {tag, result})}
   end
 end
 ```
 
-### 2. Start a Run and Dispatch Work
+TypeSafeSDK 0.4.x calls `handle_evaluation(result, tag, state)` for its direct OTP path. Plexus-managed measurement results instead arrive as `{:plexus, :measurement, tag, result}` so they can pass through cache/coalescing/budget policy first.
+
+## Controlled scheduling experiments
+
+The same actor code can be run asynchronously or under BSP:
 
 ```elixir
-# 1. Initialize the TypeSafe client
-client = TypeSafeSDK.new_client(api_key: System.fetch_env!("TYPESAFE_API_KEY"))
+Plexus.schedule(run, :async)
 
-# 2. Start an isolated run supervisor
-{:ok, run} = Plexus.start_run(id: :support_queue, client: client)
-
-# 3. Spawn a root actor
-{:ok, actor} =
-  Plexus.start_actor(run,
-    module: MyApp.TicketCoordinator,
-    actor_id: {:ticket, 4821},
-    init_arg: %{ticket: "Checkout is failing with 500 internal server error."}
-  )
-
-# 4. Trigger actor work
-Plexus.cast(actor, :triage)
+Plexus.schedule(run, {:bsp, []})
+{:ok, round, released_commands} = Plexus.barrier(run)
 ```
 
----
+Replay mode is intended to hold semantic responses fixed while execution order changes. Record once, export the run's `{memo_key, result}` entries with `Plexus.replay_entries/1`, load them into a fresh `replay: :replay` run with `Plexus.load_replay/2`, and then change only the scheduling regime. Durable on-disk serialization/versioning remains a handoff item.
 
-## Documentation & Guides
+## Calibration is part of the kernel, not an afterthought
 
-Explore the comprehensive guides for architecture details and advanced recipes:
+Do not treat raw noul values as calibrated Bayesian likelihoods without evidence. Plexus includes a dependency-free reliability-diagram data path and isotonic calibrator:
 
-| Guide | Description |
-| :--- | :--- |
-| [**Getting Started**](guides/getting-started.md) | Step-by-step walkthrough for your first Plexus workflow. |
-| [**Architecture Overview**](guides/architecture.md) | Deep dive into the actor model, supervision, and graph topology. |
-| [**Actor Runtime & Lifecycle**](guides/actor-runtime.md) | Non-blocking evaluations, OTP semantics, and process lifecycle. |
-| [**TypeSafe Integration**](guides/typesafe-integration.md) | Working with prepared contracts, choices, nouls, and scores. |
-| [**Graph & Subtrees**](guides/graph-and-subtrees.md) | Managing dynamic parent-child agent swarms and tree pruning. |
-| [**Testing & Release**](guides/testing-and-release.md) | Best practices for testing semantic actors with stubs and fixtures. |
+```elixir
+samples = [{0.1, false}, {0.3, false}, {0.7, true}, {0.9, true}]
+rows = Plexus.Belief.Calibration.reliability(samples, 10)
+model = Plexus.Belief.Calibration.fit_isotonic(samples)
+calibrated_p = Plexus.Belief.Calibration.apply(model, 0.63)
+```
 
----
+The raw TypeSafe answer remains attached to `Plexus.Belief`; calibration is an explicit application/experiment choice.
+
+## Expansion is a separate tier
+
+Expensive generative work never shares the measurement queue. `Plexus.Expand.Queue` has its own task supervisor, concurrency limit, priority ordering, capability preflight seam, and standard strict proposal schema:
+
+```elixir
+Plexus.Expand.Schema.proposals()
+```
+
+To connect an inference library, implement `Plexus.Expand.Adapter`. The adapter integration must be finished against the actual inference dependency on a machine where that source/API is available.
+
+## Observability
+
+Plexus emits `[:plexus, ...]` events for run/actor/measurement/expansion lifecycle and attaches a run-filtered handler to TypeSafeSDK semantic telemetry. TypeSafe token measurements feed the run budget ledger. The event log intentionally records bounded metadata rather than prompts, states, credentials, or raw transport bodies.
+
+```elixir
+Plexus.budget(run)
+Plexus.events(run)
+```
+
+## Guides
+
+- [Getting started](guides/getting-started.md)
+- [Architecture](guides/architecture.md)
+- [Kernel primitives](guides/kernel-primitives.md)
+- [Actor runtime](guides/actor-runtime.md)
+- [TypeSafe integration](guides/typesafe-integration.md)
+- [Graph and subtrees](guides/graph-and-subtrees.md)
+- [Calibration and replay](guides/calibration-and-replay.md)
+- [Expansion tier](guides/expansion.md)
+- [Testing and release](guides/testing-and-release.md)
+
+## Non-goals
+
+Plexus is intentionally single-node. It does not provide multi-node distribution, durable persistence, provider abstraction, a general workflow DSL, prompt management, or tool-calling agent loops. Provider concerns belong in the inference layer; transport/retries remain TypeSafe/Pristine concerns.
 
 ## License
 
-Plexus is open source software released under the [MIT License](LICENSE).
-
+MIT © 2026 nshkrdotcom. See [LICENSE](LICENSE).

@@ -1,23 +1,36 @@
 # TypeSafe integration
 
-Plexus is explicitly designed to use `typesafe_sdk` 0.4.0 **to the fullest**.
+Plexus targets `typesafe_sdk ~> 0.4.0` and uses its public semantic/runtime surface rather than recreating it.
 
-## Direct usage points
+## Prepared contracts
 
-- `TypeSafeSDK.prepare!/1`
-- `TypeSafeSDK.Prepared.fingerprint/1`
-- `TypeSafeSDK.evaluate/4`
-- `TypeSafeSDK.evaluate_stream/4`
-- `TypeSafeSDK.evaluate_many/4`
-- `TypeSafeSDK.OTP.Server`
-- `TypeSafeSDK.Response.fetch/2`
-- `TypeSafeSDK.Telemetry`
-- `TypeSafeSDK.Test` in tests
+`TypeSafeSDK.prepare!/1` and `TypeSafeSDK.Prepared.fingerprint/1` back `Plexus.Contract.Registry`. Named/versioned contracts make the same semantic questions reusable across many actors and experiments.
 
-## Contract reuse
+## Batch-first measurement
 
-`Plexus.Contract` centralizes prepared question sets so many actors can share the same semantic contract and stable fingerprint.
+The framework path resolves a contract fingerprint, derives `Contract.memo_key/2`, checks replay/cache, and submits misses to a coalescer. Coalescers close on batch size or delay and call:
 
-## Batched work
+```elixir
+TypeSafeSDK.evaluate_many(client, states, prepared,
+  ordered: true,
+  on_error: :collect,
+  max_concurrency: max_concurrency,
+  cancellation: token
+)
+```
 
-`Plexus.Strategy.Fanout` demonstrates how one root actor or coordinator can run many states through a single prepared contract using `evaluate_stream/4` or `evaluate_many/4` instead of issuing one-off calls.
+A shared `Pristine.Cancellation` token belongs to each physical batch. Pruning removes the actor's waiters; if no waiters remain, the batch token is cancelled.
+
+`evaluate_stream/4` remains exposed through `Plexus.Strategy.Fanout` for coordinator-held sweeps that benefit from lazy early results.
+
+## OTP server
+
+`Plexus.Actor` uses `TypeSafeSDK.OTP.Server`. The SDK callback order is `handle_evaluation(result, tag, state)`. The README/examples use that order for direct evaluations.
+
+## Telemetry
+
+Each run attaches to TypeSafeSDK evaluate/answer/batch-cancel telemetry and filters on explicit `telemetry_metadata.plexus_run_id`. Plexus does not log semantic state, questions, API keys, bodies or transport errors. Token measurements from successful TypeSafe calls update the run's observed token ledger.
+
+## Test fixtures
+
+`TypeSafeSDK.Test` remains the deterministic semantic oracle. The Plexus test suite uses the real serialization/decoding path while replacing only the transport, making scheduler/coalescer tests meaningful without live API calls.

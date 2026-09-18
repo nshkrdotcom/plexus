@@ -20,7 +20,7 @@ defmodule Plexus.Strategy.Fanout do
         Keyword.get(
           opts,
           :max_concurrency,
-          Application.get_env(:plexus, :default_batch_concurrency, 8)
+          Application.get_env(:plexus, :default_batch, []) |> Keyword.get(:max_concurrency, 8)
         ),
       ordered: Keyword.get(opts, :ordered, true),
       on_error: Keyword.get(opts, :on_error, :collect)
@@ -51,7 +51,7 @@ defmodule Plexus.Strategy.Fanout do
         Keyword.get(
           opts,
           :max_concurrency,
-          Application.get_env(:plexus, :default_batch_concurrency, 8)
+          Application.get_env(:plexus, :default_batch, []) |> Keyword.get(:max_concurrency, 8)
         ),
       ordered: Keyword.get(opts, :ordered, true),
       on_error: Keyword.get(opts, :on_error, :collect)
