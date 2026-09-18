@@ -20,7 +20,7 @@ Plexus does not vendor the external corpora used by the examples. Fetch scripts 
 
 - Upstream: `CloudWise-OpenSource/GAIA-DataSet`.
 - Shape used: MicroSS trace, business-log and run/fault-injection records.
-- Plexus use: evidence summaries become provenance-linked root-cause hypotheses; trace parent spans are reduced into typed service-call topology; upstream anomaly-injection records are retained separately as evaluation truth.
+- Plexus use: trace/log summaries live behind evidence actors; a small seed hypothesis population requests evidence actor-to-actor, and each TypeSafe `next_action` can grow the investigation along caller/callee topology under a shared hypothesis-population credit pool. The final hypothesis count is not known at startup; the run stops on quiescence. Upstream anomaly-injection records remain separate as evaluation truth.
 - Acquisition: the official `release-v1.0` Git ref via Git + Git LFS, followed by extraction of the standard MicroSS split archives with 7-Zip. The corpus is intentionally not copied into the package.
 - Terms: the upstream repository has conflicting license signals across its README/GitHub metadata; the fetcher downloads from upstream rather than redistributing GAIA data. Review the upstream `LICENSE` and dataset documentation before redistribution.
 

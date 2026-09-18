@@ -8,6 +8,7 @@ The format is based on Keep a Changelog and this project adheres to Semantic Ver
 
 ### Changed
 
+- Reworked the GAIA incident commander from fixed fan-out/barrier orchestration into actor-driven hypothesis growth: evidence requests are actor-to-actor, TypeSafe next-action results spawn caller/callee descendants, shared `Budget.Accounts` population credits bound endogenous growth, and termination is quiescence-based.
 - Fixed concurrent population admission, completion during init, partition/owner cleanup, task saturation and cancellation teardown
 - Made graph metadata updates atomic and replaced high-degree bag indexes with ordered indexes
 - Tracked managed actor messages/commands/timers and retired active actors exactly once across completion/termination races

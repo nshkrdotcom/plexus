@@ -55,3 +55,48 @@ Particular runtime checks:
 - deps.dev: verify scoped-package path encoding, exact version-key diffing when graphs contain duplicate package nodes, provenance topology, and migration-order beam pruning on a source/target graph with changed nodes.
 - SciFact: verify tar extraction layout and public dev labels.
 - NOAA: verify current bulk-index filename discovery, CSV parsing (including multiline quoted narratives), subscription-counter gating after real `wake_on` installation, selective day fan-out, and a full-year run with `--limit-events 0` on a suitably sized host.
+
+## Actor-native GAIA incident commander overlay — 2026-09-18
+
+This overlay replaces the fixed GAIA `fan out -> await known hypothesis count -> aggregate` control flow with an actor-driven investigation while leaving the Plexus kernel API unchanged.
+
+Implemented behavior:
+
+- `examples/02_incident_commander/application.exs` contains the reusable GAIA actor application; `run.exs` is now only CLI/bootstrap wiring.
+- Evidence actors remain addressable after publishing their graph result and answer hypothesis evidence requests through managed Plexus messages.
+- Only seed hypotheses exist at startup. A TypeSafe `next_action` answer decides whether a hypothesis follows callers, callees, both directions, or stops.
+- Child hypotheses are spawned by their parent actor through `Plexus.Actor.Command`, not by a depth-level orchestrator.
+- A shared `Plexus.Budget.Accounts` population grant is the application-level hypothesis-growth budget. Every seed/child reserves one credit; exhausted credits prevent further expansion.
+- Parent/child edges plus `:consults`, `:investigates`, and trace-derived `:calls` edges retain the investigation trajectory.
+- The outer application performs no expected-count/depth barrier. It waits only for `Runtime.await_quiescent!/2` after seeding.
+- `test/plexus/incident_commander_example_test.exs` adds deterministic coverage for semantic-result-driven child creation, credit exhaustion, directional policy filtering, and a source-level guard against reintroducing `await_class_complete!`/`await_actor_ids_complete!` into this reference application.
+- Docs now explicitly distinguish the GAIA actor-native reference from the five remaining dataset-backed integration/acceptance workloads; those five are not claimed as actor-model evidence.
+
+The artifact-authoring environment used for this overlay does not contain Elixir/OTP, so these new tests and formatter/compile gates were not executed here. The next BEAM-capable agent should apply the overlay and run:
+
+```bash
+mix format
+mix format --check-formatted
+mix compile --warnings-as-errors
+MIX_ENV=test mix compile --warnings-as-errors
+mix test test/plexus/incident_commander_example_test.exs
+mix test
+mix credo --strict
+mix dialyzer
+mix docs
+mix hex.build
+```
+
+Then run a low-cost live GAIA acceptance pass, for example:
+
+```bash
+TYPESAFE_API_KEY=... mix run examples/02_incident_commander/run.exs \
+  --day 2021-07-01 \
+  --max-services 12 \
+  --seed-services 2 \
+  --max-hypotheses 6 \
+  --max-depth 2 \
+  --branch-width 2
+```
+
+Acceptance is not merely "the script exits." Confirm the report has `dynamic descendants > 0` for at least one provider trajectory, that the built-in TypeSafe transport summary shows real 2xx/request IDs, that `hypotheses spawned <= max-hypotheses`, and that no fixed hypothesis completion count appears in the run path.

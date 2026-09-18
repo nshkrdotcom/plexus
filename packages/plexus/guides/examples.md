@@ -1,8 +1,24 @@
 # Example applications
 
-The `examples/` directory demonstrates what Plexus can *be used to build*, rather than mirroring the kernel API one primitive at a time.
+The `examples/` directory contains two categories that must not be conflated. `02_incident_commander` is the actor-native reference application; the other five are real-dataset integration workloads that validate ingestion, managed semantic calls, graph/population mechanics and packaging, but are still flattenable into conventional centralized async programs.
 
-The examples span six computational shapes: semantic routing, spatiotemporal clustering, root-cause hypothesis populations, resolved dependency-graph search, scientific evidence graphs, and a large event-driven swarm. TypeSafe/Jev usage ranges from dense to sparse, but semantic work always enters through Plexus's managed measurement path so budget, cache/replay, coalescing, cancellation and run telemetry remain interposable.
+That distinction is deliberate. Real data and real provider calls are necessary integration evidence, but they are not by themselves evidence for the actor execution model.
+
+
+## Actor-native acceptance criterion
+
+A flagship example fails the architectural bar if deleting the actors and replacing them with a central `Enum.map`/`Task.async_stream`/`asyncio.gather` leaves essentially the same control flow. An actor-native example should require several of these properties simultaneously:
+
+- population cardinality is unknown at startup;
+- an actor's semantic result spawns/prunes/wakes other actors before any global layer barrier;
+- one actor's output changes another actor's future execution;
+- finite shared credits affect local lifecycle decisions;
+- obsolete work can be cancelled rather than merely ignored after a round;
+- failures can remain local to a subpopulation;
+- termination emerges from quiescence, convergence, or budget rather than an expected completion count;
+- schedule/order can change the trajectory while explicit invariants remain testable.
+
+`02_incident_commander` now clears the minimal version of this bar: a seed hypothesis requests evidence actor-to-actor; its TypeSafe `next_action` can reserve a shared hypothesis-population credit and spawn a child along the trace topology; children begin independently; the final population is not known to the orchestrator; and the only terminal wait is quiescence.
 
 ## Dataset-first design
 

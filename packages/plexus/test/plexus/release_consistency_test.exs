@@ -57,5 +57,8 @@ defmodule Plexus.ReleaseConsistencyTest do
       assert File.exists?(Path.join(["examples", slug, entry])),
              "missing example entrypoint: #{slug}/#{entry}"
     end
+
+    assert File.exists?("examples/02_incident_commander/application.exs"),
+           "missing actor-native GAIA application module"
   end
 end

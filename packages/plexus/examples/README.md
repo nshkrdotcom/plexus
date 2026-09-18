@@ -1,6 +1,8 @@
 # Plexus example applications
 
-These are application-scale examples of Plexus as a semantic actor runtime. They are deliberately not one-example-per-primitive tutorials: each workload has a different data source, actor topology, semantic-call density, and coordination problem.
+These are dataset-backed workloads for Plexus. **`02_incident_commander` is the actor-native reference application.** The other five currently serve as real-data integration/acceptance workloads; they exercise Plexus and real TypeSafe calls, but they should not be treated as evidence that an actor architecture is superior to an ordinary centralized async pipeline.
+
+The acceptance bar for an actor-native reference is stricter: runtime semantic results must change future population/topology before a global barrier, population size must not be known in advance, finite shared resources must affect local lifecycle decisions, and termination must emerge from quiescence/convergence/budget rather than a coordinator waiting for a fixed count.
 
 All six use recognized external datasets or APIs. Downloaded data is **not** committed to Plexus; fetchers write beneath `.plexus-data/` by default and `.gitignore` protects that directory. Pass `--data-dir` to keep datasets elsewhere.
 
@@ -20,7 +22,7 @@ The examples use real TypeSafe/Jev calls. There is no fixture-mode fallback in `
 | --- | --- | --- | --- |
 | [`00_issue_swarm`](00_issue_swarm/README.md) | SWE-bench Verified | issue actors route into repository/fix-shape populations; gold patches score a fixed prediction vocabulary post hoc | one request per issue |
 | [`01_city_signal_tracker`](01_city_signal_tracker/README.md) | NYC 311 | report actors feed spatiotemporal incident clusters | one request per selected dense cluster |
-| [`02_incident_commander`](02_incident_commander/README.md) | GAIA / MicroSS | evidence + competing root-cause hypothesis population with provenance | one request per candidate service |
+| [`02_incident_commander`](02_incident_commander/README.md) | GAIA / MicroSS | **actor-native:** semantic decisions spawn caller/callee hypotheses under shared credits; no depth barrier; quiescence termination | one request per hypothesis actually created |
 | [`03_dependency_upgrade_search`](03_dependency_upgrade_search/README.md) | deps.dev v3 | resolved dependency graph diff + semantic risk measurements + pruned migration-order beam search | only changed dependency nodes |
 | [`04_research_evidence_graph`](04_research_evidence_graph/README.md) | SciFact | claim/evidence graph with typed support/contradiction edges and gold labels | one request per claim/document pair |
 | [`05_alert_swarm`](05_alert_swarm/README.md) | NOAA Storm Events | large dormant event population awakened by historical day events | only highest-impact state/day groups |
@@ -40,7 +42,7 @@ Fetch once, then rerun from the local cache. The run scripts expose workload con
 
 The examples separate **dataset scale** from **semantic-call scale**. A 10,000-actor run need not make 10,000 model requests. The run summary prints the logical actor population and Plexus measurement budget usage so the relationship is visible.
 
-Before a large run, inspect the example README and choose its call-driving control (`--limit`, `--max-clusters`, `--max-services`, `--claims`, or `--semantic-groups`). Token ledgers scale with the selected semantic workload rather than using a fixed demo ceiling; every run also accepts `--token-budget N` for an explicit hard limit. TypeSafeSDK 0.4 batches bound concurrency; distinct uncached inputs are still distinct transport requests.
+Before a large run, inspect the example README and choose its call-driving control (`--limit`, `--max-clusters`, `--max-hypotheses`, `--claims`, or `--semantic-groups`). Token ledgers scale with the selected semantic workload rather than using a fixed demo ceiling; every run also accepts `--token-budget N` for an explicit hard limit. TypeSafeSDK 0.4 batches bound concurrency; distinct uncached inputs are still distinct transport requests.
 
 ## Runtime-only experiments stay in `experiments/`
 

@@ -174,11 +174,11 @@ Direct evaluations via TypeSafe trigger `handle_evaluation(result, tag, state)`.
 
 ## Example applications
 
-The `examples/` directory contains six runnable applications built on realistic datasets rather than toy records:
+The `examples/` directory contains six runnable dataset-backed workloads. `02_incident_commander` is the actor-native reference application; the other five are integration/acceptance workloads and are not presented as evidence that actor execution is inherently better than a centralized async pipeline:
 
 - **SWE-bench Verified issue swarm** — Semantic issue routing evaluated against real patch-shape labels.
 - **NYC 311 city signal tracker** — Spatiotemporal incident clustering over service request feeds, where only dense clusters allocate semantic budget.
-- **GAIA incident commander** — Root-cause hypothesis graphs over microservice traces and logs with fault injection ground truth.
+- **GAIA incident commander** — Actor-native root-cause investigation: semantic results grow caller/callee hypothesis trees under shared credits and terminate on quiescence, with GAIA fault-injection ground truth.
 - **deps.dev dependency upgrade search** — Resolves dependency trees, evaluates changed-node risk, and runs a pruned beam search over migration order.
 - **SciFact research evidence graph** — Support/contradiction graph evaluated against scientific claims.
 - **NOAA Storm Events alert swarm** — Processes storm event feeds by waking daily worker populations and aggregating state-level impacts.
