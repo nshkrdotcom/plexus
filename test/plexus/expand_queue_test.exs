@@ -64,6 +64,13 @@ defmodule Plexus.ExpandQueueTest do
     end)
 
     config = Run.config(run)
+    # Exhaust measurement task capacity; expansion must still start.
+    occupied =
+      Task.Supervisor.async_nolink(config.task_supervisor, fn ->
+        receive do
+          :release -> :ok
+        end
+      end)
 
     for id <- [:a, :b] do
       {:ok, _} =
@@ -77,6 +84,8 @@ defmodule Plexus.ExpandQueueTest do
     end
 
     assert_receive {:started, worker, token}
+    send(occupied.pid, :release)
+    Task.await(occupied)
     refute Pristine.Cancellation.cancelled?(token)
     :ok = Queue.cancel_actor(config.run_id, :b)
     assert_receive {:b, {:error, :cancelled}}

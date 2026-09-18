@@ -28,6 +28,7 @@ defmodule Plexus.Run.Owner do
       replay: table(:set),
       waiters: table(:bag),
       activity: table(:set),
+      active_actors: table(:set),
       timers: table(:set),
       repairs: table(:ordered_set),
       budget_accounts: table(:set),

@@ -88,6 +88,7 @@ defmodule Plexus.Run do
     case Registry.lookup(run_id, actor_id) do
       {:ok, pid} ->
         ticket = Activity.begin(run_id, actor_id)
+        if not Process.alive?(pid), do: Activity.finish(ticket)
         GenServer.cast(pid, {:plexus_tracked, ticket, message})
         :ok
 
@@ -100,6 +101,7 @@ defmodule Plexus.Run do
   def call(run, actor_id, message, timeout \\ 5_000) do
     with {:ok, pid} <- Registry.lookup(run_id(run), actor_id) do
       ticket = Activity.begin(run_id(run), actor_id)
+      if not Process.alive?(pid), do: Activity.finish(ticket)
       GenServer.call(pid, {:plexus_tracked, ticket, message}, timeout)
     end
   end
@@ -168,7 +170,7 @@ defmodule Plexus.Run do
     :ets.match_delete(config.tables.waiters, {:_, actor_id})
     Graph.delete_node(run_id, actor_id)
     Budget.refund(config.budget, :population, 1)
-    if attrs.status != :complete, do: Quiescence.add(config.quiescence, :actors, -1)
+    Quiescence.retire_actor(config, attrs.lifecycle_ref)
     Record.append(run_id, :actor_death, %{actor_id: actor_id})
     Telemetry.emit(run_id, [:actor, :stop], %{}, %{actor_id: actor_id})
     :ok
@@ -279,6 +281,7 @@ defmodule Plexus.Run do
       depth: depth,
       metadata: metadata,
       status: :active,
+      lifecycle_ref: make_ref(),
       epoch: 0,
       stale: false,
       started_at: System.monotonic_time()
@@ -292,6 +295,7 @@ defmodule Plexus.Run do
       :ets.insert(config.tables.node_classes, {Graph.class_key(attrs.class, actor_id), actor_id})
       if attrs.parent != nil, do: Graph.attach_child(config.run_id, attrs.parent, actor_id)
       Quiescence.add(config.quiescence, :actors, 1)
+      :ets.insert(config.tables.active_actors, {attrs.lifecycle_ref})
 
       start_registered_actor(
         config,

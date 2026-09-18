@@ -55,6 +55,46 @@ defmodule Plexus.InferenceAdapterTest do
              InferenceAdapter.expand(client, "expand", stream: true, monitor: fn _ -> :halt end)
   end
 
+  test "a TypeSafe monitor evaluates generation deltas and cancels rejected output" do
+    semantic = TypeSafeSDK.Test.client() |> TypeSafeSDK.Test.stub(acceptable: {:noul, 0.1})
+    on_exit(fn -> TypeSafeSDK.Test.close(semantic) end)
+
+    contract =
+      TypeSafeSDK.prepare!(acceptable: TypeSafeSDK.noul("Is the proposed text acceptable?"))
+
+    inference =
+      Inference.client!(
+        adapter: Inference.Adapters.Mock,
+        adapter_opts: [response_text: "proposal"]
+      )
+
+    token = Pristine.Cancellation.new()
+
+    monitor = fn
+      %Inference.StreamEvent{type: :delta, data: text} ->
+        case TypeSafeSDK.evaluate(semantic, %{delta: text}, contract) do
+          {:ok, response} ->
+            if Plexus.Belief.from(response, :acceptable).value >= 0.5, do: :cont, else: :halt
+
+          {:error, _} ->
+            :halt
+        end
+
+      _ ->
+        :cont
+    end
+
+    assert {:error, :monitor_rejected} =
+             InferenceAdapter.expand(inference, "expand",
+               stream: true,
+               monitor: monitor,
+               cancellation: token
+             )
+
+    assert Pristine.Cancellation.cancelled?(token)
+    assert length(TypeSafeSDK.Test.requests(semantic)) == 1
+  end
+
   test "an already cancelled expansion never reaches inference" do
     cancellation = Pristine.Cancellation.new()
     Pristine.Cancellation.cancel(cancellation)

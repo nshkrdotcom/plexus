@@ -64,15 +64,7 @@ defmodule Plexus.Actor.Interpreter do
     do: Run.cast(run_id, actor_id, message)
 
   defp execute(run_id, context, {:measure, tag, state, contract, opts}) do
-    config = Config.fetch!(run_id)
-
-    case Budget.reserve(config.budget, :measure, 1) do
-      :ok ->
-        Measure.submit(run_id, context, tag, state, contract, opts)
-
-      {:error, :budget_exhausted} ->
-        deliver_measure(run_id, context.actor_id, tag, {:error, {:budget_exhausted, :measure}})
-    end
+    Measure.submit(run_id, context, tag, state, contract, opts)
   end
 
   defp execute(run_id, context, {:expand, tag, spec, opts}) do
@@ -167,9 +159,9 @@ defmodule Plexus.Actor.Interpreter do
       {:error, :not_found} ->
         :ok
 
-      {:ok, _attrs} ->
+      {:ok, attrs} ->
         config = Config.fetch!(run_id)
-        Quiescence.add(config.quiescence, :actors, -1)
+        Quiescence.retire_actor(config, attrs.lifecycle_ref)
         Record.append(run_id, :actor_complete, %{actor_id: context.actor_id, has_result: true})
     end
   end
@@ -194,9 +186,6 @@ defmodule Plexus.Actor.Interpreter do
   defp auto_actor_id(parent_id, class) do
     {parent_id, class, System.unique_integer([:positive, :monotonic])}
   end
-
-  defp deliver_measure(run_id, actor_id, tag, result),
-    do: deliver(run_id, actor_id, {:plexus, :measurement, tag, result})
 
   defp deliver_expand(run_id, actor_id, tag, result),
     do: deliver(run_id, actor_id, {:plexus, :expansion, tag, result})

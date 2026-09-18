@@ -162,6 +162,27 @@ defmodule Plexus.RuntimeAcceptanceTest do
     assert Quiescence.get(Run.config(run).quiescence, :actors) == 0
   end
 
+  test "completion racing termination retires each birth exactly once" do
+    run = run()
+    id = Run.run_id(run)
+
+    for actor <- 1..100 do
+      {:ok, _} = birth(run, actor)
+
+      completion =
+        Task.async(fn ->
+          Plexus.Actor.dispatch(%{run_id: id, actor_id: actor}, {:complete, :ok})
+        end)
+
+      Run.terminate_actor(run, actor)
+      Task.await(completion)
+    end
+
+    assert Graph.count(id) == 0
+    assert Quiescence.quiescent?(Run.config(run).quiescence)
+    assert Budget.used(Run.config(run).budget, :population) == 0
+  end
+
   @tag capture_log: true
   test "owner death replaces ETS and restarts the resource island without stale directory pointers" do
     run = run()

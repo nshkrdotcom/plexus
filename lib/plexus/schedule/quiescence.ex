@@ -17,6 +17,14 @@ defmodule Plexus.Schedule.Quiescence do
     :ok
   end
 
+  @doc false
+  def retire_actor(config, lifecycle_ref) do
+    case :ets.take(config.tables.active_actors, lifecycle_ref) do
+      [] -> :ok
+      [_] -> add(config.quiescence, :actors, -1)
+    end
+  end
+
   @spec get(t(), atom()) :: integer()
   def get(ref, counter), do: :counters.get(ref, Map.fetch!(@index, counter))
 

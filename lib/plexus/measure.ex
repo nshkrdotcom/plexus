@@ -22,8 +22,6 @@ defmodule Plexus.Measure do
 
         case replay_or_cache(run_id, config, memo_key) do
           {:hit, result, source} ->
-            Budget.refund(config.budget, :measure, 1)
-
             Record.append(run_id, :measurement_reused, %{
               actor_id: context.actor_id,
               source: source
@@ -32,16 +30,27 @@ defmodule Plexus.Measure do
             deliver(run_id, context.actor_id, tag, result)
 
           :miss ->
-            Quiescence.add(config.quiescence, :measurements, 1)
-            submit_coalesced(run_id, context, tag, state, entry, memo_key, opts)
+            admit(run_id, context, tag, state, entry, memo_key, opts)
         end
 
       {:error, :not_found} ->
-        Budget.refund(config.budget, :measure, 1)
         deliver(run_id, context.actor_id, tag, {:error, {:contract_not_found, contract_ref}})
     end
 
     :ok
+  end
+
+  defp admit(run_id, context, tag, state, entry, memo_key, opts) do
+    config = Config.fetch!(run_id)
+
+    case Budget.reserve(config.budget, :measure, 1) do
+      :ok ->
+        Quiescence.add(config.quiescence, :measurements, 1)
+        submit_coalesced(run_id, context, tag, state, entry, memo_key, opts)
+
+      {:error, :budget_exhausted} ->
+        deliver(run_id, context.actor_id, tag, {:error, {:budget_exhausted, :measure}})
+    end
   end
 
   @spec cancel_actor(term(), term()) :: :ok

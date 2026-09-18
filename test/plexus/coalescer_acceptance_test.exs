@@ -102,6 +102,26 @@ defmodule Plexus.CoalescerAcceptanceTest do
     assert Budget.used(Run.config(run).budget, :measure) == 2
   end
 
+  test "cache and replay remain usable with exhausted measurement credit" do
+    {run, id, client, contract} = setup_run(budgets: [measure: 1])
+    submit(id, :a, :original, "one", contract)
+    assert_receive {:original, {:ok, result}}, 2_000
+    submit(id, :a, :cached, "one", contract)
+    assert_receive {:cached, {:ok, ^result}}
+    submit(id, :a, :denied, "two", contract)
+    assert_receive {:denied, {:error, {:budget_exhausted, :measure}}}
+    assert length(Test.requests(client)) == 1
+    assert Budget.used(Run.config(run).budget, :measure) == 1
+
+    {_replay, replay_id, replay_client, _} = setup_run(replay: :replay, budgets: [measure: 0])
+    Record.load_replay(replay_id, [{Plexus.Contract.memo_key("one", contract), {:ok, result}}])
+    submit(replay_id, :a, :replayed, "one", contract)
+    assert_receive {:replayed, {:ok, ^result}}
+    submit(replay_id, :a, :missing, "missing", contract)
+    assert_receive {:missing, {:error, {:replay_miss, _}}}
+    assert Test.requests(replay_client) == []
+  end
+
   test "replay misses fail closed" do
     {_run, id, client, contract} = setup_run(replay: :replay)
     submit(id, :a, :miss, "missing", contract)
