@@ -1,0 +1,5 @@
+id,message,count
+1,"quoted, field",2
+2,"escaped ""quote""",3
+3,"multi
+line narrative",4

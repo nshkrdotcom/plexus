@@ -24,3 +24,9 @@ plexus-*.tar
 plexus-*/
 
 /tmp/
+# Example datasets and local caches. Test fixtures live under test/fixtures/examples/.
+/.plexus-data/
+/examples/**/data/
+/examples/**/.data/
+/examples/**/cache/
+/examples/**/downloads/

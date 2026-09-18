@@ -20,6 +20,7 @@ The format is based on Keep a Changelog and this project adheres to Semantic Ver
 
 ### Added
 
+- Added six dataset-backed runnable example applications covering SWE-bench Verified, NYC 311, GAIA/MicroSS, deps.dev, SciFact and NOAA Storm Events, with ignored local-data fetch/cache paths and offline parser coverage
 - Published Hex inference 0.4.1 integration with streams, TypeSafe monitoring, capability preflight and independent expansion accounting
 - Versioned safe durable replay files with contract/config manifests and checksums
 - Bounded command scheduling, queued priorities, hierarchical credit accounts, secondary indexes, seeded resampling/tournaments and leaf population operators

@@ -9,6 +9,7 @@
     "guides/**",
     "docs/**",
     "experiments/**",
+    "examples/**",
     "artifacts/**",
     "assets/**",
     ".github/**",

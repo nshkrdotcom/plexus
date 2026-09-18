@@ -170,6 +170,21 @@ end
 
 TypeSafeSDK 0.4.x calls `handle_evaluation(result, tag, state)` for its direct OTP path. Plexus-managed measurement results instead arrive as `{:plexus, :measurement, tag, result}` so they can pass through cache/coalescing/budget policy first.
 
+## Dataset-backed example applications
+
+`examples/` contains six runnable applications built on standard datasets rather than toy records:
+
+- **SWE-bench Verified issue swarm** — semantic issue routing evaluated post hoc against fixed patch-shape labels.
+- **NYC 311 city signal tracker** — large report populations form spatiotemporal incident clusters; only dense clusters spend semantic budget.
+- **GAIA incident commander** — provenance-linked root-cause hypotheses over MicroSS traces/logs with injected-fault ground truth.
+- **deps.dev dependency upgrade search** — compares real resolved dependency graphs, measures changed-node risk, then runs a pruned actor beam search over migration order.
+- **SciFact research evidence graph** — support/contradiction edges evaluated against public scientific fact-verification labels.
+- **NOAA Storm Events alert swarm** — large dormant historical event populations wake by day, aggregate into state/day actors, and use sparse Jev interpretation.
+
+Each example includes a fetch step for the real upstream dataset. Downloads land under `.plexus-data/` by default and are ignored by Git; tiny committed fixtures exist only for offline parser tests. The examples deliberately separate actor-population scale from semantic-call scale.
+
+See the [example catalog](examples/README.md), [dataset notes](examples/DATASETS.md), and [example applications guide](guides/examples.md).
+
 ## Controlled scheduling experiments
 
 The same actor code can be run asynchronously or under BSP:
@@ -226,6 +241,7 @@ Plexus.events(run)
 - [Calibration and replay](guides/calibration-and-replay.md)
 - [Expansion tier](guides/expansion.md)
 - [Testing and release](guides/testing-and-release.md)
+- [Example applications](guides/examples.md)
 - [Experiments and measured results](guides/experiments.md)
 
 ## Non-goals

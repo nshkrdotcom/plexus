@@ -75,6 +75,7 @@ defmodule Plexus.MixProject do
         "assets",
         "config",
         "experiments",
+        "examples",
         "artifacts",
         "guides",
         "lib",
@@ -105,6 +106,9 @@ defmodule Plexus.MixProject do
         "guides/expansion.md",
         "guides/testing-and-release.md",
         "guides/experiments.md",
+        "guides/examples.md",
+        "examples/README.md",
+        "examples/DATASETS.md",
         "HANDOFF.md",
         "CHANGELOG.md",
         "LICENSE"
@@ -112,6 +116,7 @@ defmodule Plexus.MixProject do
       groups_for_extras: [
         Overview: ["README.md"],
         Guides: Path.wildcard("guides/*.md"),
+        Examples: ["examples/README.md", "examples/DATASETS.md"],
         Project: ["HANDOFF.md", "CHANGELOG.md", "LICENSE"]
       ],
       groups_for_modules: [
