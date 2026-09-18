@@ -5,7 +5,9 @@ Code.require_file("../support/runtime.exs", __DIR__)
 alias Plexus.Examples.Support.{Data, HTTP, Runtime}
 
 {opts, _, _} =
-  OptionParser.parse(System.argv(), strict: [data_dir: :string, limit: :integer, days: :integer])
+  OptionParser.parse(Runtime.cli_args(),
+    strict: [data_dir: :string, limit: :integer, days: :integer]
+  )
 
 data_dir = opts[:data_dir] || Runtime.data_dir("nyc-311")
 limit = opts[:limit] || 20_000

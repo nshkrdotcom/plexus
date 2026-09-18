@@ -4,7 +4,7 @@ defmodule Plexus.Examples.Support.Metrics do
   def mean([]), do: 0.0
   def mean(values), do: Enum.sum(values) / length(values)
 
-  def pct(part, 0), do: 0.0
+  def pct(_part, 0), do: 0.0
   def pct(part, whole), do: 100.0 * part / whole
 
   def print_table(rows) do

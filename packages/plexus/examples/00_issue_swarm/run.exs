@@ -304,7 +304,7 @@ defmodule Plexus.Examples.IssueSwarm do
 end
 
 {opts, _, _} =
-  OptionParser.parse(System.argv(),
+  OptionParser.parse(Runtime.cli_args(),
     strict: [data_dir: :string, limit: :integer, token_budget: :integer, timeout_ms: :integer]
   )
 

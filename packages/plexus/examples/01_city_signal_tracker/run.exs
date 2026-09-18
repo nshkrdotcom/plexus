@@ -271,7 +271,7 @@ defmodule Plexus.Examples.CitySignal do
 end
 
 {opts, _, _} =
-  OptionParser.parse(System.argv(),
+  OptionParser.parse(Runtime.cli_args(),
     strict: [
       data_dir: :string,
       max_clusters: :integer,

@@ -5,10 +5,10 @@ Builds two real resolved dependency graphs from the stable **deps.dev v3 API**, 
 Those semantic risk/attention measurements then drive a bounded actor **beam search** over migration order. Search actors respect changed-dependency prerequisites, branch across multiple ready choices, retain only the best beam, and prune losing plan actors. The output therefore includes both a semantic migration-risk frontier and concrete dependency-aware migration orders rather than a flat graph diff.
 
 ```bash
-mix run examples/03_dependency_upgrade_search/fetch.exs -- \
+mix run examples/03_dependency_upgrade_search/fetch.exs \
   --system NPM --package eslint --from 8.57.0 --to 9.35.0
 
-TYPESAFE_API_KEY=... mix run examples/03_dependency_upgrade_search/run.exs -- \
+TYPESAFE_API_KEY=... mix run examples/03_dependency_upgrade_search/run.exs \
   --search-items 8 --beam-width 6 --branch-width 4
 ```
 

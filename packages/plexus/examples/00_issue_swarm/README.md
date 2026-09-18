@@ -8,7 +8,7 @@ This demonstrates semantic measurements driving actor-to-actor routing, typed to
 
 ```bash
 mix run examples/00_issue_swarm/fetch.exs
-TYPESAFE_API_KEY=... mix run examples/00_issue_swarm/run.exs -- --limit 50
+TYPESAFE_API_KEY=... mix run examples/00_issue_swarm/run.exs --limit 50
 ```
 
 Use `--limit 500` for all SWE-bench Verified instances. Downloaded data lives under `.plexus-data/swe-bench-verified/` by default and is ignored by Git.

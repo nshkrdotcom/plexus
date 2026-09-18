@@ -1,7 +1,9 @@
+Code.require_file("../../examples/support/runtime.exs", __DIR__)
+
 defmodule Plexus.ExamplesSupportTest do
   use ExUnit.Case, async: true
 
-  alias Plexus.Examples.Support.Data
+  alias Plexus.Examples.Support.{Data, Runtime}
 
   Code.require_file("../../examples/support/data.exs", __DIR__)
   Code.require_file("../../examples/support/http.exs", __DIR__)
@@ -45,5 +47,13 @@ defmodule Plexus.ExamplesSupportTest do
              path
              |> Data.jsonl!()
              |> Enum.to_list()
+  end
+
+  test "CLI arguments tolerate a legacy separator" do
+    assert Runtime.normalize_cli_args(["--", "--limit", "3"]) ==
+             ["--limit", "3"]
+
+    assert Runtime.normalize_cli_args(["--limit", "3"]) ==
+             ["--limit", "3"]
   end
 end

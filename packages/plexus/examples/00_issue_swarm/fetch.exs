@@ -4,7 +4,7 @@ Code.require_file("../support/runtime.exs", __DIR__)
 
 alias Plexus.Examples.Support.{Data, HTTP, Runtime}
 
-{opts, _, _} = OptionParser.parse(System.argv(), strict: [data_dir: :string])
+{opts, _, _} = OptionParser.parse(Runtime.cli_args(), strict: [data_dir: :string])
 data_dir = opts[:data_dir] || Runtime.data_dir("swe-bench-verified")
 path = Path.join(data_dir, "swe_bench_verified.jsonl")
 File.mkdir_p!(data_dir)

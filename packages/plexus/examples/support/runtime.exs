@@ -6,6 +6,11 @@ defmodule Plexus.Examples.Support.Runtime do
 
   def root, do: Path.expand("../..", __DIR__)
 
+  def cli_args, do: normalize_cli_args(System.argv())
+
+  def normalize_cli_args(["--" | rest]), do: rest
+  def normalize_cli_args(args) when is_list(args), do: args
+
   def data_dir(slug, opts \\ []) do
     Keyword.get(opts, :data_dir) ||
       Path.join([root(), ".plexus-data", slug])

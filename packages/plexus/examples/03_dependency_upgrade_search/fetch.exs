@@ -4,7 +4,7 @@ Code.require_file("../support/runtime.exs", __DIR__)
 alias Plexus.Examples.Support.{HTTP, Runtime}
 
 {opts, _, _} =
-  OptionParser.parse(System.argv(),
+  OptionParser.parse(Runtime.cli_args(),
     strict: [
       data_dir: :string,
       system: :string,

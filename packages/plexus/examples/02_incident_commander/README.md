@@ -6,7 +6,7 @@ Hypothesis actors depend on evidence actors through Plexus provenance edges. Tra
 
 ```bash
 mix run examples/02_incident_commander/fetch.exs
-TYPESAFE_API_KEY=... mix run examples/02_incident_commander/run.exs -- --day 2021-07-01
+TYPESAFE_API_KEY=... mix run examples/02_incident_commander/run.exs --day 2021-07-01
 ```
 
 GAIA is large and uses Git LFS. `fetch.exs` intentionally downloads the real `MicroSS/**` corpus into `.plexus-data/gaia/GAIA-DataSet`; it requires `git-lfs` plus `7z`/`7zz` to extract the standard MicroSS split archives. You may instead pass an existing checkout with `--source-dir /path/to/MicroSS`.

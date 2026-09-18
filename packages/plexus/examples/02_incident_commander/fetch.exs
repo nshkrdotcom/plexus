@@ -2,7 +2,7 @@ Code.require_file("../support/runtime.exs", __DIR__)
 
 alias Plexus.Examples.Support.Runtime
 
-{opts, _, _} = OptionParser.parse(System.argv(), strict: [data_dir: :string])
+{opts, _, _} = OptionParser.parse(Runtime.cli_args(), strict: [data_dir: :string])
 data_dir = opts[:data_dir] || Runtime.data_dir("gaia")
 repo = Path.join(data_dir, "GAIA-DataSet")
 micross = Path.join(repo, "MicroSS")

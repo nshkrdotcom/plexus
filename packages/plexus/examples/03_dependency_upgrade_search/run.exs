@@ -481,7 +481,7 @@ defmodule Plexus.Examples.DependencyUpgrade do
 end
 
 {opts, _, _} =
-  OptionParser.parse(System.argv(),
+  OptionParser.parse(Runtime.cli_args(),
     strict: [
       data_dir: :string,
       max_nodes: :integer,

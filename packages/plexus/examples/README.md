@@ -31,7 +31,7 @@ Each directory has a `fetch.exs` and `run.exs`:
 
 ```bash
 mix run examples/00_issue_swarm/fetch.exs
-TYPESAFE_API_KEY=... mix run examples/00_issue_swarm/run.exs -- --limit 50
+TYPESAFE_API_KEY=... mix run examples/00_issue_swarm/run.exs --limit 50
 ```
 
 Fetch once, then rerun from the local cache. The run scripts expose workload controls rather than substituting toy datasets for the real source.

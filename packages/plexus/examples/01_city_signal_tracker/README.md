@@ -5,8 +5,8 @@ Streams real **NYC 311 Service Requests** into a spatiotemporal actor population
 The dataset can contain tens of millions of rows; the example intentionally scales the *run* with `--max-clusters`, `--min-cluster`, and the fetch window instead of replacing the source with toy data.
 
 ```bash
-mix run examples/01_city_signal_tracker/fetch.exs -- --days 7 --limit 50000
-TYPESAFE_API_KEY=... mix run examples/01_city_signal_tracker/run.exs -- --max-clusters 50
+mix run examples/01_city_signal_tracker/fetch.exs --days 7 --limit 50000
+TYPESAFE_API_KEY=... mix run examples/01_city_signal_tracker/run.exs --max-clusters 50
 ```
 
 Set `SOCRATA_APP_TOKEN` if you have one. Downloaded rows are cached under `.plexus-data/nyc-311/` and ignored by Git.

@@ -6,7 +6,7 @@ The dev split supplies gold evidence labels, so the example reports relation acc
 
 ```bash
 mix run examples/04_research_evidence_graph/fetch.exs
-TYPESAFE_API_KEY=... mix run examples/04_research_evidence_graph/run.exs -- --claims 50
+TYPESAFE_API_KEY=... mix run examples/04_research_evidence_graph/run.exs --claims 50
 ```
 
 Use `--claims 450` for the full public dev claim split. Data is downloaded from SciFact's official S3 release into `.plexus-data/scifact/` and ignored by Git.

@@ -403,7 +403,7 @@ defmodule Plexus.Examples.AlertSwarm do
 end
 
 {opts, _, _} =
-  OptionParser.parse(System.argv(),
+  OptionParser.parse(Runtime.cli_args(),
     strict: [
       data_dir: :string,
       year: :integer,

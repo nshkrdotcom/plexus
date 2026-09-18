@@ -4,7 +4,7 @@ Code.require_file("../support/runtime.exs", __DIR__)
 
 alias Plexus.Examples.Support.{Data, HTTP, Runtime}
 
-{opts, _, _} = OptionParser.parse(System.argv(), strict: [data_dir: :string, year: :integer])
+{opts, _, _} = OptionParser.parse(Runtime.cli_args(), strict: [data_dir: :string, year: :integer])
 year = opts[:year] || Date.utc_today().year - 1
 data_dir = opts[:data_dir] || Runtime.data_dir("noaa-storm-events")
 File.mkdir_p!(data_dir)
