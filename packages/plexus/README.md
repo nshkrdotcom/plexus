@@ -16,7 +16,7 @@ Instead of each actor firing independent, uncoordinated API calls, Plexus acts a
 
 Rather than locking you into rigid agent patterns, Plexus provides composable primitives so you can assemble search trees, belief graphs, particle filters, hypothesis swarms, or recursive map/reduce workflows from the same core runtime.
 
-> **Status**: Plexus is currently in early development (`0.1.0`). See [HANDOFF.md](HANDOFF.md).
+> **Status**: Plexus is currently in early development (`0.1.0`).
 
 ## How it works
 

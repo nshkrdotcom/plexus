@@ -13,8 +13,6 @@ defmodule Plexus.ReleaseConsistencyTest do
     for path <- [
           "README.md",
           "CHANGELOG.md",
-          "HANDOFF.md",
-          "GAIA_LIVING_TWIN_HANDOFF.md",
           "LICENSE",
           "assets/plexus.svg",
           "guides/index.md",
@@ -35,10 +33,19 @@ defmodule Plexus.ReleaseConsistencyTest do
     end
   end
 
-  test "example applications are packaged, ignored safely, and have entrypoints" do
+  test "example applications remain in the repository and package metadata stays clean" do
     package_files = Mix.Project.config()[:package][:files]
-    assert "examples" in package_files
-    assert "GAIA_LIVING_TWIN_HANDOFF.md" in package_files
+
+    assert "examples/README.md" in package_files
+    assert "examples/DATASETS.md" in package_files
+
+    refute "examples" in package_files
+    refute "HANDOFF.md" in package_files
+    refute "GAIA_LIVING_TWIN_HANDOFF.md" in package_files
+    refute "artifacts" in package_files
+    refute "experiments" in package_files
+    refute "test" in package_files
+    refute "config" in package_files
 
     gitignore = File.read!(".gitignore")
     assert gitignore =~ "/.plexus-data/"
