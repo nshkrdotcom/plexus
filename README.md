@@ -6,6 +6,7 @@
 
 <p align="center">
   <a href="https://github.com/nshkrdotcom/plexus"><img src="https://img.shields.io/badge/GitHub-nshkrdotcom%2Fplexus-24292e?logo=github" alt="GitHub"/></a>
+  <a href="https://github.com/nshkrdotcom/typesafe_sdk"><img src="https://img.shields.io/badge/built%20on-TypeSafeSDK-blueviolet?logo=github" alt="TypeSafeSDK"/></a>
   <a href="https://hex.pm/packages/plexus"><img src="https://img.shields.io/hexpm/v/plexus.svg" alt="Hex.pm"/></a>
   <a href="https://hexdocs.pm/plexus"><img src="https://img.shields.io/badge/hex-docs-blue.svg" alt="HexDocs"/></a>
   <a href="LICENSE"><img src="https://img.shields.io/badge/license-MIT-blue.svg" alt="MIT License"/></a>
@@ -18,9 +19,9 @@
 
 ---
 
-Plexus is an Elixir runtime for workloads that require large populations of concurrent actors—such as hypothesis swarms, Monte Carlo Tree Search, belief graphs, and spatiotemporal clustering.
+Plexus is an Elixir actor runtime built on [TypeSafeSDK](https://github.com/nshkrdotcom/typesafe_sdk) for workloads that require large populations of concurrent actors—such as hypothesis swarms, Monte Carlo Tree Search, belief graphs, and spatiotemporal clustering.
 
-Instead of each actor firing independent, uncoordinated API calls, Plexus acts as the coordination layer:
+Instead of each actor firing independent, uncoordinated API calls, Plexus acts as the coordination layer over [TypeSafeSDK](https://github.com/nshkrdotcom/typesafe_sdk):
 - **Fast actor lifecycle** — Spawn and supervise thousands of concurrent actors across partitioned supervisors without coordinator mailbox bottlenecks.
 - **Typed graph topology** — Maintain parent/child, dependency, and neighbor relationships directly in fast, run-isolated ETS tables.
 - **Request coalescing** — Intercept evaluation requests across actors, automatically deduplicating identical calls and batching them into bounded windows.
@@ -36,6 +37,8 @@ Rather than locking you into rigid agent patterns, Plexus provides composable pr
 
 ## Quick start
 
+Add `plexus` to your `mix.exs` dependencies. It automatically includes [`typesafe_sdk`](https://github.com/nshkrdotcom/typesafe_sdk) as its core semantic evaluation engine:
+
 ```elixir
 def deps do
   [
@@ -43,6 +46,8 @@ def deps do
   ]
 end
 ```
+
+Configure a [TypeSafeSDK client](https://github.com/nshkrdotcom/typesafe_sdk) and pass it when starting your run:
 
 ```elixir
 client = TypeSafeSDK.new_client(api_key: System.fetch_env!("TYPESAFE_API_KEY"))
@@ -67,7 +72,7 @@ See the [package README](packages/plexus/README.md) for the full API walkthrough
 
 - **Population runtime** — Per-run metadata, secondary indexes, top-k/Pareto tracking, and seeded sampling.
 - **Typed topology** — Fast in-memory edges in ETS (e.g., `:child`, `:supports`, `:contradicts`, `:depends_on`, `:neighbor`, or custom edge types).
-- **Measurement coalescing** — Named prepared contracts with automatic deduplication, memoization, and batching via `TypeSafeSDK.evaluate_many/4`.
+- **Measurement coalescing** — Named prepared contracts with automatic deduplication, memoization, and batching via [`TypeSafeSDK.evaluate_many/4`](https://github.com/nshkrdotcom/typesafe_sdk).
 - **Scheduling regimes** — Support for asynchronous dispatch, Bulk Synchronous Parallel (BSP) barriers, and prioritized command queues.
 - **Belief state** — Track confidence distributions (Bernoulli, categorical, ordinal) alongside raw evaluation values.
 - **Budgets & admission** — Atomic token and cost meters with hierarchical credit accounts.
@@ -107,7 +112,7 @@ plexus/
 
 ## Non-goals
 
-Plexus is focused on single-node execution. It does not handle distributed multi-node clusters, durable mailbox persistence across node crashes, or high-level prompt engineering and chat loops. Transport retries and provider APIs remain the responsibility of TypeSafe and the inference layer.
+Plexus is focused on single-node execution. It does not handle distributed multi-node clusters, durable mailbox persistence across node crashes, or high-level prompt engineering and chat loops. Transport retries and provider APIs remain the responsibility of [TypeSafe](https://github.com/nshkrdotcom/typesafe_sdk) and the inference layer.
 
 ## License
 

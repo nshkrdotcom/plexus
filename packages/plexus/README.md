@@ -6,9 +6,9 @@
 
 **High-concurrency actor runtime for large-scale semantic graphs and search.**
 
-Plexus is an Elixir runtime for workloads that require large populations of concurrent actors—such as hypothesis swarms, Monte Carlo Tree Search, belief graphs, and spatiotemporal clustering.
+Plexus is an Elixir actor runtime built on [TypeSafeSDK](https://github.com/nshkrdotcom/typesafe_sdk) for workloads that require large populations of concurrent actors—such as hypothesis swarms, Monte Carlo Tree Search, belief graphs, and spatiotemporal clustering.
 
-Instead of each actor firing independent, uncoordinated API calls, Plexus acts as the coordination layer:
+Instead of each actor firing independent, uncoordinated API calls, Plexus acts as the coordination layer over [TypeSafeSDK](https://github.com/nshkrdotcom/typesafe_sdk):
 - **Fast actor lifecycle** — Spawn and supervise thousands of concurrent actors across partitioned supervisors without coordinator mailbox bottlenecks.
 - **Typed graph topology** — Maintain parent/child, dependency, and neighbor relationships directly in fast, run-isolated ETS tables.
 - **Request coalescing** — Intercept evaluation requests across actors, automatically deduplicating identical calls and grouping them into short configurable windows.
@@ -20,7 +20,7 @@ Rather than locking you into rigid agent patterns, Plexus provides composable pr
 
 ## How it works
 
-Actors declare what they want to evaluate. Plexus intercepts these effects, coalesces matching requests, and runs them as batched evaluations through TypeSafe, returning the results directly to the requesting actors.
+Actors declare what they want to evaluate. Plexus intercepts these effects, coalesces matching requests, and runs them as batched evaluations through [TypeSafe](https://github.com/nshkrdotcom/typesafe_sdk), returning the results directly to the requesting actors.
 
 ```text
 Actor local state
@@ -45,7 +45,7 @@ Independent actors do not need to manage individual HTTP requests or rate limits
 
 - **Population runtime** — Per-run metadata, secondary indexes, top-k/Pareto tracking, and seeded sampling.
 - **Typed topology** — Fast in-memory edges in ETS (such as `:child`, `:supports`, `:contradicts`, `:depends_on`, `:neighbor`, or custom edge types).
-- **Measurement coalescing** — Named prepared contracts with automatic deduplication, memoization, and batching through `TypeSafeSDK.evaluate_many/4`.
+- **Measurement coalescing** — Named prepared contracts with automatic deduplication, memoization, and batching through [`TypeSafeSDK.evaluate_many/4`](https://github.com/nshkrdotcom/typesafe_sdk).
 - **Scheduling regimes** — Support for asynchronous execution, Bulk Synchronous Parallel (BSP) barriers, and prioritized command queues.
 - **Belief state** — Track confidence distributions (Bernoulli, categorical, ordinal) alongside raw evaluation values.
 - **Quiescence counters** — Run-scoped lock-free counters for termination and quiescence detection.
@@ -88,9 +88,11 @@ def deps do
 end
 ```
 
-Plexus integrates with `typesafe_sdk`, `pristine` (for cancellation tokens), and `telemetry` for event dispatching.
+Plexus is built on [`typesafe_sdk`](https://github.com/nshkrdotcom/typesafe_sdk) (which is included automatically), and integrates with `pristine` (for cancellation tokens) and `telemetry` for event dispatching.
 
 ## Start a run
+
+Configure a [TypeSafeSDK client](https://github.com/nshkrdotcom/typesafe_sdk) and pass it when starting your run:
 
 ```elixir
 client = TypeSafeSDK.new_client(api_key: System.fetch_env!("TYPESAFE_API_KEY"))
@@ -126,7 +128,7 @@ The prepared fingerprint serves as the cache key, coalescer partition key, and c
 
 ## Actors declare effects
 
-`Plexus.Actor` builds on `TypeSafeSDK.OTP.Server`, so direct `{:evaluate, ...}` remains available as a lower-level escape hatch when needed. The standard framework path is `Plexus.Actor.dispatch/2`:
+`Plexus.Actor` builds on [`TypeSafeSDK.OTP.Server`](https://github.com/nshkrdotcom/typesafe_sdk), so direct `{:evaluate, ...}` remains available as a lower-level escape hatch when needed. The standard framework path is `Plexus.Actor.dispatch/2`:
 
 ```elixir
 defmodule MyApp.Region do
@@ -248,7 +250,7 @@ Plexus.events(run)
 
 ## Non-goals
 
-Plexus is focused on single-node execution. It does not handle distributed multi-node clusters, durable mailbox persistence across node crashes, or high-level prompt engineering and chat loops. Transport retries and provider APIs remain the responsibility of TypeSafe and the inference layer.
+Plexus is focused on single-node execution. It does not handle distributed multi-node clusters, durable mailbox persistence across node crashes, or high-level prompt engineering and chat loops. Transport retries and provider APIs remain the responsibility of [TypeSafe](https://github.com/nshkrdotcom/typesafe_sdk) and the inference layer.
 
 ## License
 
