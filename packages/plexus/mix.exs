@@ -69,19 +69,14 @@ defmodule Plexus.MixProject do
       files: [
         ".formatter.exs",
         "CHANGELOG.md",
-        "HANDOFF.md",
-        "GAIA_LIVING_TWIN_HANDOFF.md",
         "LICENSE",
         "README.md",
         "assets",
-        "config",
-        "experiments",
-        "examples",
-        "artifacts",
         "guides",
         "lib",
         "mix.exs",
-        "test"
+        "examples/README.md",
+        "examples/DATASETS.md"
       ]
     ]
   end
@@ -110,8 +105,6 @@ defmodule Plexus.MixProject do
         "guides/examples.md",
         {"examples/README.md", [filename: "examples", title: "Examples"]},
         "examples/DATASETS.md",
-        "HANDOFF.md",
-        "GAIA_LIVING_TWIN_HANDOFF.md",
         "CHANGELOG.md",
         "LICENSE"
       ],
@@ -119,7 +112,7 @@ defmodule Plexus.MixProject do
         Overview: ["README.md"],
         Guides: Path.wildcard("guides/*.md"),
         Examples: ["examples/README.md", "examples/DATASETS.md"],
-        Project: ["HANDOFF.md", "GAIA_LIVING_TWIN_HANDOFF.md", "CHANGELOG.md", "LICENSE"]
+        Project: ["CHANGELOG.md", "LICENSE"]
       ],
       groups_for_modules: [
         Core: [
